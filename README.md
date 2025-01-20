@@ -2,6 +2,7 @@
 
 This Java application will enable users to retrieve and analyze stock market data using the free version of the Alpha Vantage API. The application supports fetching stock price data, processing it, and presenting it in a user-friendly way via the console or a graphical interface.
 
+---
 
 ## Prerequisites
 
@@ -12,7 +13,9 @@ Before you can run the application, ensure you have the following installed:
 - **MySQL** - A MySQL database server (Aiven - I need to check if this fits).
 - **IDE**: IntelliJ IDEA, Eclipse, VS code, or any other Java IDE.
 - **Web Browser**: Any modern browser (e.g., Google Chrome, Firefox).
-- **Alpha Vantage API Key**: Sign up at Alpha Vantage to get a free API key.
+- **Alpha Vantage API Key**: Sign up at [Alpha Vantage](https://www.alphavantage.com) to get a free API key.
+
+---
 
 ## Features
 
@@ -22,6 +25,64 @@ Before you can run the application, ensure you have the following installed:
 - Store fetched and user data in a cloud database.
 - Counting profit for given stock buy
 - Creating dashboard for portfolio display
+
+---
+
+## **Getting Started**
+
+### **1. Clone the Repository**
+
+```bash
+git clone https://github.com/your-repo/stock-market-app.git
+cd stock-market-app
+```
+
+### **2. Configure the API Key**
+
+- Add your API key to the application configuration. Update the `application.properties` file:
+
+```properties
+alphavantage.api.key=YOUR_API_KEY
+```
+
+### **3. Build and Run**
+
+#### Using Maven:
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+#### Using an IDE:
+
+- Open the project in IntelliJ IDEA or Eclipse.
+- Run the `StockAppApplication` class.
+
+---
+
+## **Usage**
+
+1. **Console Interface**:
+
+   - The application will prompt the user to input a stock symbol (e.g., `AAPL`, `GOOGL`).
+   - It will fetch and display data such as opening price, closing price, and volume for the last trading day.
+
+2. **Graphical Interface (Optional)**:
+
+   - If GUI functionality is implemented, it will display data in tables or charts (JavaFX recommended).
+
+---
+
+## **API Integration**
+
+- Example of an API request to retrieve daily time series data:
+
+```
+https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=YOUR_API_KEY
+```
+
+---
 
 ## Project Structure
 
@@ -41,7 +102,30 @@ com.stockapp
 - **StockService (Business logic)**: Processes stock data and performs analyses such as calculating averages or filtering results.
 - **Main (Entry point)**: Contains the main method to initialize and run the application.
 
+---
+
+## **Future Enhancements**
+
+1. **Error Handling**:
+   - Improve handling for API rate limits (e.g., cache recent results).
+   - Display user-friendly error messages for invalid symbols or API issues.
+2. **Data Storage**:
+   - Add support for storing historical data in a database (SQLite).
+   - Export data to CSV files.
+3. **Advanced Analytics**:
+   - Add features like moving averages, trend analysis, and data visualization.
+4. **GUI Improvements**:
+   - Use JavaFX to display data in charts and tables for better usability.
+
+---
+
 ## License
 
 This project is licensed under the MIT License.
-"# Stock-App" 
+
+---
+
+## **Contributions**
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
