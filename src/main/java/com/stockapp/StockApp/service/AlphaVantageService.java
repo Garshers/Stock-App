@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -39,7 +41,7 @@ public class AlphaVantageService {
      * @param functionType
      * @return
      */
-    public Stock parseStockData(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
+    public List<Stock> parseStockData(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
         String timeSeriesKey;
         switch (functionType) {
             case TIME_SERIES_DAILY:
@@ -62,11 +64,13 @@ public class AlphaVantageService {
             throw new RuntimeException("Not found '" + timeSeriesKey + "' in JSON answer.");
         }
 
-        String latestDate = timeSeries.keySet().iterator().next();
-        JsonObject latestData = timeSeries.getAsJsonObject(latestDate);
+        List<Stock> stockList = new ArrayList<>();
+        for (String date : timeSeries.keySet()) {
+            JsonObject dailyData = timeSeries.getAsJsonObject(date);
+            double closePrice = dailyData.get("4. close").getAsDouble();
+            stockList.add(new Stock(symbol, closePrice, date));
+        }
 
-        double closePrice = latestData.get("4. close").getAsDouble();
-
-        return new Stock(symbol, closePrice, latestDate);
+        return stockList;
     }
 }

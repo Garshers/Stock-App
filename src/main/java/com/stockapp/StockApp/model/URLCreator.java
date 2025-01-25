@@ -2,7 +2,7 @@ package com.stockapp.StockApp.model;
 
 public class URLCreator {
     private static final String BASE_URL = "https://www.alphavantage.co/query";
-    private static final String API_KEY = "key"; // Swap this string with your Alpha Vantage API key
+    private static final String API_KEY = "demo"; // Swap this string with your Alpha Vantage API key
 
     private String symbol;
     private FunctionType function;
