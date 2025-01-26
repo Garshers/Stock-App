@@ -35,14 +35,18 @@ public class URLCreator {
     }
 
     public enum FunctionType {
-        TIME_SERIES_DAILY("TIME_SERIES_DAILY"),
-        TIME_SERIES_WEEKLY("TIME_SERIES_WEEKLY"),
-        TIME_SERIES_MONTHLY("TIME_SERIES_MONTHLY");
-
-        private final String value;
-
-        FunctionType(String value) {
-            this.value = value;
+        TIME_SERIES_DAILY_ADJUSTED("Daily Adjusted Time Series"),
+        TIME_SERIES_WEEKLY_ADJUSTED("Weekly Adjusted Time Series"),
+        TIME_SERIES_MONTHLY_ADJUSTED("Monthly Adjusted Time Series");
+    
+        private final String jsonKey;
+    
+        FunctionType(String jsonKey) {
+            this.jsonKey = jsonKey;
+        }
+    
+        public String getJsonKey() {
+            return jsonKey;
         }
     }
 

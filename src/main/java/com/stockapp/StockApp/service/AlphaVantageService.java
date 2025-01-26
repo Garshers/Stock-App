@@ -42,21 +42,9 @@ public class AlphaVantageService {
      * @return
      */
     public List<Stock> parseStockData(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
-        String timeSeriesKey;
-        switch (functionType) {
-            case TIME_SERIES_DAILY:
-                timeSeriesKey = "Time Series (Daily)";
-                break;
-            case TIME_SERIES_WEEKLY:
-                timeSeriesKey = "Weekly Time Series";
-                break;
-            case TIME_SERIES_MONTHLY:
-                timeSeriesKey = "Monthly Time Series";
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported FunctionType: " + functionType);
-        }
-
+        String timeSeriesKey = functionType.getJsonKey();
+        System.out.println(jsonResponse);
+        System.out.println(timeSeriesKey);
         JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
 
         JsonObject timeSeries = jsonObject.getAsJsonObject(timeSeriesKey);
@@ -67,7 +55,10 @@ public class AlphaVantageService {
         List<Stock> stockList = new ArrayList<>();
         for (String date : timeSeries.keySet()) {
             JsonObject dailyData = timeSeries.getAsJsonObject(date);
-            double closePrice = dailyData.get("4. close").getAsDouble();
+            if (!dailyData.has("5. adjusted close")) {
+                throw new IllegalArgumentException("Missing '5. adjusted close' for date: " + date);
+            }
+            double closePrice = dailyData.get("5. adjusted close").getAsDouble();
             stockList.add(new Stock(symbol, closePrice, date));
         }
 

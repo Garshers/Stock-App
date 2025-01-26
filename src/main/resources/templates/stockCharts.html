@@ -2,8 +2,53 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Stock Charts</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>Hello World!</h1>
+    <canvas id="stockChart" width="800" height="400"></canvas>
 </body>
 </html>
+
+<script th:inline="javascript">
+    const stockData = /*[[${stocks}]]*/ [];
+    const labels = stockData.map(stock => stock.date);
+    const prices = stockData.map(stock => stock.price);
+
+    console.log(labels);
+    console.log(prices);
+    
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Price',
+                data: prices,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2,
+                fill: true,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Price (USD)'
+                    }
+                }
+            }
+        }
+    });
+</script>
