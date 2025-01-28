@@ -119,6 +119,40 @@ com.stockapp
 
 ---
 
+## "Port 8080 Already in Use" error
+
+### How to Find and Kill a Process Using Port 8080:
+
+#### On macOS or Linux:
+1. Open a terminal (as administrator) and run the following command to find the process using port 8080:
+
+    ```bash
+   lsof -i :8080
+   ```
+This will show the process ID (PID) of the application using port 8080.
+
+1. To kill the process, use the kill command with the PID obtained from the previous step:
+    ```bash
+   kill -9 <PID>
+   ```
+Replace <PID> with the process ID.
+
+#### On Windows:
+1. Open a terminal (as administrator) and run the following command to find the process using port 8080:
+
+    ```bash
+   netstat -ano | findstr :8080
+   ```
+This will show the process ID (PID) of the application using port 8080.
+
+1. To kill the process, use the kill command with the PID obtained from the previous step:
+    ```bash
+   taskkill /PID <PID> /F
+   ```
+Replace <PID> with the process ID.
+
+---
+
 ## License
 
 This project is licensed under the MIT License.
