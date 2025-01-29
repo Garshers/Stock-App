@@ -2,11 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Stock Charts</title>
+    <link rel="stylesheet" type="text/css" href="/css/stockChartsStyle.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <canvas id="stockChart" width="800" height="400"></canvas>
+
+    <canvas id="stockChart" width="400" height="200"></canvas>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Fiscal Date Ending</th>
+                <th>Reported Currency</th>
+                <th>Gross Profit</th>
+                <th>Total Revenue</th>
+                <th>Operating Income</th>
+                <th>Net Income</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="report : ${annualReports}">
+                <td th:text="${report.fiscalDateEnding}"></td>
+                <td th:text="${report.reportedCurrency}"></td>
+                <td th:text="${report.grossProfit}"></td>
+                <td th:text="${report.totalRevenue}"></td>
+                <td th:text="${report.operatingIncome}"></td>
+                <td th:text="${report.netIncome}"></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
 

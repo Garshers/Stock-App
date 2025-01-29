@@ -86,7 +86,7 @@ public class AlphaVantageService {
             
             annualReportsList.add(annualReport);
         }
-        System.out.println(annualReportsList);
+        //System.out.println(annualReportsList); //Log
         
         return annualReportsList;
     }

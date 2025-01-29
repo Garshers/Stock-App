@@ -18,6 +18,30 @@ public class AnnualReport {
         this.netIncome = netIncome;
     }
 
+    public String getFiscalDateEnding() {
+        return fiscalDateEnding;
+    }
+
+    public String getReportedCurrency() {
+        return reportedCurrency;
+    }
+
+    public String getGrossProfit() {
+        return grossProfit;
+    }
+
+    public String getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public String getOperatingIncome() {
+        return operatingIncome;
+    }
+
+    public String getNetIncome() {
+        return netIncome;
+    }
+    
     @Override
     public String toString() {
         return "AnnualReport{" +
@@ -27,6 +51,6 @@ public class AnnualReport {
                 ", totalRevenue='" + totalRevenue + '\'' +
                 ", operatingIncome='" + operatingIncome + '\'' +
                 ", netIncome='" + netIncome + '\'' +
-                '}';
+                '}' + "\n";
     }
 }

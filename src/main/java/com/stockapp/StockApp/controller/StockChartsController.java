@@ -16,7 +16,7 @@ public class StockChartsController {
 
     @GetMapping("/stockCharts")
     public String getStockChartsPage(Model model){
-        URLCreator stockURL = new URLCreator("NVDA",URLCreator.FunctionType.TIME_SERIES_MONTHLY_ADJUSTED,URLCreator.OutputSize.COMPACT);
+        URLCreator stockURL = new URLCreator("IBM",URLCreator.FunctionType.TIME_SERIES_MONTHLY_ADJUSTED);//,URLCreator.OutputSize.COMPACT);
         String url = stockURL.generateUrl();
         System.out.println("Generated URL: " + url); //Log
         System.out.println("symbol: " + stockURL.getSymbol()); //Log
@@ -25,9 +25,10 @@ public class StockChartsController {
 		AlphaVantageService service = new AlphaVantageService();
         try {
             String jsonResponse = service.getStockData(url);
-            System.out.println(jsonResponse); //Log
+            //System.out.println(jsonResponse); //Log
             List<Stock> stocks = service.parseStockData(stockURL.getSymbol(), jsonResponse, stockURL.getFunction());
             model.addAttribute("stocks", stocks);
+            //System.out.println("------'stocks' was sent------"); //Log
             /*for(Stock stock : stocks){
                 System.out.println(stock);
             }*/
@@ -35,7 +36,7 @@ public class StockChartsController {
             System.err.println("ERROR: " + e.getMessage());
         }
 
-        URLCreator stockReportURL = new URLCreator("NVDA",URLCreator.FunctionType.INCOME_STATEMENT);
+        URLCreator stockReportURL = new URLCreator("IBM",URLCreator.FunctionType.INCOME_STATEMENT);
         String reportUrl = stockReportURL.generateUrl();
         System.out.println("Generated URL: " + reportUrl); //Log
         System.out.println("symbol: " + stockReportURL.getSymbol()); //Log
@@ -44,9 +45,10 @@ public class StockChartsController {
         AlphaVantageService serviceReport = new AlphaVantageService();
         try {
             String jsonResponse = serviceReport.getStockData(reportUrl);
-            System.out.println(jsonResponse); //Log
-            List<AnnualReport> annualReports = service.parseAnnualReports(stockReportURL.getSymbol(), jsonResponse, stockURL.getFunction());
+            //System.out.println(jsonResponse); //Log
+            List<AnnualReport> annualReports = service.parseAnnualReports(stockReportURL.getSymbol(), jsonResponse, stockReportURL.getFunction());
             model.addAttribute("annualReports", annualReports);
+            //System.out.println("------'annualReport' was sent------" + annualReports); //Log
         } catch (Exception e) {
             System.err.println("ERROR: " + e.getMessage());
         }
