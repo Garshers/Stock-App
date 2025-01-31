@@ -78,14 +78,15 @@ public class AlphaVantageService {
             AnnualReport annualReport = new AnnualReport(
                     reportJson.get("fiscalDateEnding").getAsString(),
                     reportJson.get("reportedCurrency").getAsString(),
-                    reportJson.get("grossProfit").getAsString(),
-                    reportJson.get("totalRevenue").getAsString(),
-                    reportJson.get("operatingIncome").getAsString(),
-                    reportJson.get("netIncome").getAsString()
+                    reportJson.get("grossProfit").getAsLong(),
+                    reportJson.get("totalRevenue").getAsLong(),
+                    reportJson.get("operatingIncome").getAsLong(),
+                    reportJson.get("netIncome").getAsLong()
             );
             
             annualReportsList.add(annualReport);
         }
+        Collections.reverse(annualReportsList);
         //System.out.println(annualReportsList); //Log
         
         return annualReportsList;

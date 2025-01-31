@@ -3,47 +3,48 @@ package com.stockapp.StockApp.model;
 public class AnnualReport {
     private String fiscalDateEnding;
     private String reportedCurrency;
-    private String grossProfit;
-    private String totalRevenue;
-    private String operatingIncome;
-    private String netIncome;
+    private Long grossProfit;
+    private Long totalRevenue;
+    private Long operatingIncome;
+    private Long netIncome;
 
-    public AnnualReport(String fiscalDateEnding, String reportedCurrency, String grossProfit,
-                        String totalRevenue, String operatingIncome, String netIncome) {
+    public AnnualReport(String fiscalDateEnding, String reportedCurrency, Long grossProfit,
+                        Long totalRevenue, Long operatingIncome, Long netIncome){
+                            
         this.fiscalDateEnding = fiscalDateEnding;
-        this.reportedCurrency = reportedCurrency;
         this.grossProfit = grossProfit;
         this.totalRevenue = totalRevenue;
         this.operatingIncome = operatingIncome;
         this.netIncome = netIncome;
+        this.reportedCurrency = reportedCurrency;
     }
 
-    public String getFiscalDateEnding() {
+    public String getFiscalDateEnding(){
         return fiscalDateEnding;
     }
 
-    public String getReportedCurrency() {
+    public String getReportedCurrency(){
         return reportedCurrency;
     }
 
-    public String getGrossProfit() {
+    public Long getGrossProfit(){
         return grossProfit;
     }
 
-    public String getTotalRevenue() {
+    public Long getTotalRevenue(){
         return totalRevenue;
     }
 
-    public String getOperatingIncome() {
+    public Long getOperatingIncome(){
         return operatingIncome;
     }
 
-    public String getNetIncome() {
+    public Long getNetIncome(){
         return netIncome;
     }
     
     @Override
-    public String toString() {
+    public String toString(){
         return "AnnualReport{" +
                 "fiscalDateEnding='" + fiscalDateEnding + '\'' +
                 ", reportedCurrency='" + reportedCurrency + '\'' +

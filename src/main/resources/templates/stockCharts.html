@@ -7,13 +7,14 @@
 </head>
 <body>
 
-    <canvas id="stockChart" width="400" height="200"></canvas>
+    <canvas id="stockChart" class="canvaStyle"></canvas>
+    <canvas id="annualReportChart" class="canvaStyle"></canvas>
 
     <table>
         <thead>
             <tr>
                 <th>Fiscal Date Ending</th>
-                <th>Reported Currency</th>
+                <th>Currency</th>
                 <th>Gross Profit</th>
                 <th>Total Revenue</th>
                 <th>Operating Income</th>
@@ -22,8 +23,8 @@
         </thead>
         <tbody>
             <tr th:each="report : ${annualReports}">
-                <td th:text="${report.fiscalDateEnding}"></td>
-                <td th:text="${report.reportedCurrency}"></td>
+                <td th:text="${report.fiscalDateEnding}" style="text-align: center;"></td>
+                <td th:text="${report.reportedCurrency}" style="text-align: center;"></td>
                 <td th:text="${report.grossProfit}"></td>
                 <td th:text="${report.totalRevenue}"></td>
                 <td th:text="${report.operatingIncome}"></td>
@@ -34,45 +35,57 @@
 </body>
 </html>
 
-<script th:inline="javascript">
-    const stockData = /*[[${stocks}]]*/ [];
-    const labels = stockData.map(stock => stock.date);
-    const prices = stockData.map(stock => stock.price);
-
-    console.log(labels);
-    console.log(prices);
-    
-    const ctx = document.getElementById('stockChart').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Price',
-                data: prices,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 2,
-                fill: true,
-                pointRadius: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Date'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Price (USD)'
+<script>
+    function chartFunc(labels, data, labelsName, dataName, chartName){
+        console.log(labels);
+        console.log(data);
+        const ctx = document.getElementById(chartName).getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: dataName,
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: labelsName
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: dataName
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+</script>
+<script th:inline="javascript">
+    const stockData = /*[[${stocks}]]*/ [];
+    const labels = stockData.map(stock => stock.date);
+    const data = stockData.map(stock => stock.price);
+    const labelsName = "Date";
+    const dataName = "Price (USD)";
+    chartFunc(labels, data, labelsName, dataName, "stockChart");
+
+    const finRepAnnualData = /*[[${annualReports}]]*/ [];
+    const frlabels = finRepAnnualData.map(report => report.fiscalDateEnding);
+    const frdata = finRepAnnualData.map(report => report.netIncome);
+    const frlabelsName = "Date";
+    const frdataName = "Price (USD)";
+    chartFunc(frlabels, frdata, frlabelsName, frdataName, "annualReportChart");
 </script>
