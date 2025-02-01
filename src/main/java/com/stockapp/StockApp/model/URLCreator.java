@@ -4,9 +4,9 @@ public class URLCreator {
     private static final String BASE_URL = "https://www.alphavantage.co/query";
     private static final String API_KEY = "demo"; // Swap this string with your Alpha Vantage API key
 
-    private String symbol;
-    private FunctionType function;
-    private OutputSize outputSize;
+    final private String symbol;
+    final private FunctionType function;
+    final private OutputSize outputSize;
 
     public URLCreator(String symbol, FunctionType function, OutputSize outputSize) {
         this.symbol = symbol;
@@ -66,6 +66,9 @@ public class URLCreator {
 
         OutputSize(String value) {
             this.value = value;
+        }
+        public String getOutput() {
+            return value;
         }
     }
 }

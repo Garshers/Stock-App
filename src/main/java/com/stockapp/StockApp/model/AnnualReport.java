@@ -1,12 +1,12 @@
 package com.stockapp.StockApp.model;
 
 public class AnnualReport {
-    private String fiscalDateEnding;
-    private String reportedCurrency;
-    private Long grossProfit;
-    private Long totalRevenue;
-    private Long operatingIncome;
-    private Long netIncome;
+    final private String fiscalDateEnding;
+    final private String reportedCurrency;
+    final private Long grossProfit;
+    final private Long totalRevenue;
+    final private Long operatingIncome;
+    final private Long netIncome;
 
     public AnnualReport(String fiscalDateEnding, String reportedCurrency, Long grossProfit,
                         Long totalRevenue, Long operatingIncome, Long netIncome){

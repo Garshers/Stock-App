@@ -1,9 +1,9 @@
 package com.stockapp.StockApp.model;
 
 public class Stock {
-    private String symbol;
-    private double price;
-    private String date;
+    final private String symbol;
+    final private double price;
+    final private String date;
 
     public Stock(String symbol, double price, String date) {
         this.symbol = symbol;

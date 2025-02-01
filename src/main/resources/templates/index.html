@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+    Hello World!
+
+    <div th:each="company : ${companies}">
+        <a th:href="@{/stockCharts/{symbol}(symbol=${company.symbol})}">
+            <button th:text="${company.name} + ' (' + ${company.symbol} + ')'"></button>
+        </a>
+    </div>
+
+</body>
+</html>

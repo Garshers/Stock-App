@@ -6,7 +6,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
+    <a href="/">Back to Home Page</a>
+    
     <canvas id="stockChart" class="canvaStyle"></canvas>
     <canvas id="annualReportChart" class="canvaStyle"></canvas>
 
@@ -74,6 +75,7 @@
         });
     }
 </script>
+
 <script th:inline="javascript">
     const stockData = /*[[${stocks}]]*/ [];
     const labels = stockData.map(stock => stock.date);

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.stockapp.StockApp.model.AnnualReport;
 import com.stockapp.StockApp.model.Stock;
@@ -14,9 +15,13 @@ import com.stockapp.StockApp.service.AlphaVantageService;
 @Controller
 public class StockChartsController {
 
-    @GetMapping("/stockCharts")
-    public String getStockChartsPage(Model model){
-        URLCreator stockURL = new URLCreator("IBM",URLCreator.FunctionType.TIME_SERIES_MONTHLY_ADJUSTED);//,URLCreator.OutputSize.COMPACT);
+    @GetMapping("/stockCharts/{symbol}")
+    public String getStockChartsPage(@PathVariable String symbol, Model model) {
+        if (symbol == null || symbol.isEmpty()){
+            model.addAttribute("errorMessage", "Please provide a stock symbol.");
+            return "error";
+        }
+        URLCreator stockURL = new URLCreator(symbol, URLCreator.FunctionType.TIME_SERIES_MONTHLY_ADJUSTED);
         String url = stockURL.generateUrl();
         System.out.println("Generated URL: " + url); //Log
         System.out.println("symbol: " + stockURL.getSymbol()); //Log
@@ -33,10 +38,12 @@ public class StockChartsController {
                 System.out.println(stock);
             }*/
         } catch (Exception e) {
-            System.err.println("ERROR: " + e.getMessage());
+            System.err.println("ERROR fetching stock data: " + e.getMessage());
+            model.addAttribute("errorMessage", "Error fetching stock data. Please try again later.");
+            return "error";
         }
 
-        URLCreator stockReportURL = new URLCreator("IBM",URLCreator.FunctionType.INCOME_STATEMENT);
+        URLCreator stockReportURL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
         String reportUrl = stockReportURL.generateUrl();
         System.out.println("Generated URL: " + reportUrl); //Log
         System.out.println("symbol: " + stockReportURL.getSymbol()); //Log
@@ -50,10 +57,11 @@ public class StockChartsController {
             model.addAttribute("annualReports", annualReports);
             //System.out.println("------'annualReport' was sent------" + annualReports); //Log
         } catch (Exception e) {
-            System.err.println("ERROR: " + e.getMessage());
+            System.err.println("ERROR fetching report data: " + e.getMessage());
+            model.addAttribute("errorMessage", "Error fetching report data. Please try again later.");
+            return "error";
         }
 
-        
         return "stockCharts";
     }
 }
