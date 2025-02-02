@@ -1,8 +1,6 @@
 body{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    place-items: center;
     min-height: 100vh;
 }
 

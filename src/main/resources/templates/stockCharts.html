@@ -48,6 +48,9 @@
         // console.log(labels);
         // console.log(data);
         const ctx = document.getElementById(chartName).getContext('2d');
+        ctx.canvas.width = 800; // From stockChartStyle.css
+        ctx.canvas.height = 400;
+
         const chart = new Chart(ctx, {
             type: 'line',
             data: {

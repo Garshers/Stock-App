@@ -15,11 +15,17 @@ import com.stockapp.StockApp.model.AnnualReport;
 import com.stockapp.StockApp.model.Stock;
 import com.stockapp.StockApp.model.URLCreator;
 
+/**
+ * Service class for interacting with the Alpha Vantage API.
+ */
 public class AlphaVantageService {
+
     /**
-     * @param symbol
-     * @return JSON answer AV API.
-     * @throws Exception
+     * Retrieves data from the specified URL.
+     *
+     * @param url The URL to fetch data from.
+     * @return The JSON response from the URL as a String.
+     * @throws Exception If an error occurs during the HTTP request.
      */
     public String getStockData(String url) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
@@ -32,10 +38,14 @@ public class AlphaVantageService {
     }
 
     /**
-     * @param symbol
-     * @param jsonResponse
-     * @param functionType
-     * @return
+     * Parses stock data from a JSON response.
+     *
+     * @param symbol       The stock symbol.
+     * @param jsonResponse The JSON response string.
+     * @param functionType The AlphaVantage API function type used to retrieve the data.
+     * @return A list of Stock objects parsed from the JSON response.
+     * @throws RuntimeException If the specified time series function is not found in the JSON response.
+     * @throws IllegalArgumentException If the "5. adjusted close" value is missing for a date.
      */
     public List<Stock> parseStockData(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
         JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
@@ -61,10 +71,12 @@ public class AlphaVantageService {
     }
 
     /**
-     * @param symbol
-     * @param jsonResponse
-     * @param functionType
-     * @return
+     * Parses annual reports data from a JSON response.
+     *
+     * @param symbol       The stock symbol.
+     * @param jsonResponse The JSON response string containing annual reports data.
+     * @param functionType The AlphaVantage API function type used to retrieve the data.
+     * @return A list of AnnualReport objects parsed from the JSON response.
      */
     public List<AnnualReport> parseAnnualReports(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
         JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();

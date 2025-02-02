@@ -12,9 +12,19 @@ import com.stockapp.StockApp.model.Stock;
 import com.stockapp.StockApp.model.URLCreator;
 import com.stockapp.StockApp.service.AlphaVantageService;
 
+/**
+ * Controller for the Stock Chart pages.
+ */
 @Controller
 public class StockChartsController {
 
+    /**
+     * Retrieves stock data and annual reports for a given symbol and displays them on the stock charts page.
+     *
+     * @param symbol The stock symbol.
+     * @param model  The Spring Model object for adding attributes to the view.
+     * @return The name of the stock charts view ("stockCharts") or the error view ("error") if an error occurs.
+     */
     @GetMapping("/stockCharts/{symbol}")
     public String getStockChartsPage(@PathVariable String symbol, Model model) {
         if (symbol == null || symbol.isEmpty()){
