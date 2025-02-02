@@ -39,10 +39,10 @@ cd stock-market-app
 
 ### **2. Configure the API Key**
 
-- Add your API key to the application configuration. Update the `application.properties` file:
+- Add your API key to the application configuration. Update the `URLCreator` file:
 
-```properties
-alphavantage.api.key=YOUR_API_KEY
+```java
+private static final String API_KEY = "demo";
 ```
 
 ### **3. Build and Run**
@@ -116,6 +116,18 @@ com.stockapp
    - Add features like moving averages, trend analysis, and data visualization.
 4. **GUI Improvements**:
    - Use JavaFX to display data in charts and tables for better usability.
+
+---
+
+## Generating Documentation (Javadoc)
+This project uses Maven for building and dependency management. To generate the project documentation, including Javadoc, follow these steps:
+
+1. Open a terminal: Navigate to the project's root directory in the terminal.
+2. Run the command: Execute the following Maven command:
+
+   ```bash
+   mvn clean javadoc:javadoc
+   ```
 
 ---
 
