@@ -129,6 +129,8 @@ This project uses Maven for building and dependency management. To generate the 
    mvn clean javadoc:javadoc
    ```
 
+(`target` file is excluded from commits by `.gitignore`)
+
 ---
 
 ## "Port 8080 Already in Use" error

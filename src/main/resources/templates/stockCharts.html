@@ -2,53 +2,67 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Stock Charts</title>
+
     <link rel="stylesheet" type="text/css" href="/css/stockChartsStyle.css">
+    <link rel="stylesheet" type="text/css" href="/css/headerFooter.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <a href="/">Back to Home Page</a>
+    <div id="header"></div>
+    
+    <div class="contentBox">
+        <canvas id="stockChart" class="canvaStyle"></canvas>
 
-    <canvas id="stockChart" class="canvaStyle"></canvas>
-    <canvas id="annualReportChart" class="canvaStyle"></canvas>
+        <div class="financialDataBox">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fiscal Date Ending</th>
+                        <th>Currency</th>
+                        <th>Gross Profit</th>
+                        <th>Total Revenue</th>
+                        <th>Operating Income</th>
+                        <th>Net Income</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="report : ${annualReports}">
+                        <td th:text="${report.fiscalDateEnding}" style="text-align: center;"></td>
+                        <td th:text="${report.reportedCurrency}" style="text-align: center;"></td>
+                        <td th:text="${report.grossProfit}"></td>
+                        <td th:text="${report.totalRevenue}"></td>
+                        <td th:text="${report.operatingIncome}"></td>
+                        <td th:text="${report.netIncome}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="financialChartBox">
+                <select id="dataSelection">
+                    <option value="netIncome" selected>Net Income</option>
+                    <option value="grossProfit">Gross Profit</option>
+                    <option value="totalRevenue">Total Revenue</option>
+                    <option value="operatingIncome">Operating Income</option>
+                </select>
+                <canvas id="annualReportChart" class="canvaStyle"></canvas>
+            </div>
+        </div>
+    </div>
 
-    <select id="dataSelection">
-        <option value="netIncome" selected>Net Income</option>
-        <option value="grossProfit">Gross Profit</option>
-        <option value="totalRevenue">Total Revenue</option>
-        <option value="operatingIncome">Operating Income</option>
-    </select>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Fiscal Date Ending</th>
-                <th>Currency</th>
-                <th>Gross Profit</th>
-                <th>Total Revenue</th>
-                <th>Operating Income</th>
-                <th>Net Income</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="report : ${annualReports}">
-                <td th:text="${report.fiscalDateEnding}" style="text-align: center;"></td>
-                <td th:text="${report.reportedCurrency}" style="text-align: center;"></td>
-                <td th:text="${report.grossProfit}"></td>
-                <td th:text="${report.totalRevenue}"></td>
-                <td th:text="${report.operatingIncome}"></td>
-                <td th:text="${report.netIncome}"></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="footer"></div>
+    <script src="/js/header.js"></script>
 </body>
 </html>
 
 <script>
-    function chartFunc(labels, data, labelsName, dataName, chartName){
+    function chartFunc(labels, data, labelsName, dataName, chartName, width){
         // console.log(labels);
         // console.log(data);
         const ctx = document.getElementById(chartName).getContext('2d');
-        ctx.canvas.width = 800; // From stockChartStyle.css
+        ctx.canvas.width = width;
         ctx.canvas.height = 400;
 
         const chart = new Chart(ctx, {
@@ -94,7 +108,8 @@
     const data = stockData.map(stock => stock.price);
     const labelsName = "Date";
     const dataName = "Price (USD)";
-    chartFunc(labels, data, labelsName, dataName, "stockChart");
+    const width = 1200;
+    chartFunc(labels, data, labelsName, dataName, "stockChart", width);
 
     // Chart showing income statement data
     const finRepAnnualData = /*[[${annualReports}]]*/ [];
@@ -106,11 +121,12 @@
         const frdata = finRepAnnualData.map(report => report[selectedData]);
         const frlabelsName = "Date";
         const frdataName = selectedData;
+        const frwidth = 700;
 
         if (chart) {
             chart.destroy();
         }
-        chart = chartFunc(frlabels, frdata, frlabelsName, frdataName, "annualReportChart");
+        chart = chartFunc(frlabels, frdata, frlabelsName, frdataName, "annualReportChart", frwidth);
     }
 
     updateChart(dataSelection.value);
