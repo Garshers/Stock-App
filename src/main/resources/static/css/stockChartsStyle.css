@@ -78,6 +78,16 @@ a:hover {
     border: 1px solid black;
 }
 
+#stockChart {
+    width: 90%;
+    height: 400px;
+}
+
+#annualReportChart {
+    width: 80%;
+    height: 300px;
+}
+
 .financialDataBox {
     width: 100%;
     display: flex;
