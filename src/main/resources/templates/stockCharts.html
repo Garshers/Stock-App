@@ -15,9 +15,16 @@
     <div id="header"></div>
     
     <div class="contentBox">
-        <canvas id="stockChart" class="canvaStyle"></canvas>
-
-        <div class="financialDataBox">
+        <div class="mainLeftBox"></div>
+        <div class="mainCenterBox">
+            <canvas id="stockChart" class="canvaStyle"></canvas>
+            <select id="dataSelection">
+                <option value="netIncome" selected>Net Income</option>
+                <option value="grossProfit">Gross Profit</option>
+                <option value="totalRevenue">Total Revenue</option>
+                <option value="operatingIncome">Operating Income</option>
+            </select>
+            <canvas id="annualReportChart" class="canvaStyle"></canvas>
             <table>
                 <thead>
                     <tr>
@@ -40,16 +47,8 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="financialChartBox">
-                <select id="dataSelection">
-                    <option value="netIncome" selected>Net Income</option>
-                    <option value="grossProfit">Gross Profit</option>
-                    <option value="totalRevenue">Total Revenue</option>
-                    <option value="operatingIncome">Operating Income</option>
-                </select>
-                <canvas id="annualReportChart" class="canvaStyle"></canvas>
-            </div>
         </div>
+        <div class="mainRightBox"></div>
     </div>
 
     <div id="footer"></div>
@@ -69,9 +68,6 @@
         const computedStyle = window.getComputedStyle(canvas);
         const width = parseFloat(computedStyle.getPropertyValue('width'));
         const height = parseFloat(computedStyle.getPropertyValue('height'));
-
-        console.log("width: ", width);
-        console.log("height: ", height);
 
         ctx.canvas.width = width;
         ctx.canvas.height = height;

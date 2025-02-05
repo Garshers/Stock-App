@@ -86,7 +86,6 @@
 .box1-3 {
     height: auto;
     width: 33.33%;
-    border: 0px solid red;
     display: flex;
     align-items: center;
     justify-content: center;
