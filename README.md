@@ -1,6 +1,6 @@
 # Stock Market Application with Alpha Vantage API
 
-This Java application will enable users to retrieve and analyze stock market data using the free version of the Alpha Vantage API. The application supports fetching stock price data, processing it, and presenting it in a user-friendly way via the console or a graphical interface.
+This Java application will enable users to retrieve and analyze stock market data using the free version of the Alpha Vantage API. It uses a backend (Java/Spring Boot) to fetch data from a financial API (e.g., Alpha Vantage) and a frontend (React) to display the information in a user-friendly way.
 
 ---
 
@@ -8,23 +8,44 @@ This Java application will enable users to retrieve and analyze stock market dat
 
 Before you can run the application, ensure you have the following installed:
 
-- **JDK** (Java Development Kit) - [Download](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
-- **Maven** - [Download](https://maven.apache.org/download.cgi)
-- **MySQL** - A MySQL database server (Aiven - I need to check if this fits).
-- **IDE**: IntelliJ IDEA, Eclipse, VS code, or any other Java IDE.
-- **Web Browser**: Any modern browser (e.g., Google Chrome, Firefox).
-- **Alpha Vantage API Key**: Sign up at [Alpha Vantage](https://www.alphavantage.com) to get a free API key.
+**Backend (Java/Spring Boot):**
+
+- **JDK** (Java Development Kit) 17 or later - [Download](https://www.oracle.com/java/technologies/javase-downloads.html)
+- **Maven** 3.6 or later - [Download](https://maven.apache.org/download.cgi)
+- **Database:** (e.g., MySQL, PostgreSQL, H2 for development) - Instructions for setup will depend on your chosen database.
+- **IDE:** IntelliJ IDEA, Eclipse, VS Code, or any other Java IDE.
+
+**Frontend (React):**
+
+- **Node.js** 16 or later (LTS recommended) - [Download](https://nodejs.org/)
+- **npm** (Node Package Manager) 8 or later (comes with Node.js) or **yarn** - [Download](https://yarnpkg.com/)
+- **IDE:** VS Code (recommended), or any other IDE suitable for JavaScript/React development.
+- **Web Browser:** Any modern browser (e.g., Google Chrome, Firefox, Safari).
+
+**API Key:**
+
+- You'll need an API key from a financial data provider.  Alpha Vantage is a common choice, but others may be used.  Sign up with your chosen provider to get a free or paid API key.
+
 
 ---
 
 ## Features
 
-- Fetch stock price data from Alpha Vantage.
-- Validate and process JSON responses from the API.
-- Display stock information in a graphical user interface (GUI).
-- Store fetched and user data in a cloud database.
-- Counting profit for given stock buy
-- Creating dashboard for portfolio display
+**Backend:**
+
+- Fetches stock price data from a financial API.
+- Validates and processes JSON responses from the API.
+- [Not implemented] Stores fetched and user data in a database.
+- Provides REST endpoints for the frontend to access data.
+
+**Frontend:**
+
+- Displays stock information in a graphical user interface (GUI) using charts and tables.
+- [Not implemented] Allows users to search for stocks by symbol.
+- Creates charts of historical stock prices.
+- Displays key financial metrics.
+- [Not implemented] Provides a dashboard for portfolio display. (If implemented)
+- [Not implemented] Manages user authentication and authorization.
 
 ---
 
@@ -45,7 +66,7 @@ cd stock-market-app
 private static final String API_KEY = "demo";
 ```
 
-### **3. Build and Run**
+### **3. Backend Setup**
 
 #### Using Maven:
 
@@ -61,16 +82,14 @@ mvn spring-boot:run
 
 ---
 
-## **Usage**
+### **4. Frontend Setup**
 
-1. **Console Interface**:
+- Navigate to the frontend directory
+- Start the development server:
 
-   - The application will prompt the user to input a stock symbol (e.g., `AAPL`, `GOOGL`).
-   - It will fetch and display data such as opening price, closing price, and volume for the last trading day.
-
-2. **Graphical Interface (Optional)**:
-
-   - If GUI functionality is implemented, it will display data in tables or charts (JavaFX recommended).
+```bash
+   npm start
+```
 
 ---
 
@@ -81,41 +100,6 @@ mvn spring-boot:run
 ```
 https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=YOUR_API_KEY
 ```
-
----
-
-## Project Structure
-
-The project will be organized into the following packages:
-
-```bash
-com.stockapp
-├── api          // Classes to interact with the Alpha Vantage API
-├── model        // Data models for stock data
-├── service      // Business logic for processing stock data
-├── ui           // User interface (console or GUI)
-└── util         // Utility classes (e.g., JSON parsing, error handling)
-```
-
-- **AlphaVantageClient (API interactions)**: Handles requests to Alpha Vantage and retrieves stock data.
-- **StockData (Model)**: Represents stock data fields like symbol, date, opening price, closing price, volume, etc.
-- **StockService (Business logic)**: Processes stock data and performs analyses such as calculating averages or filtering results.
-- **Main (Entry point)**: Contains the main method to initialize and run the application.
-
----
-
-## **Future Enhancements**
-
-1. **Error Handling**:
-   - Improve handling for API rate limits (e.g., cache recent results).
-   - Display user-friendly error messages for invalid symbols or API issues.
-2. **Data Storage**:
-   - Add support for storing historical data in a database (SQLite).
-   - Export data to CSV files.
-3. **Advanced Analytics**:
-   - Add features like moving averages, trend analysis, and data visualization.
-4. **GUI Improvements**:
-   - Use JavaFX to display data in charts and tables for better usability.
 
 ---
 
