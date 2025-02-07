@@ -2,16 +2,19 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CompanyList from './components/CompanyList';
 import StockChart from './components/StockChart';
+import Header from './components/header.js';
+import Footer from './components/footer.js';
 
 function App() {
   return (
       <BrowserRouter>
           <div className="App">
-              <h1>Stock App</h1>
+            <Header />
               <Routes>
                   <Route path="/" element={<CompanyList />} />
                   <Route path="/stockChart/:symbol" element={<StockChart />} />
               </Routes>
+            <Footer />
           </div>
       </BrowserRouter>
   );

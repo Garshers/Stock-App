@@ -11,18 +11,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 /**
- * RestController for the home page.
+ * REST controller for the home page, providing access to company data.
  */
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class HomePageController {
 
     /**
-     * Retrieves a list of companies and adds it to the model for display on the home page.
+     * Retrieves a list of available companies.
      *
-     * @param model The Spring Model object for adding attributes to the view.
-     * @return The name of the home page view ("index").
+     * This endpoint returns a list of Company objects, each containing the 
+     * symbol and name of a company.  This data is typically used to populate
+     * the company selection list on the frontend.
+     *
+     * @return A list of Company objects.
      */
     @RequestMapping("/api/companies")
     public List<Company> getHomePage() {
