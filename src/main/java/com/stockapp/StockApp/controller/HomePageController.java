@@ -3,8 +3,13 @@ package com.stockapp.StockApp.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 /**
  * RestController for the home page.
@@ -19,7 +24,7 @@ public class HomePageController {
      * @param model The Spring Model object for adding attributes to the view.
      * @return The name of the home page view ("index").
      */
-    @GetMapping("/api/companies")
+    @RequestMapping("/api/companies")
     public List<Company> getHomePage() {
         List<Company> companies = Arrays.asList(
                 new Company("IBM", "International Business Machines"),
@@ -63,6 +68,22 @@ public class HomePageController {
          */
         public String getName(){
             return name;
+        }
+    }
+
+    @ControllerAdvice
+    public class GlobalExceptionHandler {
+
+        @ExceptionHandler(IllegalArgumentException.class)
+        @ResponseBody
+        public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(RuntimeException.class)
+        @ResponseBody
+        public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+            return new ResponseEntity<>("Error fetching data: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

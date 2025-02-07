@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function CompanyList() {
@@ -34,7 +35,9 @@ function CompanyList() {
         <ul>
             {companies.map(company => (
                 <li key={company.symbol}>
-                    {company.name} ({company.symbol})
+                    <Link to={`/stockChart/${company.symbol}`}>
+                        {company.name}
+                    </Link>
                 </li>
             ))}
         </ul>
