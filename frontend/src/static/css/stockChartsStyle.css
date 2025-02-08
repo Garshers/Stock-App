@@ -83,7 +83,7 @@ a:hover {
     height: fit-content;
     display: flex;
     flex-direction: row;
-    border: 2px solid purple;
+    border: 1px solid red;
 }
 
 .mainCenterBox {
@@ -102,6 +102,7 @@ a:hover {
     width: 15%;
     min-height: 400px;
     border: 1px solid red;
+    background-color: rgba(230, 240, 239, 0.8);
 }
 
 .annualReportBox{
@@ -112,7 +113,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     gap: 5px;
-    border: 2px solid orange;
+    border: 1px solid red;
 }
 
 @media (max-width: 900px) {
