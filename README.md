@@ -102,7 +102,7 @@ https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=Y
 ```
 
 ---
-
+netstat 
 ## Generating Documentation (Javadoc)
 This project uses Maven for building and dependency management. To generate the project documentation, including Javadoc, follow these steps:
 

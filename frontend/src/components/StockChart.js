@@ -125,54 +125,62 @@ function StockChart() {
 
     return (
         <div>
-            <h2>Stocks</h2>
-            {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
+            <div className="contentBox">
+                <div className="mainLeftBox"></div>
+                <div className="mainCenterBox">
+                    <h2>Stocks</h2>
+                    {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
-            <button onClick={fetchReportData} disabled={loadingReport}>
-                {loadingReport ? "Loading report..." : "Get Annual Report"}
-            </button>
+                    <button onClick={fetchReportData} disabled={loadingReport}>
+                        {loadingReport ? "Loading report..." : "Get Annual Report"}
+                    </button>
 
-            {report && report.length > 0 ? (
-                <div>
-                    <h2>Annual Report</h2>
-                    <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
-                        <option value="netIncome">Net Income</option>
-                        <option value="grossProfit">Gross Profit</option>
-                        <option value="totalRevenue">Total Revenue</option>
-                        <option value="operatingIncome">Operating Income</option>
-                    </select>
-                    <canvas id="annualReportChart"></canvas>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fiscal Date Ending</th>
-                                <th>Currency</th>
-                                <th>Gross Profit</th>
-                                <th>Total Revenue</th>
-                                <th>Operating Income</th>
-                                <th>Net Income</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {report.map(item => (
-                                <tr key={item.fiscalDateEnding}>
-                                    <td>{item.fiscalDateEnding}</td>
-                                    <td>{item.reportedCurrency}</td>
-                                    <td>{item.grossProfit}</td>
-                                    <td>{item.totalRevenue}</td>
-                                    <td>{item.operatingIncome}</td>
-                                    <td>{item.netIncome}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {/*Box containing annual report data*/}
+                    {report && report.length > 0 ? (
+                        <div className='annualReportBox'>
+                            <h2>Annual Report</h2>
+                            <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
+                                <option value="netIncome">Net Income</option>
+                                <option value="grossProfit">Gross Profit</option>
+                                <option value="totalRevenue">Total Revenue</option>
+                                <option value="operatingIncome">Operating Income</option>
+                            </select>
+                            <canvas id="annualReportChart"></canvas>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fiscal Date Ending</th>
+                                        <th>Currency</th>
+                                        <th>Gross Profit</th>
+                                        <th>Total Revenue</th>
+                                        <th>Operating Income</th>
+                                        <th>Net Income</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {report.map(item => (
+                                        <tr key={item.fiscalDateEnding}>
+                                            <td>{item.fiscalDateEnding}</td>
+                                            <td>{item.reportedCurrency}</td>
+                                            <td>{item.grossProfit}</td>
+                                            <td>{item.totalRevenue}</td>
+                                            <td>{item.operatingIncome}</td>
+                                            <td>{item.netIncome}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    ) : loadingReport ? (
+                        <div>Loading report data...</div>
+                    ) : (
+                        <div>No annual report data available.</div>
+                    )}
 
                 </div>
-            ) : loadingReport ? (
-                <div>Loading report data...</div>
-            ) : (
-                <div>No annual report data available.</div>
-            )}
+                <div className="mainRightBox"></div>
+            </div>
         </div>
     );
 }

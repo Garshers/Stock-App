@@ -5,10 +5,9 @@ body{
 
 /* -------- Table styling -------- */
 table {
-    width: 40%;
-    max-width: 800px;
+    width: 100%;
+    max-width: 600px;
     height: auto;
-    margin: 0 auto;
     border-collapse: collapse;
     background-color: #ffffff;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -20,6 +19,7 @@ th { /* head */
     font-size: 12px;
     padding: 5px;
     text-align: center;
+    height: fit-content;
     border: 1px solid #ddd;
 }
 
@@ -27,6 +27,7 @@ td { /* content */
     padding: 10px;
     font-size: 12px;
     text-align: left;
+    height: fit-content;
     border: 1px solid #ddd;
 }
 
@@ -68,8 +69,11 @@ a:hover {
 
 #annualReportChart {
     width: 80%;
-    max-width: 500px;
+    max-width: 800px;
     height: 300px;
+    max-height: 350px;
+    border: 1px solid rgba(20, 19, 43, 0.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* -------- Main Boxes -------- */
@@ -88,6 +92,7 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    padding: 5px 0 5px;
     align-items: center;
     justify-content: center;
     border: 1px solid red;
@@ -99,13 +104,30 @@ a:hover {
     border: 1px solid red;
 }
 
-@media (max-width: 768px) {
-    table {
-        font-size: 14px;
-    }
-    
-    th, td {
-        padding: 8px;
-    }
+.annualReportBox{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 2px solid orange;
 }
 
+@media (max-width: 900px) {
+    table {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    th { /* head */
+        font-size: 8px;
+        padding: 2px;
+    }
+    
+    td {
+        font-size: 8px;
+        padding: 2px;
+    }
+}
