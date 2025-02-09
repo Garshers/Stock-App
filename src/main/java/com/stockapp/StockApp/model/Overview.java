@@ -3,6 +3,10 @@ package com.stockapp.StockApp.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * The {@code Overview} class represents stock overview data retrieved from an API such as AlphaVantage.
+ * It encapsulates detailed fundamental analysis information about a company.
+ */
 public class Overview {
     private final String symbol;
     private final String name;
@@ -53,6 +57,58 @@ public class Overview {
     private final LocalDate dividendDate;
     private final LocalDate exDividendDate;
 
+    /**
+     * Constructs an {@code Overview} object.
+     *
+     * @param symbol                     The stock symbol.
+     * @param name                       The company name.
+     * @param description                The company description.
+     * @param exchange                   The stock exchange where the company is listed.
+     * @param currency                   The currency in which financial data is reported.
+     * @param country                    The country where the company operates.
+     * @param sector                     The sector the company belongs to.
+     * @param industry                   The industry the company operates in.
+     * @param fiscalYearEnd              The end date of the company's fiscal year.
+     * @param latestQuarter              The date of the latest reported quarter.
+     * @param marketCapitalization       The market capitalization of the company.
+     * @param ebitda                     The earnings before interest, taxes, depreciation, and amortization.
+     * @param peRatio                    The price-to-earnings ratio.
+     * @param pegRatio                   The price-to-earnings growth ratio.
+     * @param bookValue                  The book value of the company.
+     * @param dividendPerShare           The dividend per share.
+     * @param dividendYield              The dividend yield.
+     * @param eps                        The earnings per share.
+     * @param revenuePerShareTTM         The revenue per share (Trailing Twelve Months).
+     * @param profitMargin               The profit margin.
+     * @param operatingMarginTTM         The operating margin (Trailing Twelve Months).
+     * @param returnOnAssetsTTM          The return on assets (Trailing Twelve Months).
+     * @param returnOnEquityTTM          The return on equity (Trailing Twelve Months).
+     * @param revenueTTM                 The revenue (Trailing Twelve Months).
+     * @param grossProfitTTM             The gross profit (Trailing Twelve Months).
+     * @param dilutedEPSTTM              The diluted earnings per share (Trailing Twelve Months).
+     * @param quarterlyEarningsGrowthYOY  The quarterly earnings growth year-over-year.
+     * @param quarterlyRevenueGrowthYOY The quarterly revenue growth year-over-year.
+     * @param analystTargetPrice         The analyst target price.
+     * @param analystRatingStrongBuy     The number of "Strong Buy" analyst ratings.
+     * @param analystRatingBuy           The number of "Buy" analyst ratings.
+     * @param analystRatingHold          The number of "Hold" analyst ratings.
+     * @param analystRatingSell          The number of "Sell" analyst ratings.
+     * @param analystRatingStrongSell     The number of "Strong Sell" analyst ratings.
+     * @param trailingPE                 The trailing price-to-earnings ratio.
+     * @param forwardPE                  The forward price-to-earnings ratio.
+     * @param priceToSalesRatioTTM       The price-to-sales ratio (Trailing Twelve Months).
+     * @param priceToBookRatio           The price-to-book ratio.
+     * @param evToRevenue                The enterprise value to revenue ratio.
+     * @param evToEBITDA                 The enterprise value to EBITDA ratio.
+     * @param beta                       The beta.
+     * @param weekHigh52                 The 52-week high.
+     * @param weekLow52                  The 52-week low.
+     * @param movingAverage50            The 50-day moving average.
+     * @param movingAverage200           The 200-day moving average.
+     * @param sharesOutstanding          The number of shares outstanding.
+     * @param dividendDate               The dividend date.
+     * @param exDividendDate            The ex-dividend date.
+     */
     public Overview(String symbol, String name, String description, String exchange, String currency, String country, String sector, String industry, String fiscalYearEnd, LocalDate latestQuarter, BigDecimal marketCapitalization, BigDecimal ebitda, BigDecimal peRatio, BigDecimal pegRatio, BigDecimal bookValue, BigDecimal dividendPerShare, BigDecimal dividendYield, BigDecimal eps, BigDecimal revenuePerShareTTM, BigDecimal profitMargin, BigDecimal operatingMarginTTM, BigDecimal returnOnAssetsTTM, BigDecimal returnOnEquityTTM, BigDecimal revenueTTM, BigDecimal grossProfitTTM, BigDecimal dilutedEPSTTM, BigDecimal quarterlyEarningsGrowthYOY, BigDecimal quarterlyRevenueGrowthYOY, BigDecimal analystTargetPrice, Integer analystRatingStrongBuy, Integer analystRatingBuy, Integer analystRatingHold, Integer analystRatingSell, Integer analystRatingStrongSell, BigDecimal trailingPE, BigDecimal forwardPE, BigDecimal priceToSalesRatioTTM, BigDecimal priceToBookRatio, BigDecimal evToRevenue, BigDecimal evToEBITDA, BigDecimal beta, BigDecimal weekHigh52, BigDecimal weekLow52, BigDecimal movingAverage50, BigDecimal movingAverage200, Long sharesOutstanding, LocalDate dividendDate, LocalDate exDividendDate) {
         this.symbol = symbol;
         this.name = name;

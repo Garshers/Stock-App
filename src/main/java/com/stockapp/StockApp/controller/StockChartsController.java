@@ -76,12 +76,13 @@ public class StockChartsController {
      */
     @GetMapping("/api/stockCharts/{symbol}/overview")
     public Overview getOverview(@PathVariable String symbol) {
-        URLCreator stockOverviewURL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
-        String overviewUrl = stockOverviewURL.generateUrl();
+        URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
+        String overviewUrl = URL.generateUrl();
+        System.out.println("Overview url: " + overviewUrl);
 
         try {
             String jsonResponse = service.getStockData(overviewUrl);
-            return service.parseOverview(stockOverviewURL.getSymbol(), jsonResponse, stockOverviewURL.getFunction());
+            return service.parseOverview(URL.getSymbol(), jsonResponse, URL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
             throw new RuntimeException("Error fetching income statement data.", e);

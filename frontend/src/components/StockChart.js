@@ -7,11 +7,17 @@ import '../static/css/stockChartsStyle.css';
 
 function StockChart() {
     const { symbol } = useParams();
+
     const [stocks, setStocks] = useState([]);
     const [incomeStatement, setIncomeStatement] = useState(null);
+    const [overviewData, setOverviewData] = useState(null);
+
     const [loadingStocks, setLoadingStocks] = useState(true);
     const [loadingIncomeStatement, setLoadingIncomeStatement] = useState(false);
+    const [loadingOverview, setLoadingOverview] = useState(true);
+
     const [selectedData, setSelectedData] = useState('netIncome');
+
     const [stockChart, setStockChart] = useState(null);
     const [incomeStatementChart, setIncomeStatementChart] = useState(null);
 
@@ -43,6 +49,22 @@ function StockChart() {
             setLoadingIncomeStatement(false);
         }
     };
+
+    useEffect(() => {
+        const fetchOverviewData = async () => {
+            setLoadingOverview(true);
+            try {
+                const response = await axios.get(`http://localhost:8080/api/stockCharts/${symbol}/overview`);
+                setOverviewData(response.data);
+            } catch (error) {
+                console.error("Error fetching overview data:", error);
+            } finally {
+                setLoadingOverview(false);
+            }
+        };
+
+        fetchOverviewData();
+    }, [symbol]);
 
     useEffect(() => {
         if (stocks.length > 0) {
@@ -124,13 +146,16 @@ function StockChart() {
                 <div className="mainLeftBox"></div>
                 <div className="mainCenterBox">
                     <h2>Stocks</h2>
+
+                    {/* Stock price chart */}
                     {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
+                    {/* Button for getting income statement data */}
                     <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
                         {loadingIncomeStatement ? "Loading report..." : "Get Income Statement"}
                     </button>
 
-                    {/*Box containing annual report data*/}
+                    {/*Box containing income statement data*/}
                     {incomeStatement && incomeStatement.length > 0 ? (
                         <div className='incomeStatementBox'>
                             <h2>Annual Report</h2>
@@ -174,7 +199,40 @@ function StockChart() {
                     )}
 
                 </div>
-                <div className="mainRightBox"></div>
+                <div className="mainRightBox">
+                    {/* Overview Data Table */}
+                    {loadingOverview ? (
+                        <div>Loading overview data...</div>
+                    ) : overviewData ? (
+                        <div className="overviewTableBox">
+                            <h2>Overview</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(overviewData)
+                                        .filter(([key]) => key !== "description")
+                                        .map(([key, value]) => (
+                                            <tr key={key}>
+                                                <td>{key}</td>
+                                                <td>
+                                                    {key.includes("Date") && value ? new Date(value).toLocaleDateString() :
+                                                    key.includes("Yield") || key.includes("Ratio") || key.includes("Beta") || typeof value === 'number' ? value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) :
+                                                    value && typeof value === 'object' ? JSON.stringify(value) : value ? value.toString() : "-"}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div>No overview data available.</div>
+                    )}
+                </div>
             </div>
         </div>
     );
