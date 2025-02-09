@@ -74,8 +74,8 @@ public class StockChartsController {
      * @return A list of Annual Income Statement objects representing the annual income statement data.
      * @throws RuntimeException If an error occurs during data retrieval.
      */
-    @GetMapping("/api/stockCharts/{symbol}/Overview")
-    public List<Overview> getOverview(@PathVariable String symbol) {
+    @GetMapping("/api/stockCharts/{symbol}/overview")
+    public Overview getOverview(@PathVariable String symbol) {
         URLCreator stockOverviewURL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
         String overviewUrl = stockOverviewURL.generateUrl();
 

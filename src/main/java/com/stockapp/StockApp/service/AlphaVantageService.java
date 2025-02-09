@@ -112,19 +112,13 @@ public class AlphaVantageService {
      * @param symbol       The stock symbol.
      * @param jsonResponse The JSON response string containing overview data.
      * @param functionType The AlphaVantage API function type used to retrieve the data.
-     * @return A list of OverView objects parsed from the JSON response.
+     * @return A list of Overview objects parsed from the JSON response.
      */
-    public List<Overview> parseOverview(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
-        JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-
-        String Function = functionType.getJsonFunction();
-        JsonArray OverviewJsonArray = jsonObject.getAsJsonArray(Function); 
-        List<Overview> annualIncomeStatementList = new ArrayList<>();
-        for (int i = 0; i < OverviewJsonArray.size(); i++) {
-            JsonObject jsonData = OverviewJsonArray.get(i).getAsJsonObject();
-            
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            
+    public Overview parseOverview(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
+        JsonObject jsonData = JsonParser.parseString(jsonResponse).getAsJsonObject();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        
+        try {
             Overview overview = new Overview(
                 jsonData.get("symbol").getAsString(),
                 jsonData.get("name").getAsString(),
@@ -175,10 +169,13 @@ public class AlphaVantageService {
                 jsonData.get("dividendDate").isJsonNull() ? null : LocalDate.parse(jsonData.get("dividendDate").getAsString(), dateFormatter),
                 jsonData.get("exDividendDate").isJsonNull() ? null : LocalDate.parse(jsonData.get("exDividendDate").getAsString(), dateFormatter)
             );
-            
-            annualIncomeStatementList.add(overview);
+
+            System.out.println(overview);
+            return overview;
+
+        } catch (Exception e) {
+            System.err.println("Error prasing overview: " + e.getMessage());
+            return null;
         }
-        
-        return annualIncomeStatementList;
     }
 }
