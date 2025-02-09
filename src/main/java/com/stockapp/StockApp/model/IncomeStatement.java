@@ -1,9 +1,9 @@
 package com.stockapp.StockApp.model;
 
 /**
- * Represents an annual financial report for a company.
+ * Represents an annual income statement for a company.
  */
-public class AnnualReport {
+public class IncomeStatement {
     final private String fiscalDateEnding;
     final private String reportedCurrency;
     final private Long grossProfit;
@@ -12,7 +12,7 @@ public class AnnualReport {
     final private Long netIncome;
 
     /**
-     * Constructs a new AnnualReport object.
+     * Constructs a new IncomeStatement object.
      *
      * @param fiscalDateEnding The ending date of the fiscal year (e.g., YYYY-MM-DD).
      * @param reportedCurrency The currency in which the report is denominated (e.g., USD, EUR).
@@ -21,7 +21,7 @@ public class AnnualReport {
      * @param operatingIncome  The operating income for the fiscal year.
      * @param netIncome        The net income for the fiscal year.
      */
-    public AnnualReport(String fiscalDateEnding, String reportedCurrency, Long grossProfit,
+    public IncomeStatement(String fiscalDateEnding, String reportedCurrency, Long grossProfit,
                         Long totalRevenue, Long operatingIncome, Long netIncome){
                             
         this.fiscalDateEnding = fiscalDateEnding;
@@ -87,13 +87,13 @@ public class AnnualReport {
     }
     
     /**
-     * Returns a string representation of the AnnualReport object.
+     * Returns a string representation of the FinancialStatement object.
      *
-     * @return A string representation of the AnnualReport object.
+     * @return A string representation of the FinancialStatement object.
      */
     @Override
     public String toString(){
-        return "AnnualReport{" +
+        return "Income Statement{" +
                 "fiscalDateEnding='" + fiscalDateEnding + '\'' +
                 ", reportedCurrency='" + reportedCurrency + '\'' +
                 ", grossProfit='" + grossProfit + '\'' +

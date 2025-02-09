@@ -8,12 +8,12 @@ import '../static/css/stockChartsStyle.css';
 function StockChart() {
     const { symbol } = useParams();
     const [stocks, setStocks] = useState([]);
-    const [report, setReport] = useState(null);
+    const [incomeStatement, setIncomeStatement] = useState(null);
     const [loadingStocks, setLoadingStocks] = useState(true);
-    const [loadingReport, setLoadingReport] = useState(false);
+    const [loadingIncomeStatement, setLoadingIncomeStatement] = useState(false);
     const [selectedData, setSelectedData] = useState('netIncome');
     const [stockChart, setStockChart] = useState(null);
-    const [annualReportChart, setAnnualReportChart] = useState(null);
+    const [incomeStatementChart, setIncomeStatementChart] = useState(null);
 
 
     useEffect(() => {
@@ -32,15 +32,15 @@ function StockChart() {
         fetchStockData();
     }, [symbol]);
 
-    const fetchReportData = async () => {
-        setLoadingReport(true);
+    const fetchIncomeStatementData = async () => {
+        setLoadingIncomeStatement(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/stockCharts/${symbol}/reports`);
-            setReport(response.data);
+            const response = await axios.get(`http://localhost:8080/api/stockCharts/${symbol}/incomeStatement`);
+            setIncomeStatement(response.data);
         } catch (error) {
-            console.error("Error fetching report:", error);
+            console.error("Error fetching financial statement:", error);
         } finally {
-            setLoadingReport(false);
+            setLoadingIncomeStatement(false);
         }
     };
 
@@ -71,7 +71,6 @@ function StockChart() {
                 options: {
                     responsive: true,
                     scales: {
-                        x: { title: { display: true, text: 'Date' } },
                         y: { title: { display: true, text: 'Price (USD)' } }
                     }
                 }
@@ -82,17 +81,17 @@ function StockChart() {
 
 
     useEffect(() => {
-        if (report && report.length > 0) {
-            const frlabels = report.map(item => item.fiscalDateEnding);
-            const frdata = report.map(item => item[selectedData]);
+        if (incomeStatement && incomeStatement.length > 0) {
+            const frlabels = incomeStatement.map(item => item.fiscalDateEnding);
+            const frdata = incomeStatement.map(item => item[selectedData]);
             const frdataName = selectedData;
 
-            if (annualReportChart) {
-                annualReportChart.destroy();
+            if (incomeStatementChart) {
+                incomeStatementChart.destroy();
             }
 
-            const ctx = document.getElementById('annualReportChart').getContext('2d');
-            const newAnnualReportChart = new Chart(ctx, {
+            const ctx = document.getElementById('incomeStatementChart').getContext('2d');
+            const newIncomeStatementChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: frlabels,
@@ -107,16 +106,12 @@ function StockChart() {
                     }]
                 },
                 options: {
-                    responsive: true,
-                    scales: {
-                        x: { title: { display: true, text: 'Date' } },
-                        y: { title: { display: true, text: frdataName } }
-                    }
+                    responsive: true
                 }
             });
-            setAnnualReportChart(newAnnualReportChart);
+            setIncomeStatementChart(newIncomeStatementChart);
         }
-    }, [report, selectedData]);
+    }, [incomeStatement, selectedData]);
 
 
     const handleDataSelectionChange = (event) => {
@@ -131,13 +126,13 @@ function StockChart() {
                     <h2>Stocks</h2>
                     {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
-                    <button onClick={fetchReportData} disabled={loadingReport}>
-                        {loadingReport ? "Loading report..." : "Get Annual Report"}
+                    <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
+                        {loadingIncomeStatement ? "Loading report..." : "Get Income Statement"}
                     </button>
 
                     {/*Box containing annual report data*/}
-                    {report && report.length > 0 ? (
-                        <div className='annualReportBox'>
+                    {incomeStatement && incomeStatement.length > 0 ? (
+                        <div className='incomeStatementBox'>
                             <h2>Annual Report</h2>
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
                                 <option value="netIncome">Net Income</option>
@@ -145,7 +140,7 @@ function StockChart() {
                                 <option value="totalRevenue">Total Revenue</option>
                                 <option value="operatingIncome">Operating Income</option>
                             </select>
-                            <canvas id="annualReportChart"></canvas>
+                            <canvas id="incomeStatementChart"></canvas>
                             <table>
                                 <thead>
                                     <tr>
@@ -158,7 +153,7 @@ function StockChart() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {report.map(item => (
+                                    {incomeStatement.map(item => (
                                         <tr key={item.fiscalDateEnding}>
                                             <td>{item.fiscalDateEnding}</td>
                                             <td>{item.reportedCurrency}</td>
@@ -172,10 +167,10 @@ function StockChart() {
                             </table>
 
                         </div>
-                    ) : loadingReport ? (
-                        <div>Loading report data...</div>
+                    ) : loadingIncomeStatement ? (
+                        <div>Loading income statement data...</div>
                     ) : (
-                        <div>No annual report data available.</div>
+                        <div>No annual income statement data available.</div>
                     )}
 
                 </div>

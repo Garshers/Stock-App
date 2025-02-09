@@ -67,7 +67,7 @@ a:hover {
     font-size: 10px;
 }
 
-#annualReportChart {
+#incomeStatementChart {
     width: 80%;
     max-width: 800px;
     height: 300px;
@@ -105,7 +105,7 @@ a:hover {
     background-color: rgba(230, 240, 239, 0.8);
 }
 
-.annualReportBox{
+.incomeStatementBox{
     width: 100%;
     height: fit-content;
     display: flex;

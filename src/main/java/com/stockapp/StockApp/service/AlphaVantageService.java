@@ -11,7 +11,7 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.stockapp.StockApp.model.AnnualReport;
+import com.stockapp.StockApp.model.IncomeStatement;
 import com.stockapp.StockApp.model.Stock;
 import com.stockapp.StockApp.model.URLCreator;
 
@@ -71,36 +71,34 @@ public class AlphaVantageService {
     }
 
     /**
-     * Parses annual reports data from a JSON response.
+     * Parses annual income statemens data from a JSON response.
      *
      * @param symbol       The stock symbol.
-     * @param jsonResponse The JSON response string containing annual reports data.
+     * @param jsonResponse The JSON response string containing annual income statement data.
      * @param functionType The AlphaVantage API function type used to retrieve the data.
-     * @return A list of AnnualReport objects parsed from the JSON response.
+     * @return A list of AnnualIncomeStatement objects parsed from the JSON response.
      */
-    public List<AnnualReport> parseAnnualReports(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
+    public List<IncomeStatement> parseAnnualIncomeStatement(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
         JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
 
         String Function = functionType.getJsonFunction();
-        JsonArray annualReportsJsonArray = jsonObject.getAsJsonArray(Function); 
-        List<AnnualReport> annualReportsList = new ArrayList<>();
-        for (int i = 0; i < annualReportsJsonArray.size(); i++) {
-            JsonObject reportJson = annualReportsJsonArray.get(i).getAsJsonObject();
+        JsonArray annualIncomeStatementJsonArray = jsonObject.getAsJsonArray(Function); 
+        List<IncomeStatement> annualIncomeStatementList = new ArrayList<>();
+        for (int i = 0; i < annualIncomeStatementJsonArray.size(); i++) {
+            JsonObject jsonData = annualIncomeStatementJsonArray.get(i).getAsJsonObject();
             
-            AnnualReport annualReport = new AnnualReport(
-                    reportJson.get("fiscalDateEnding").getAsString(),
-                    reportJson.get("reportedCurrency").getAsString(),
-                    reportJson.get("grossProfit").getAsLong(),
-                    reportJson.get("totalRevenue").getAsLong(),
-                    reportJson.get("operatingIncome").getAsLong(),
-                    reportJson.get("netIncome").getAsLong()
+            IncomeStatement annualIncomeStatement = new IncomeStatement(
+                    jsonData.get("fiscalDateEnding").getAsString(),
+                    jsonData.get("reportedCurrency").getAsString(),
+                    jsonData.get("grossProfit").getAsLong(),
+                    jsonData.get("totalRevenue").getAsLong(),
+                    jsonData.get("operatingIncome").getAsLong(),
+                    jsonData.get("netIncome").getAsLong()
             );
             
-            annualReportsList.add(annualReport);
+            annualIncomeStatementList.add(annualIncomeStatement);
         }
-        Collections.reverse(annualReportsList);
-        //System.out.println(annualReportsList); //Log
         
-        return annualReportsList;
+        return annualIncomeStatementList;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.stockapp.StockApp.model.AnnualReport;
+import com.stockapp.StockApp.model.IncomeStatement;
 import com.stockapp.StockApp.model.Stock;
 import com.stockapp.StockApp.model.URLCreator;
 import com.stockapp.StockApp.service.AlphaVantageService;
@@ -46,23 +46,23 @@ public class StockChartsController {
     }
 
     /**
-     * Retrieves annual report data for a given symbol.
+     * Retrieves annual inclome statment data for a given symbol.
      *
      * @param symbol The stock symbol.
-     * @return A list of AnnualReport objects representing the annual report data.
+     * @return A list of Annual Income Statement objects representing the annual income statement data.
      * @throws RuntimeException If an error occurs during data retrieval.
      */
-    @GetMapping("/api/stockCharts/{symbol}/reports")
-    public List<AnnualReport> getAnnualReports(@PathVariable String symbol) {
-        URLCreator stockReportURL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
-        String reportUrl = stockReportURL.generateUrl();
+    @GetMapping("/api/stockCharts/{symbol}/incomeStatement")
+    public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
+        URLCreator stockIncomeStatementURL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
+        String incomeStatementUrl = stockIncomeStatementURL.generateUrl();
 
         try {
-            String jsonResponse = service.getStockData(reportUrl);
-            return service.parseAnnualReports(stockReportURL.getSymbol(), jsonResponse, stockReportURL.getFunction());
+            String jsonResponse = service.getStockData(incomeStatementUrl);
+            return service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction());
         } catch (Exception e) {
-            System.err.println("ERROR fetching report data: " + e.getMessage());
-            throw new RuntimeException("Error fetching report data.", e);
+            System.err.println("ERROR fetching income statement data: " + e.getMessage());
+            throw new RuntimeException("Error fetching income statement data.", e);
         }
     }
 }
