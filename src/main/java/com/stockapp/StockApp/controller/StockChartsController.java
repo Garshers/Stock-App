@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stockapp.StockApp.model.IncomeStatement;
+import com.stockapp.StockApp.model.Overview;
 import com.stockapp.StockApp.model.Stock;
 import com.stockapp.StockApp.model.URLCreator;
 import com.stockapp.StockApp.service.AlphaVantageService;
@@ -60,6 +61,27 @@ public class StockChartsController {
         try {
             String jsonResponse = service.getStockData(incomeStatementUrl);
             return service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction());
+        } catch (Exception e) {
+            System.err.println("ERROR fetching income statement data: " + e.getMessage());
+            throw new RuntimeException("Error fetching income statement data.", e);
+        }
+    }
+
+    /**
+     * Retrieves annual inclome statment data for a given symbol.
+     *
+     * @param symbol The stock symbol.
+     * @return A list of Annual Income Statement objects representing the annual income statement data.
+     * @throws RuntimeException If an error occurs during data retrieval.
+     */
+    @GetMapping("/api/stockCharts/{symbol}/Overview")
+    public List<Overview> getOverview(@PathVariable String symbol) {
+        URLCreator stockOverviewURL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
+        String overviewUrl = stockOverviewURL.generateUrl();
+
+        try {
+            String jsonResponse = service.getStockData(overviewUrl);
+            return service.parseOverview(stockOverviewURL.getSymbol(), jsonResponse, stockOverviewURL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
             throw new RuntimeException("Error fetching income statement data.", e);
