@@ -8,27 +8,32 @@ table {
     width: 100%;
     max-width: 600px;
     height: auto;
+    table-layout: fixed;
+    overflow: hidden;
     border-collapse: collapse;
     background-color: #ffffff;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-th { /* head */
-    background: rgba(20, 19, 43, 1);
-    color: white;
+th, td { /* Head and Content merged */
     font-size: 12px;
-    padding: 2px;
-    text-align: center;
     height: fit-content;
     border: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-td { /* content */
+th { /* Head */
+    padding: 2px;
+    text-align: center;
+    background: rgba(20, 19, 43, 1);
+    color: white;
+}
+
+td { /* Content */
     padding: 5px;
-    font-size: 12px;
-    text-align: left;
-    height: fit-content;
-    border: 1px solid #ddd;
+    text-align: right;
 }
 
 tbody tr:nth-child(even) {
@@ -87,8 +92,8 @@ a:hover {
 }
 
 .mainCenterBox {
-    width: 68%;
-    margin: 0 1% 0;
+    width: 69.6%;
+    margin: 0 0.2% 0;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -120,6 +125,7 @@ a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-x: auto;
 }
 
 .incomeStatementBox{
@@ -130,6 +136,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     gap: 5px;
+    overflow-x: auto;
     border: 1px solid red;
 }
 

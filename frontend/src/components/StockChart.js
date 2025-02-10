@@ -180,8 +180,8 @@ function StockChart() {
                                 <tbody>
                                     {incomeStatement.map(item => (
                                         <tr key={item.fiscalDateEnding}>
-                                            <td>{item.fiscalDateEnding}</td>
-                                            <td>{item.reportedCurrency}</td>
+                                            <td style={{ textAlign: 'left' }}>{item.fiscalDateEnding}</td>
+                                            <td style={{ textAlign: 'left' }}>{item.reportedCurrency}</td>
                                             <td>{item.grossProfit}</td>
                                             <td>{item.totalRevenue}</td>
                                             <td>{item.operatingIncome}</td>
@@ -214,18 +214,27 @@ function StockChart() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Object.entries(overviewData)
-                                        .filter(([key]) => key !== "description")
-                                        .map(([key, value]) => (
-                                            <tr key={key}>
-                                                <td>{key}</td>
-                                                <td>
-                                                    {key.includes("Date") && value ? new Date(value).toLocaleDateString() :
-                                                    key.includes("Yield") || key.includes("Ratio") || key.includes("Beta") || typeof value === 'number' ? value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) :
-                                                    value && typeof value === 'object' ? JSON.stringify(value) : value ? value.toString() : "-"}
-                                                </td>
-                                            </tr>
-                                        ))}
+                                {Object.entries(overviewData)
+                                    .filter(([key]) => key !== "description")
+                                    .map(([key, value]) => {
+                                    
+                                    const formattedKey = key
+                                    .replace(/([A-Z])(?=[A-Z][a-z])/g, '$1 ') // Add space between a capital letter followed by another capital and a lowercase letter (EvToEBITDA -> Ev To EBITDA)
+                                    .replace(/([A-Z]+)(?=[A-Z][a-z]|$)/g, '$1 ') // Add space after an acronym, unless it's followed by another capital and a lowercase letter or the end of the string (DividendPerShare -> Dividend Per Share)
+                                    .replace(/([a-z])([A-Z]+)(?=[A-Z][a-z]|$)/g, '$1 $2') // Add space between a lowercase letter and an acronym, unless the acronym is followed by another capital letter and a lowercase letter or the end of the string (adjustedEBITDA -> Adjusted EBITDA)
+                                    .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
+
+                                    return (
+                                        <tr key={key}>
+                                        <td style={{ textAlign: 'left' }}>{formattedKey}</td>
+                                        <td>
+                                            {key.includes("Date") && value ? new Date(value).toLocaleDateString() :
+                                            key.includes("Yield") || key.includes("Ratio") || key.includes("Beta") || typeof value === 'number' ? value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :
+                                            value && typeof value === 'object' ? JSON.stringify(value) : value ? value.toString() : "-"}
+                                        </td>
+                                        </tr>
+                                    );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
