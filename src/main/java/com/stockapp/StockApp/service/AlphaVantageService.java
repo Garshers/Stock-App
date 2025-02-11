@@ -117,7 +117,6 @@ public class AlphaVantageService {
      */
     public Overview parseOverview(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
         JsonObject jsonData = JsonParser.parseString(jsonResponse).getAsJsonObject();
-        System.out.println("------------- JSON DATA ------------- " + jsonData);
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         
         try {

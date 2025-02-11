@@ -36,6 +36,7 @@ public class StockChartsController {
         }
         URLCreator stockURL = new URLCreator(symbol, URLCreator.FunctionType.TIME_SERIES_MONTHLY_ADJUSTED);
         String url = stockURL.generateUrl();
+        System.out.println("stock url: " + url);
 
         try {
             String jsonResponse = service.getStockData(url);
@@ -56,10 +57,11 @@ public class StockChartsController {
     @GetMapping("/api/stockCharts/{symbol}/incomeStatement")
     public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
         URLCreator stockIncomeStatementURL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
-        String incomeStatementUrl = stockIncomeStatementURL.generateUrl();
+        String url = stockIncomeStatementURL.generateUrl();
+        System.out.println("income statement url: " + url);
 
         try {
-            String jsonResponse = service.getStockData(incomeStatementUrl);
+            String jsonResponse = service.getStockData(url);
             return service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
@@ -77,11 +79,11 @@ public class StockChartsController {
     @GetMapping("/api/stockCharts/{symbol}/overview")
     public Overview getOverview(@PathVariable String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
-        String overviewUrl = URL.generateUrl();
-        System.out.println("Overview url: " + overviewUrl);
+        String url = URL.generateUrl();
+        System.out.println("Overview url: " + url);
 
         try {
-            String jsonResponse = service.getStockData(overviewUrl);
+            String jsonResponse = service.getStockData(url);
             return service.parseOverview(URL.getSymbol(), jsonResponse, URL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());

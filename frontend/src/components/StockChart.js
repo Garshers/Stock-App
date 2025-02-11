@@ -21,7 +21,7 @@ function StockChart() {
     const [stockChart, setStockChart] = useState(null);
     const [incomeStatementChart, setIncomeStatementChart] = useState(null);
 
-
+    {/* Fetches stock data from API */}
     useEffect(() => {
         const fetchStockData = async () => {
             try {
@@ -38,6 +38,7 @@ function StockChart() {
         fetchStockData();
     }, [symbol]);
 
+    {/* Fetches income statement data from API */}
     const fetchIncomeStatementData = async () => {
         setLoadingIncomeStatement(true);
         try {
@@ -50,6 +51,7 @@ function StockChart() {
         }
     };
 
+    {/* Fetches overview data from API */}
     useEffect(() => {
         const fetchOverviewData = async () => {
             setLoadingOverview(true);
@@ -66,76 +68,34 @@ function StockChart() {
         fetchOverviewData();
     }, [symbol]);
 
+    {/* Creates stock chart */}
     useEffect(() => {
         if (stocks.length > 0) {
             const labels = stocks.map(stock => stock.date);
             const data = stocks.map(stock => stock.price);
-
-            if (stockChart) {
-                stockChart.destroy();
-            }
-
             const ctx = document.getElementById('stockChart').getContext('2d');
-            const newStockChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Price (USD)',
-                        data: data,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2,
-                        fill: true,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { title: { display: true, text: 'Price (USD)' } }
-                    }
-                }
-            });
+
+            const newStockChart = createChart(ctx, 'line', labels, data, 'Price (USD)');
+            
             setStockChart(newStockChart);
         }
     }, [stocks]);
 
-
+    {/* Creates Income Statement chart */}
     useEffect(() => {
         if (incomeStatement && incomeStatement.length > 0) {
             const frlabels = incomeStatement.map(item => item.fiscalDateEnding);
             const frdata = incomeStatement.map(item => item[selectedData]);
             const frdataName = selectedData;
-
-            if (incomeStatementChart) {
-                incomeStatementChart.destroy();
-            }
-
             const ctx = document.getElementById('incomeStatementChart').getContext('2d');
-            const newIncomeStatementChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: frlabels,
-                    datasets: [{
-                        label: frdataName,
-                        data: frdata,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2,
-                        fill: true,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
+
+            const newIncomeStatementChart = createChart(ctx, 'bar', frlabels, frdata, frdataName);
+
             setIncomeStatementChart(newIncomeStatementChart);
         }
-    }, [incomeStatement, selectedData]);
+    }, [incomeStatement, selectedData]); // Runs when those are changed
 
-
+    {/* Supports changes of data selection dropdown */}
     const handleDataSelectionChange = (event) => {
         setSelectedData(event.target.value);
     };
@@ -245,6 +205,50 @@ function StockChart() {
             </div>
         </div>
     );
+
+    {/* Helper func in creating charts */}
+    function createChart(ctx, type, labels, data, dataName, options = {}) {
+        if (!ctx) {
+            console.error("Canvas context is null or undefined.");
+            return null; 
+        }
+    
+        const existingChart = Chart.getChart(ctx);
+        if (existingChart) {
+            existingChart.destroy();
+        }
+    
+        const chartData = {
+            labels: labels,
+            datasets: [{
+                label: dataName,
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2,
+                pointRadius: 0,
+                ...(type === 'bar' ? {} : { fill: true }), // "..." - Spread, unpacking object
+            }]
+        };
+    
+        const chartOptions = {
+            responsive: true,
+            ...options, 
+            scales: { 
+                y: {
+                    beginAtZero: true 
+                }
+            }
+        };
+    
+        const newChart = new Chart(ctx, {
+            type: type,
+            data: chartData,
+            options: chartOptions
+        });
+    
+        return newChart;
+    }
 }
 
 export default StockChart;
