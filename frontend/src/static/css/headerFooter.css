@@ -8,6 +8,7 @@ body {
     margin: 0;
 }
 
+/* Header styles */
 .header-frame {
     height: 108px;
     width: 100%;
@@ -79,9 +80,9 @@ body {
     width: 100px;
 }
 
-
+/* Footer styles */
 .footer-frame {
-    position: relative;
+
     height: 200px;
     width: 100%;
     display: flex;

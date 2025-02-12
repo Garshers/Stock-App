@@ -233,7 +233,7 @@ function StockChart() {
     
         const chartOptions = {
             responsive: true,
-            ...options, 
+            ...options,
             scales: { 
                 y: {
                     beginAtZero: true 
