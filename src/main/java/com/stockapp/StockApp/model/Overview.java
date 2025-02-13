@@ -86,14 +86,14 @@ public class Overview {
      * @param revenueTTM                 The revenue (Trailing Twelve Months).
      * @param grossProfitTTM             The gross profit (Trailing Twelve Months).
      * @param dilutedEPSTTM              The diluted earnings per share (Trailing Twelve Months).
-     * @param quarterlyEarningsGrowthYOY  The quarterly earnings growth year-over-year.
-     * @param quarterlyRevenueGrowthYOY The quarterly revenue growth year-over-year.
+     * @param quarterlyEarningsGrowthYOY The quarterly earnings growth year-over-year.
+     * @param quarterlyRevenueGrowthYOY  The quarterly revenue growth year-over-year.
      * @param analystTargetPrice         The analyst target price.
      * @param analystRatingStrongBuy     The number of "Strong Buy" analyst ratings.
      * @param analystRatingBuy           The number of "Buy" analyst ratings.
      * @param analystRatingHold          The number of "Hold" analyst ratings.
      * @param analystRatingSell          The number of "Sell" analyst ratings.
-     * @param analystRatingStrongSell     The number of "Strong Sell" analyst ratings.
+     * @param analystRatingStrongSell    The number of "Strong Sell" analyst ratings.
      * @param trailingPE                 The trailing price-to-earnings ratio.
      * @param forwardPE                  The forward price-to-earnings ratio.
      * @param priceToSalesRatioTTM       The price-to-sales ratio (Trailing Twelve Months).
@@ -107,7 +107,7 @@ public class Overview {
      * @param movingAverage200           The 200-day moving average.
      * @param sharesOutstanding          The number of shares outstanding.
      * @param dividendDate               The dividend date.
-     * @param exDividendDate            The ex-dividend date.
+     * @param exDividendDate             The ex-dividend date.
      */
     public Overview(String symbol, String name, String description, String exchange, String currency, String country, String sector, String industry, String fiscalYearEnd, LocalDate latestQuarter, BigDecimal marketCapitalization, BigDecimal ebitda, BigDecimal peRatio, BigDecimal pegRatio, BigDecimal bookValue, BigDecimal dividendPerShare, BigDecimal dividendYield, BigDecimal eps, BigDecimal revenuePerShareTTM, BigDecimal profitMargin, BigDecimal operatingMarginTTM, BigDecimal returnOnAssetsTTM, BigDecimal returnOnEquityTTM, BigDecimal revenueTTM, BigDecimal grossProfitTTM, BigDecimal dilutedEPSTTM, BigDecimal quarterlyEarningsGrowthYOY, BigDecimal quarterlyRevenueGrowthYOY, BigDecimal analystTargetPrice, Integer analystRatingStrongBuy, Integer analystRatingBuy, Integer analystRatingHold, Integer analystRatingSell, Integer analystRatingStrongSell, BigDecimal trailingPE, BigDecimal forwardPE, BigDecimal priceToSalesRatioTTM, BigDecimal priceToBookRatio, BigDecimal evToRevenue, BigDecimal evToEBITDA, BigDecimal beta, BigDecimal weekHigh52, BigDecimal weekLow52, BigDecimal movingAverage50, BigDecimal movingAverage200, Long sharesOutstanding, LocalDate dividendDate, LocalDate exDividendDate) {
         this.symbol = symbol;

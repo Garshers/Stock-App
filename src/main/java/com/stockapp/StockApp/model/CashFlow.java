@@ -1,0 +1,132 @@
+package com.stockapp.StockApp.model;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class CashFlow {
+    private LocalDate fiscalDateEnding;
+    private final String reportedCurrency;
+    private final BigDecimal operatingCashflow;
+    private final BigDecimal paymentsForOperatingActivities;
+    private final BigDecimal proceedsFromOperatingActivities;
+    private final BigDecimal changeInOperatingLiabilities;
+    private final BigDecimal changeInOperatingAssets;
+    private final BigDecimal depreciationDepletionAndAmortization;
+    private final BigDecimal capitalExpenditures;
+    private final BigDecimal changeInReceivables;
+    private final BigDecimal changeInInventory;
+    private final BigDecimal profitLoss;
+    private final BigDecimal cashflowFromInvestment;
+    private final BigDecimal cashflowFromFinancing;
+    private final BigDecimal proceedsFromRepaymentsOfShortTermDebt;
+    private final BigDecimal paymentsForRepurchaseOfCommonStock;
+    private final BigDecimal paymentsForRepurchaseOfEquity;
+    private final BigDecimal paymentsForRepurchaseOfPreferredStock;
+    private final BigDecimal dividendPayout;
+    private final BigDecimal dividendPayoutCommonStock;
+    private final BigDecimal dividendPayoutPreferredStock;
+    private final BigDecimal proceedsFromIssuanceOfCommonStock;
+    private final BigDecimal proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet;
+    private final BigDecimal proceedsFromIssuanceOfPreferredStock;
+    private final BigDecimal proceedsFromRepurchaseOfEquity;
+    private final BigDecimal proceedsFromSaleOfTreasuryStock;
+    private final BigDecimal changeInCashAndCashEquivalents;
+    private final BigDecimal changeInExchangeRate;
+    private final BigDecimal netIncome;
+
+    public CashFlow(String fiscalDateEnding, String reportedCurrency, String operatingCashflow,
+                       String paymentsForOperatingActivities, String proceedsFromOperatingActivities,
+                       String changeInOperatingLiabilities, String changeInOperatingAssets,
+                       String depreciationDepletionAndAmortization, String capitalExpenditures,
+                       String changeInReceivables, String changeInInventory, String profitLoss,
+                       String cashflowFromInvestment, String cashflowFromFinancing,
+                       String proceedsFromRepaymentsOfShortTermDebt, String paymentsForRepurchaseOfCommonStock,
+                       String paymentsForRepurchaseOfEquity, String paymentsForRepurchaseOfPreferredStock,
+                       String dividendPayout, String dividendPayoutCommonStock, String dividendPayoutPreferredStock,
+                       String proceedsFromIssuanceOfCommonStock, String proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet,
+                       String proceedsFromIssuanceOfPreferredStock, String proceedsFromRepurchaseOfEquity,
+                       String proceedsFromSaleOfTreasuryStock, String changeInCashAndCashEquivalents,
+                       String changeInExchangeRate, String netIncome) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
+        } catch (DateTimeParseException e) {
+            System.err.println("Error parsing LocalDate value: " + fiscalDateEnding + ". Setting fiscalDateEnding to null.");
+            this.fiscalDateEnding = null;
+        }
+
+        this.reportedCurrency = reportedCurrency;
+        this.operatingCashflow = parseBigDecimal(operatingCashflow);
+        this.paymentsForOperatingActivities = parseBigDecimal(paymentsForOperatingActivities);
+        this.proceedsFromOperatingActivities = parseBigDecimal(proceedsFromOperatingActivities);
+        this.changeInOperatingLiabilities = parseBigDecimal(changeInOperatingLiabilities);
+        this.changeInOperatingAssets = parseBigDecimal(changeInOperatingAssets);
+        this.depreciationDepletionAndAmortization = parseBigDecimal(depreciationDepletionAndAmortization);
+        this.capitalExpenditures = parseBigDecimal(capitalExpenditures);
+        this.changeInReceivables = parseBigDecimal(changeInReceivables);
+        this.changeInInventory = parseBigDecimal(changeInInventory);
+        this.profitLoss = parseBigDecimal(profitLoss);
+        this.cashflowFromInvestment = parseBigDecimal(cashflowFromInvestment);
+        this.cashflowFromFinancing = parseBigDecimal(cashflowFromFinancing);
+        this.proceedsFromRepaymentsOfShortTermDebt = parseBigDecimal(proceedsFromRepaymentsOfShortTermDebt);
+        this.paymentsForRepurchaseOfCommonStock = parseBigDecimal(paymentsForRepurchaseOfCommonStock);
+        this.paymentsForRepurchaseOfEquity = parseBigDecimal(paymentsForRepurchaseOfEquity);
+        this.paymentsForRepurchaseOfPreferredStock = parseBigDecimal(paymentsForRepurchaseOfPreferredStock);
+        this.dividendPayout = parseBigDecimal(dividendPayout);
+        this.dividendPayoutCommonStock = parseBigDecimal(dividendPayoutCommonStock);
+        this.dividendPayoutPreferredStock = parseBigDecimal(dividendPayoutPreferredStock);
+        this.proceedsFromIssuanceOfCommonStock = parseBigDecimal(proceedsFromIssuanceOfCommonStock);
+        this.proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet = parseBigDecimal(proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet);
+        this.proceedsFromIssuanceOfPreferredStock = parseBigDecimal(proceedsFromIssuanceOfPreferredStock);
+        this.proceedsFromRepurchaseOfEquity = parseBigDecimal(proceedsFromRepurchaseOfEquity);
+        this.proceedsFromSaleOfTreasuryStock = parseBigDecimal(proceedsFromSaleOfTreasuryStock);
+        this.changeInCashAndCashEquivalents = parseBigDecimal(changeInCashAndCashEquivalents);
+        this.changeInExchangeRate = parseBigDecimal(changeInExchangeRate);
+        this.netIncome = parseBigDecimal(netIncome);
+    }
+
+    private BigDecimal parseBigDecimal(String value) {
+        if (value == null || value.equals("None")) {
+            return null;
+        }
+        try {
+            return new BigDecimal(value);
+        } catch (NumberFormatException e) {
+            System.err.println("Error parsing BigDecimal value: " + value + ". Returning null.");
+            return null;
+        }
+    }
+
+    public LocalDate getFiscalDateEnding() { return fiscalDateEnding; }
+    public String getReportedCurrency() { return reportedCurrency; }
+    public BigDecimal getOperatingCashflow() { return operatingCashflow; }
+    public BigDecimal getPaymentsForOperatingActivities() { return paymentsForOperatingActivities; }
+    public BigDecimal getProceedsFromOperatingActivities() { return proceedsFromOperatingActivities; }
+    public BigDecimal getChangeInOperatingLiabilities() { return changeInOperatingLiabilities; }
+    public BigDecimal getChangeInOperatingAssets() { return changeInOperatingAssets; }
+    public BigDecimal getDepreciationDepletionAndAmortization() { return depreciationDepletionAndAmortization; }
+    public BigDecimal getCapitalExpenditures() { return capitalExpenditures; }
+    public BigDecimal getChangeInReceivables() { return changeInReceivables; }
+    public BigDecimal getChangeInInventory() { return changeInInventory; }
+    public BigDecimal getProfitLoss() { return profitLoss; }
+    public BigDecimal getCashflowFromInvestment() { return cashflowFromInvestment; }
+    public BigDecimal getCashflowFromFinancing() { return cashflowFromFinancing; }
+    public BigDecimal getProceedsFromRepaymentsOfShortTermDebt() { return proceedsFromRepaymentsOfShortTermDebt; }
+    public BigDecimal getPaymentsForRepurchaseOfCommonStock() { return paymentsForRepurchaseOfCommonStock; }
+    public BigDecimal getPaymentsForRepurchaseOfEquity() { return paymentsForRepurchaseOfEquity; }
+    public BigDecimal getPaymentsForRepurchaseOfPreferredStock() { return paymentsForRepurchaseOfPreferredStock; }
+    public BigDecimal getDividendPayout() { return dividendPayout; }
+    public BigDecimal getDividendPayoutCommonStock() { return dividendPayoutCommonStock; }
+    public BigDecimal getDividendPayoutPreferredStock() { return dividendPayoutPreferredStock; }
+    public BigDecimal getProceedsFromIssuanceOfCommonStock() { return proceedsFromIssuanceOfCommonStock; }
+    public BigDecimal getProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet() { return proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet; }
+    public BigDecimal getProceedsFromIssuanceOfPreferredStock() { return proceedsFromIssuanceOfPreferredStock; }
+    public BigDecimal getProceedsFromRepurchaseOfEquity() { return proceedsFromRepurchaseOfEquity; }
+    public BigDecimal getProceedsFromSaleOfTreasuryStock() { return proceedsFromSaleOfTreasuryStock; }
+    public BigDecimal getChangeInCashAndCashEquivalents() { return changeInCashAndCashEquivalents; }
+    public BigDecimal getChangeInExchangeRate() { return changeInExchangeRate; }
+    public BigDecimal getNetIncome() { return netIncome; }
+}
