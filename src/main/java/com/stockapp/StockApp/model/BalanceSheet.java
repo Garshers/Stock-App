@@ -1,5 +1,9 @@
 package com.stockapp.StockApp.model;
 
+/**
+ * Represents a balance sheet for a company. This class stores the various
+ * financial figures that make up a balance sheet.
+ */
 public class BalanceSheet {
     final private String fiscalDateEnding;
     final private String reportedCurrency;
@@ -32,6 +36,39 @@ public class BalanceSheet {
     final private String netIncome;
 
 
+    /**
+     * Constructs a new BalanceSheet object.
+     *
+     * @param fiscalDateEnding The ending date of the fiscal year (e.g., YYYY-MM-DD).
+     * @param reportedCurrency The currency in which the report is denominated (e.g., USD, EUR).
+     * @param operatingCashflow Cash flow from operating activities.
+     * @param paymentsForOperatingActivities Payments made for operating activities.
+     * @param proceedsFromOperatingActivities Proceeds received from operating activities.
+     * @param changeInOperatingLiabilities Change in operating liabilities.
+     * @param changeInOperatingAssets Change in operating assets.
+     * @param depreciationDepletionAndAmortization Depreciation, depletion, and amortization expense.
+     * @param capitalExpenditures Capital expenditures.
+     * @param changeInReceivables Change in receivables.
+     * @param changeInInventory Change in inventory.
+     * @param profitLoss Profit or loss for the period.
+     * @param cashflowFromInvestment Cash flow from investing activities.
+     * @param cashflowFromFinancing Cash flow from financing activities.
+     * @param proceedsFromRepaymentsOfShortTermDebt Proceeds from repayments of short-term debt.
+     * @param paymentsForRepurchaseOfCommonStock Payments for repurchase of common stock.
+     * @param paymentsForRepurchaseOfEquity Payments for repurchase of equity.
+     * @param paymentsForRepurchaseOfPreferredStock Payments for repurchase of preferred stock.
+     * @param dividendPayout Dividend payout.
+     * @param dividendPayoutCommonStock Dividend payout for common stock.
+     * @param dividendPayoutPreferredStock Dividend payout for preferred stock.
+     * @param proceedsFromIssuanceOfCommonStock Proceeds from issuance of common stock.
+     * @param proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet Proceeds from issuance of long-term debt and capital securities, net.
+     * @param proceedsFromIssuanceOfPreferredStock Proceeds from issuance of preferred stock.
+     * @param proceedsFromRepurchaseOfEquity Proceeds from repurchase of equity.
+     * @param proceedsFromSaleOfTreasuryStock Proceeds from sale of treasury stock.
+     * @param changeInCashAndCashEquivalents Change in cash and cash equivalents.
+     * @param changeInExchangeRate Change in exchange rate.
+     * @param netIncome Net income for the period.
+     */
     public BalanceSheet(String fiscalDateEnding, String reportedCurrency, String operatingCashflow,
                        String paymentsForOperatingActivities, String proceedsFromOperatingActivities,
                        String changeInOperatingLiabilities, String changeInOperatingAssets,
