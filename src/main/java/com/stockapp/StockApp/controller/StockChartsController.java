@@ -54,15 +54,15 @@ public class StockChartsController {
      * @return A list of Annual Income Statement objects representing the annual income statement data.
      * @throws RuntimeException If an error occurs during data retrieval.
      */
-    @GetMapping("/api/stockCharts/{symbol}/incomeStatement")
-    public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
-        URLCreator stockIncomeStatementURL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
-        String url = stockIncomeStatementURL.generateUrl();
-        System.out.println("income statement url: " + url);
+    @GetMapping("/api/stockCharts/{symbol}/overview")
+    public Overview getOverview(@PathVariable String symbol) {
+        URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
+        String url = URL.generateUrl();
+        System.out.println("Overview url: " + url);
 
         try {
             String jsonResponse = service.getStockData(url);
-            return service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction());
+            return service.parseOverview(URL.getSymbol(), jsonResponse, URL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
             throw new RuntimeException("Error fetching income statement data.", e);
@@ -76,15 +76,15 @@ public class StockChartsController {
      * @return A list of Annual Income Statement objects representing the annual income statement data.
      * @throws RuntimeException If an error occurs during data retrieval.
      */
-    @GetMapping("/api/stockCharts/{symbol}/overview")
-    public Overview getOverview(@PathVariable String symbol) {
-        URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
-        String url = URL.generateUrl();
-        System.out.println("Overview url: " + url);
+    @GetMapping("/api/stockCharts/{symbol}/incomeStatement")
+    public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
+        URLCreator stockIncomeStatementURL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
+        String url = stockIncomeStatementURL.generateUrl();
+        System.out.println("income statement url: " + url);
 
         try {
             String jsonResponse = service.getStockData(url);
-            return service.parseOverview(URL.getSymbol(), jsonResponse, URL.getFunction());
+            return service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
             throw new RuntimeException("Error fetching income statement data.", e);

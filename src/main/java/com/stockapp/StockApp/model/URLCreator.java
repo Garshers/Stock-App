@@ -86,7 +86,10 @@ public class URLCreator {
         TIME_SERIES_WEEKLY_ADJUSTED("Weekly Adjusted Time Series"),
         TIME_SERIES_MONTHLY_ADJUSTED("Monthly Adjusted Time Series"),
         OVERVIEW("Description"),
-        INCOME_STATEMENT("annualReports");
+        INCOME_STATEMENT("annualReports"),
+        BALANCE_SHEET("annualReports"),
+        CASH_FLOW("annualReports");
+
     
         private final String jsonFunction;
     
