@@ -44,6 +44,35 @@ tbody tr:hover {
     background-color: #e2f7e2;
 }
 
+/* -------- Custom table styling -------- */
+.customTable {
+    width: 100%;
+    min-height: 100px;
+    height: auto;
+    overflow-x: scroll;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid red;
+}
+
+.customTableRow {
+    min-width: fit-content;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(255, 0, 212);
+}
+
+.customTableCell {
+    width: fit-content;
+    min-width: 100%;
+    overflow: hidden;
+    padding: 6px 10px;
+    border: 1px solid red;
+}
+
 /* -------- Links styling -------- */
 a {
     width: fit-content;

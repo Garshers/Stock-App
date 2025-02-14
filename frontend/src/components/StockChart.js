@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Chart } from 'chart.js/auto';
 import '../static/css/headerFooter.css';
 import '../static/css/stockChartsStyle.css';
+import MyTable from './MyTable.js';
 
 function StockChart() {
     const { symbol } = useParams();
@@ -126,6 +127,9 @@ function StockChart() {
                                 <option value="operatingIncome">Operating Income</option>
                             </select>
                             <canvas id="incomeStatementChart"></canvas>
+
+                            <MyTable incomeStatement={incomeStatement} />
+
                             <table>
                                 <thead>
                                     <tr>
@@ -150,7 +154,6 @@ function StockChart() {
                                     ))}
                                 </tbody>
                             </table>
-
                         </div>
                     ) : loadingIncomeStatement ? (
                         <div>Loading income statement data...</div>
@@ -179,10 +182,10 @@ function StockChart() {
                                     .map(([key, value]) => {
                                     
                                     const formattedKey = key
-                                    .replace(/([A-Z])(?=[A-Z][a-z])/g, '$1 ') // Add space between a capital letter followed by another capital and a lowercase letter (EvToEBITDA -> Ev To EBITDA)
-                                    .replace(/([A-Z]+)(?=[A-Z][a-z]|$)/g, '$1 ') // Add space after an acronym, unless it's followed by another capital and a lowercase letter or the end of the string (DividendPerShare -> Dividend Per Share)
+                                    .replace(/([A-Z])(?=[A-Z][a-z])/g, '$1 ')             // Add space between a capital letter followed by another capital and a lowercase letter (EvToEBITDA -> Ev To EBITDA)
+                                    .replace(/([A-Z]+)(?=[A-Z][a-z]|$)/g, '$1 ')          // Add space after an acronym, unless it's followed by another capital and a lowercase letter or the end of the string (DividendPerShare -> Dividend Per Share)
                                     .replace(/([a-z])([A-Z]+)(?=[A-Z][a-z]|$)/g, '$1 $2') // Add space between a lowercase letter and an acronym, unless the acronym is followed by another capital letter and a lowercase letter or the end of the string (adjustedEBITDA -> Adjusted EBITDA)
-                                    .replace(/^./, str => str.toUpperCase()); // Capitalize the first letter
+                                    .replace(/^./, str => str.toUpperCase());             // Capitalize the first letter
 
                                     return (
                                         <tr key={key}>
