@@ -116,10 +116,11 @@ function StockChart() {
                         {loadingIncomeStatement ? "Loading report..." : "Get Income Statement"}
                     </button>
 
-                    {/*Box containing income statement data*/}
+                    {/* Box containing income statement (IS) data */}
                     {incomeStatement && incomeStatement.length > 0 ? (
                         <div className='incomeStatementBox'>
                             <h2>Annual Report</h2>
+                            {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
                                 <option value="netIncome">Net Income</option>
                                 <option value="grossProfit">Gross Profit</option>
@@ -128,32 +129,8 @@ function StockChart() {
                             </select>
                             <canvas id="incomeStatementChart"></canvas>
 
+                            {/* Custom table showing IS data */}
                             <MyTable incomeStatement={incomeStatement} />
-
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Fiscal Date Ending</th>
-                                        <th>Currency</th>
-                                        <th>Gross Profit</th>
-                                        <th>Total Revenue</th>
-                                        <th>Operating Income</th>
-                                        <th>Net Income</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {incomeStatement.map(item => (
-                                        <tr key={item.fiscalDateEnding}>
-                                            <td style={{ textAlign: 'left' }}>{item.fiscalDateEnding}</td>
-                                            <td style={{ textAlign: 'left' }}>{item.reportedCurrency}</td>
-                                            <td>{item.grossProfit}</td>
-                                            <td>{item.totalRevenue}</td>
-                                            <td>{item.operatingIncome}</td>
-                                            <td>{item.netIncome}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
                         </div>
                     ) : loadingIncomeStatement ? (
                         <div>Loading income statement data...</div>

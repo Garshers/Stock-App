@@ -94,7 +94,6 @@ public class AlphaVantageService {
             
             IncomeStatement annualIncomeStatement = new IncomeStatement(
                     jsonData.get("fiscalDateEnding").getAsString(),
-                    jsonData.get("reportedCurrency").getAsString(),
                     jsonData.get("grossProfit").getAsLong(),
                     jsonData.get("totalRevenue").getAsLong(),
                     jsonData.get("operatingIncome").getAsLong(),

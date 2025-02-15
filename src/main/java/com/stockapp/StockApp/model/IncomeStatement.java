@@ -5,7 +5,6 @@ package com.stockapp.StockApp.model;
  */
 public class IncomeStatement {
     final private String fiscalDateEnding;
-    final private String reportedCurrency;
     final private Long grossProfit;
     final private Long totalRevenue;
     final private Long operatingIncome;
@@ -15,13 +14,12 @@ public class IncomeStatement {
      * Constructs a new IncomeStatement object.
      *
      * @param fiscalDateEnding The ending date of the fiscal year (e.g., YYYY-MM-DD).
-     * @param reportedCurrency The currency in which the report is denominated (e.g., USD, EUR).
      * @param grossProfit      The gross profit for the fiscal year.
      * @param totalRevenue     The total revenue for the fiscal year.
      * @param operatingIncome  The operating income for the fiscal year.
      * @param netIncome        The net income for the fiscal year.
      */
-    public IncomeStatement(String fiscalDateEnding, String reportedCurrency, Long grossProfit,
+    public IncomeStatement(String fiscalDateEnding, Long grossProfit,
                         Long totalRevenue, Long operatingIncome, Long netIncome){
                             
         this.fiscalDateEnding = fiscalDateEnding;
@@ -29,7 +27,6 @@ public class IncomeStatement {
         this.totalRevenue = totalRevenue;
         this.operatingIncome = operatingIncome;
         this.netIncome = netIncome;
-        this.reportedCurrency = reportedCurrency;
     }
 
     /**
@@ -39,15 +36,6 @@ public class IncomeStatement {
      */
     public String getFiscalDateEnding(){
         return fiscalDateEnding;
-    }
-
-    /**
-     * Returns the currency in which the report is denominated.
-     *
-     * @return The reported currency.
-     */
-    public String getReportedCurrency(){
-        return reportedCurrency;
     }
 
     /**
@@ -95,7 +83,6 @@ public class IncomeStatement {
     public String toString(){
         return "Income Statement{" +
                 "fiscalDateEnding='" + fiscalDateEnding + '\'' +
-                ", reportedCurrency='" + reportedCurrency + '\'' +
                 ", grossProfit='" + grossProfit + '\'' +
                 ", totalRevenue='" + totalRevenue + '\'' +
                 ", operatingIncome='" + operatingIncome + '\'' +
