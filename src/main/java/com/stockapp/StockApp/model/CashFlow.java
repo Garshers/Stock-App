@@ -3,7 +3,6 @@ package com.stockapp.StockApp.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 /**
  * Represents a balance sheet for a company.  This class stores the various
@@ -11,7 +10,7 @@ import java.time.format.DateTimeParseException;
  * as BigDecimals, and the fiscal date is stored as a LocalDate.
  */
 public class CashFlow {
-    private LocalDate fiscalDateEnding;
+    private final LocalDate fiscalDateEnding;
     private final String reportedCurrency;
     private final BigDecimal operatingCashflow;
     private final BigDecimal paymentsForOperatingActivities;
@@ -89,13 +88,8 @@ public class CashFlow {
                        String changeInExchangeRate, String netIncome) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
-        } catch (DateTimeParseException e) {
-            System.err.println("Error parsing LocalDate value: " + fiscalDateEnding + ". Setting fiscalDateEnding to null.");
-            this.fiscalDateEnding = null;
-        }
-
+        
+        this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
         this.reportedCurrency = reportedCurrency;
         this.operatingCashflow = parseBigDecimal(operatingCashflow);
         this.paymentsForOperatingActivities = parseBigDecimal(paymentsForOperatingActivities);
@@ -124,6 +118,38 @@ public class CashFlow {
         this.changeInCashAndCashEquivalents = parseBigDecimal(changeInCashAndCashEquivalents);
         this.changeInExchangeRate = parseBigDecimal(changeInExchangeRate);
         this.netIncome = parseBigDecimal(netIncome);
+    }
+
+    public CashFlow(BigDecimal capitalExpenditures, BigDecimal cashflowFromFinancing, BigDecimal cashflowFromInvestment, BigDecimal changeInCashAndCashEquivalents, BigDecimal changeInExchangeRate, BigDecimal changeInInventory, BigDecimal changeInOperatingAssets, BigDecimal changeInOperatingLiabilities, BigDecimal changeInReceivables, BigDecimal depreciationDepletionAndAmortization, BigDecimal dividendPayout, BigDecimal dividendPayoutCommonStock, BigDecimal dividendPayoutPreferredStock, LocalDate fiscalDateEnding, BigDecimal netIncome, BigDecimal operatingCashflow, BigDecimal paymentsForOperatingActivities, BigDecimal paymentsForRepurchaseOfCommonStock, BigDecimal paymentsForRepurchaseOfEquity, BigDecimal paymentsForRepurchaseOfPreferredStock, BigDecimal proceedsFromIssuanceOfCommonStock, BigDecimal proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet, BigDecimal proceedsFromIssuanceOfPreferredStock, BigDecimal proceedsFromOperatingActivities, BigDecimal proceedsFromRepaymentsOfShortTermDebt, BigDecimal proceedsFromRepurchaseOfEquity, BigDecimal proceedsFromSaleOfTreasuryStock, BigDecimal profitLoss, String reportedCurrency) {
+        this.capitalExpenditures = capitalExpenditures;
+        this.cashflowFromFinancing = cashflowFromFinancing;
+        this.cashflowFromInvestment = cashflowFromInvestment;
+        this.changeInCashAndCashEquivalents = changeInCashAndCashEquivalents;
+        this.changeInExchangeRate = changeInExchangeRate;
+        this.changeInInventory = changeInInventory;
+        this.changeInOperatingAssets = changeInOperatingAssets;
+        this.changeInOperatingLiabilities = changeInOperatingLiabilities;
+        this.changeInReceivables = changeInReceivables;
+        this.depreciationDepletionAndAmortization = depreciationDepletionAndAmortization;
+        this.dividendPayout = dividendPayout;
+        this.dividendPayoutCommonStock = dividendPayoutCommonStock;
+        this.dividendPayoutPreferredStock = dividendPayoutPreferredStock;
+        this.fiscalDateEnding = fiscalDateEnding;
+        this.netIncome = netIncome;
+        this.operatingCashflow = operatingCashflow;
+        this.paymentsForOperatingActivities = paymentsForOperatingActivities;
+        this.paymentsForRepurchaseOfCommonStock = paymentsForRepurchaseOfCommonStock;
+        this.paymentsForRepurchaseOfEquity = paymentsForRepurchaseOfEquity;
+        this.paymentsForRepurchaseOfPreferredStock = paymentsForRepurchaseOfPreferredStock;
+        this.proceedsFromIssuanceOfCommonStock = proceedsFromIssuanceOfCommonStock;
+        this.proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet = proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet;
+        this.proceedsFromIssuanceOfPreferredStock = proceedsFromIssuanceOfPreferredStock;
+        this.proceedsFromOperatingActivities = proceedsFromOperatingActivities;
+        this.proceedsFromRepaymentsOfShortTermDebt = proceedsFromRepaymentsOfShortTermDebt;
+        this.proceedsFromRepurchaseOfEquity = proceedsFromRepurchaseOfEquity;
+        this.proceedsFromSaleOfTreasuryStock = proceedsFromSaleOfTreasuryStock;
+        this.profitLoss = profitLoss;
+        this.reportedCurrency = reportedCurrency;
     }
 
     /**

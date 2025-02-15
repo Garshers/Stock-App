@@ -62,15 +62,6 @@ tbody tr:hover {
     flex-direction: column;
 }
 
-.customTableCell {
-    width: fit-content;
-    min-width: 100%;
-    overflow: hidden;
-    padding: 6px 10px;
-    border: 0.5px solid #ddd;
-    text-align: right;
-}
-
 .customTableColumnHeader {
     position: sticky;
     white-space: nowrap;
@@ -79,29 +70,22 @@ tbody tr:hover {
     z-index: 1;
 }
 
-.customTableCellHeader {
+.customTableCell, .customTableCellHeader {
     width: fit-content;
     min-width: 100%;
+    min-height: 35px;
     overflow: hidden;
     padding: 6px 10px;
-    background: rgba(20, 19, 43, 1);
     border: 0.5px solid #ddd;
+}
+
+.customTableCell {
+    text-align: right;
+}
+
+.customTableCellHeader {
+    background: rgb(57, 56, 70);
     color: white;
-}
-
-.customScrollbar {
-    width: 100%;
-    height: 8px; /* Height of the scrollbar */
-    background-color: #eee; /* Background color of the scrollbar track */
-    margin-top: 4px; /* Space between table and scrollbar */
-}
-
-.customScrollbarThumb {
-    height: 100%;
-    background-color: #333; /* Color of the scrollbar thumb */
-    width: 0%; /* Initial width */
-    border-radius: 4px; /* Rounded corners */
-    transition: width 0.2s ease; /* Smooth transition for thumb width */
 }
 
 /* -------- Links styling -------- */

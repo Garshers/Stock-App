@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.stockapp.StockApp.model.IncomeStatement;
 import com.stockapp.StockApp.model.Overview;
@@ -89,20 +91,53 @@ public class AlphaVantageService {
         String Function = functionType.getJsonFunction();
         JsonArray annualIncomeStatementJsonArray = jsonObject.getAsJsonArray(Function); 
         List<IncomeStatement> annualIncomeStatementList = new ArrayList<>();
+        
         for (int i = 0; i < annualIncomeStatementJsonArray.size(); i++) {
             JsonObject jsonData = annualIncomeStatementJsonArray.get(i).getAsJsonObject();
             
-            IncomeStatement annualIncomeStatement = new IncomeStatement(
-                    jsonData.get("fiscalDateEnding").getAsString(),
-                    jsonData.get("grossProfit").getAsLong(),
-                    jsonData.get("totalRevenue").getAsLong(),
-                    jsonData.get("operatingIncome").getAsLong(),
-                    jsonData.get("netIncome").getAsLong()
-            );
+            try {
+                IncomeStatement annualIncomeStatement = new IncomeStatement(
+                    safeGetString(jsonData, "fiscalDateEnding"),
+                    safeGetLong(jsonData, "grossProfit"),
+                    safeGetLong(jsonData, "totalRevenue"),
+                    safeGetLong(jsonData, "operatingIncome"),
+                    safeGetLong(jsonData, "netIncome"),
+                    safeGetLong(jsonData, "costOfRevenue"),
+                    safeGetLong(jsonData, "costofGoodsAndServicesSold"),
+                    safeGetLong(jsonData, "sellingGeneralAndAdministrative"),
+                    safeGetLong(jsonData, "researchAndDevelopment"),
+                    safeGetLong(jsonData, "operatingExpenses"),
+                    safeGetLong(jsonData, "investmentIncomeNet"),
+                    safeGetLong(jsonData, "netInterestIncome"),
+                    safeGetLong(jsonData, "interestIncome"),
+                    safeGetLong(jsonData, "interestExpense"),
+                    safeGetLong(jsonData, "nonInterestIncome"),
+                    safeGetLong(jsonData, "otherNonOperatingIncome"),
+                    safeGetLong(jsonData, "depreciation"),
+                    safeGetLong(jsonData, "depreciationAndAmortization"),
+                    safeGetLong(jsonData, "incomeBeforeTax"),
+                    safeGetLong(jsonData, "incomeTaxExpense"),
+                    safeGetLong(jsonData, "interestAndDebtExpense"),
+                    safeGetLong(jsonData, "netIncomeFromContinuingOperations"),
+                    safeGetLong(jsonData, "comprehensiveIncomeNetOfTax"),
+                    safeGetLong(jsonData, "ebit"),
+                    safeGetLong(jsonData, "ebitda")
+                );
             
-            annualIncomeStatementList.add(annualIncomeStatement);
+                annualIncomeStatementList.add(annualIncomeStatement);
+            
+            } catch (JsonParseException e) {
+                System.err.println("Error parsing JSON: " + e.getMessage());
+            } catch (IllegalArgumentException e) {
+                System.err.println("Error creating IncomeStatement: " + e.getMessage());
+            } catch (Exception e) {
+                System.err.println("A general error occurred: " + e.getMessage());
+            }
+            
+            
         }
         
+        System.out.println(annualIncomeStatementList + " From Service"); // Log
         return annualIncomeStatementList;
     }
 
@@ -180,27 +215,92 @@ public class AlphaVantageService {
 
     // ***HELPER FUNCTIONS***
     private String safeGetString(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        return element != null && !element.isJsonNull() ? element.getAsString() : null;
+        try {
+            JsonElement element = json.get(key);
+            return element != null && !element.isJsonNull() ? element.getAsString() : null;
+        } catch (ClassCastException e) {
+            System.err.println("Error: Invalid type for key '" + key + "'. Expected String.");
+            return null;
+        }
     }
 
     private BigDecimal safeGetBigDecimal(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        return element != null && !element.isJsonNull() ? new BigDecimal(element.getAsString()) : null;
+        try {
+            JsonElement element = json.get(key);
+            if (element != null && !element.isJsonNull()) {
+                String value = element.getAsString();
+                try {
+                return new BigDecimal(value);
+                } catch (NumberFormatException ex) {
+                System.err.println("Error parsing BigDecimal for key '" + key + "': " + value);
+                return null;
+                }
+            }
+            return null;
+        } catch (ClassCastException e) {
+            System.err.println("Error: Invalid type for key '" + key + "'. Expected BigDecimal.");
+            return null;
+        }
     }
 
     private Long safeGetLong(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        return element != null && !element.isJsonNull() ? element.getAsLong() : null;
+        try {
+            JsonElement element = json.get(key);
+            if (element != null && !element.isJsonNull()) {
+                String value = element.getAsString();
+                if (!"None".equalsIgnoreCase(value)) {
+                    try {
+                        return Long.valueOf(value);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing Long for key '" + key + "': " + value);
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
+            }
+            return null;
+        } catch (ClassCastException e) {
+            System.err.println("Error: Invalid type for key '" + key + "'. Expected Long.");
+            return null;
+        }
     }
 
     private Integer safeGetInt(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        return element != null && !element.isJsonNull() ? element.getAsInt() : null;
+    try {
+            JsonElement element = json.get(key);
+            if (element != null && !element.isJsonNull()) {
+                String value = element.getAsString();
+                try {
+                    return Integer.valueOf(value);
+                } catch (NumberFormatException e) {
+                    System.err.println("Error parsing Integer for key '" + key + "': " + value);
+                    return null;
+                }
+            }
+            return null;
+        } catch (ClassCastException e) {
+            System.err.println("Error: Invalid type for key '" + key + "'. Expected Integer.");
+            return null;
+        }
     }
 
     private LocalDate safeGetDate(JsonObject json, String key, DateTimeFormatter formatter) {
-        JsonElement element = json.get(key);
-        return element != null && !element.isJsonNull() ? LocalDate.parse(element.getAsString(), formatter) : null;
+        try {
+            JsonElement element = json.get(key);
+            if (element != null && !element.isJsonNull()) {
+                String dateString = element.getAsString();
+                try {
+                    return LocalDate.parse(dateString, formatter);
+                } catch (DateTimeParseException e) {
+                    System.err.println("Error parsing date for key '" + key + "': " + dateString + ".  Expected format: " + formatter.format(LocalDate.now()));
+                    return null;
+                }
+            }
+            return null;
+        } catch (ClassCastException e) {
+            System.err.println("Error: Invalid type for key '" + key + "'. Expected Date String.");
+            return null;
+        }
     }
 }
