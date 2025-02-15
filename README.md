@@ -12,7 +12,7 @@ Before you can run the application, ensure you have the following installed:
 
 - **JDK** (Java Development Kit) 17 or later - [Download](https://www.oracle.com/java/technologies/javase-downloads.html)
 - **Maven** 3.6 or later - [Download](https://maven.apache.org/download.cgi)
-- **Database:** (e.g., MySQL, PostgreSQL, H2 for development) - Instructions for setup will depend on your chosen database.
+- **Database:** (e.g., MySQL, PostgreSQL, H2 for development)
 - **IDE:** IntelliJ IDEA, Eclipse, VS Code, or any other Java IDE.
 
 **Frontend (React):**
@@ -44,7 +44,7 @@ Before you can run the application, ensure you have the following installed:
 - [Not implemented] Allows users to search for stocks by symbol.
 - Creates charts of historical stock prices.
 - Displays key financial metrics.
-- [Not implemented] Provides a dashboard for portfolio display. (If implemented)
+- Provides a dashboard for portfolio display.
 - [Not implemented] Manages user authentication and authorization.
 
 ---
