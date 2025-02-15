@@ -82,11 +82,31 @@ public class IncomeStatement {
     }
 
 
-    public LocalDate getFiscalDateEnding() {return fiscalDateEnding;}
-    public Long getGrossProfit(){return grossProfit;}
-    public Long getTotalRevenue(){return totalRevenue;}
-    public Long getOperatingIncome(){return operatingIncome;}
-    public Long getNetIncome(){return netIncome;}
+    public LocalDate getFiscalDateEnding() { return fiscalDateEnding; }
+    public Long getGrossProfit() { return grossProfit; }
+    public Long getTotalRevenue() { return totalRevenue; }
+    public Long getCostOfRevenue() { return costOfRevenue; }
+    public Long getCostofGoodsAndServicesSold() { return costofGoodsAndServicesSold; }
+    public Long getOperatingIncome() { return operatingIncome; }
+    public Long getSellingGeneralAndAdministrative() { return sellingGeneralAndAdministrative; }
+    public Long getResearchAndDevelopment() { return researchAndDevelopment; }
+    public Long getOperatingExpenses() { return operatingExpenses; }
+    public Long getInvestmentIncomeNet() { return investmentIncomeNet; }
+    public Long getNetInterestIncome() { return netInterestIncome; }
+    public Long getInterestIncome() { return interestIncome; }
+    public Long getInterestExpense() { return interestExpense; }
+    public Long getNonInterestIncome() { return nonInterestIncome; }
+    public Long getOtherNonOperatingIncome() { return otherNonOperatingIncome; }
+    public Long getDepreciation() { return depreciation; }
+    public Long getDepreciationAndAmortization() { return depreciationAndAmortization; }
+    public Long getIncomeBeforeTax() { return incomeBeforeTax; }
+    public Long getIncomeTaxExpense() { return incomeTaxExpense; }
+    public Long getInterestAndDebtExpense() { return interestAndDebtExpense; }
+    public Long getNetIncomeFromContinuingOperations() { return netIncomeFromContinuingOperations; }
+    public Long getComprehensiveIncomeNetOfTax() { return comprehensiveIncomeNetOfTax; }
+    public Long getEbit() { return ebit; }
+    public Long getEbitda() { return ebitda; }
+    public Long getNetIncome() { return netIncome; }
     
     /**
      * Returns a string representation of the FinancialStatement object.

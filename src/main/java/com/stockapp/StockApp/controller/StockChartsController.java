@@ -84,7 +84,6 @@ public class StockChartsController {
 
         try {
             String jsonResponse = service.getStockData(url);
-            System.out.println(service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction()) + " From controller"); // Log
             return service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());

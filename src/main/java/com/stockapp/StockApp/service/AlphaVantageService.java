@@ -136,8 +136,7 @@ public class AlphaVantageService {
             
             
         }
-        
-        System.out.println(annualIncomeStatementList + " From Service"); // Log
+
         return annualIncomeStatementList;
     }
 
