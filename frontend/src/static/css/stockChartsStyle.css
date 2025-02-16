@@ -46,7 +46,7 @@ tbody tr:hover {
 
 /* -------- Custom table styling -------- */
 .customTable {
-    width: 100%;
+    width: 90%;
     min-height: 100px;
     height: auto;
     overflow-x: auto;

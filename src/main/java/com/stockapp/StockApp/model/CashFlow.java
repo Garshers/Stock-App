@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Represents a balance sheet for a company.  This class stores the various
- * financial figures that make up a balance sheet.  Monetary values are stored
+ * Represents a cash flow statement for a company.  This class stores the various
+ * financial figures that make up a cash flow statement.  Monetary values are stored
  * as BigDecimals, and the fiscal date is stored as a LocalDate.
  */
 public class CashFlow {
@@ -118,38 +118,6 @@ public class CashFlow {
         this.changeInCashAndCashEquivalents = parseBigDecimal(changeInCashAndCashEquivalents);
         this.changeInExchangeRate = parseBigDecimal(changeInExchangeRate);
         this.netIncome = parseBigDecimal(netIncome);
-    }
-
-    public CashFlow(BigDecimal capitalExpenditures, BigDecimal cashflowFromFinancing, BigDecimal cashflowFromInvestment, BigDecimal changeInCashAndCashEquivalents, BigDecimal changeInExchangeRate, BigDecimal changeInInventory, BigDecimal changeInOperatingAssets, BigDecimal changeInOperatingLiabilities, BigDecimal changeInReceivables, BigDecimal depreciationDepletionAndAmortization, BigDecimal dividendPayout, BigDecimal dividendPayoutCommonStock, BigDecimal dividendPayoutPreferredStock, LocalDate fiscalDateEnding, BigDecimal netIncome, BigDecimal operatingCashflow, BigDecimal paymentsForOperatingActivities, BigDecimal paymentsForRepurchaseOfCommonStock, BigDecimal paymentsForRepurchaseOfEquity, BigDecimal paymentsForRepurchaseOfPreferredStock, BigDecimal proceedsFromIssuanceOfCommonStock, BigDecimal proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet, BigDecimal proceedsFromIssuanceOfPreferredStock, BigDecimal proceedsFromOperatingActivities, BigDecimal proceedsFromRepaymentsOfShortTermDebt, BigDecimal proceedsFromRepurchaseOfEquity, BigDecimal proceedsFromSaleOfTreasuryStock, BigDecimal profitLoss, String reportedCurrency) {
-        this.capitalExpenditures = capitalExpenditures;
-        this.cashflowFromFinancing = cashflowFromFinancing;
-        this.cashflowFromInvestment = cashflowFromInvestment;
-        this.changeInCashAndCashEquivalents = changeInCashAndCashEquivalents;
-        this.changeInExchangeRate = changeInExchangeRate;
-        this.changeInInventory = changeInInventory;
-        this.changeInOperatingAssets = changeInOperatingAssets;
-        this.changeInOperatingLiabilities = changeInOperatingLiabilities;
-        this.changeInReceivables = changeInReceivables;
-        this.depreciationDepletionAndAmortization = depreciationDepletionAndAmortization;
-        this.dividendPayout = dividendPayout;
-        this.dividendPayoutCommonStock = dividendPayoutCommonStock;
-        this.dividendPayoutPreferredStock = dividendPayoutPreferredStock;
-        this.fiscalDateEnding = fiscalDateEnding;
-        this.netIncome = netIncome;
-        this.operatingCashflow = operatingCashflow;
-        this.paymentsForOperatingActivities = paymentsForOperatingActivities;
-        this.paymentsForRepurchaseOfCommonStock = paymentsForRepurchaseOfCommonStock;
-        this.paymentsForRepurchaseOfEquity = paymentsForRepurchaseOfEquity;
-        this.paymentsForRepurchaseOfPreferredStock = paymentsForRepurchaseOfPreferredStock;
-        this.proceedsFromIssuanceOfCommonStock = proceedsFromIssuanceOfCommonStock;
-        this.proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet = proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet;
-        this.proceedsFromIssuanceOfPreferredStock = proceedsFromIssuanceOfPreferredStock;
-        this.proceedsFromOperatingActivities = proceedsFromOperatingActivities;
-        this.proceedsFromRepaymentsOfShortTermDebt = proceedsFromRepaymentsOfShortTermDebt;
-        this.proceedsFromRepurchaseOfEquity = proceedsFromRepurchaseOfEquity;
-        this.proceedsFromSaleOfTreasuryStock = proceedsFromSaleOfTreasuryStock;
-        this.profitLoss = profitLoss;
-        this.reportedCurrency = reportedCurrency;
     }
 
     /**
