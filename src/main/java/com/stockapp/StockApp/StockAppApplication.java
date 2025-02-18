@@ -28,19 +28,27 @@ public class StockAppApplication {
     BigDecimal terminalValueBigDecimal = new BigDecimal("100.0");
 
     BigDecimal dcfValue1 = dcfUtil.calculateDCF(freeCashFlows, discountRateBigDecimal, terminalValueBigDecimal);
-    
+
     System.out.println("DCF Value (List): " + dcfValue1);
 
-    // Test 2: WAAC calculation
-    BigDecimal costOfEquity = new BigDecimal("0.10");
-    BigDecimal costOfDebt = new BigDecimal("0.05");
-    BigDecimal equityValue = new BigDecimal("1000000");
-    BigDecimal debtValue = new BigDecimal("500000");
-    BigDecimal taxRate = new BigDecimal("0.25");
+    // Test 2: WAAC calculation for Mastercard (2024 data)
+    BigDecimal riskFreeRate = new BigDecimal("0.0474"); // 02/14/2025
+    BigDecimal beta = new BigDecimal("1.1"); // (5Y Monthly)
+    BigDecimal interestExpense = new BigDecimal("646000000");
+    BigDecimal totalDebt = new BigDecimal("18226000000");
+    BigDecimal marketCapitalization = new BigDecimal("514427000000");
+    BigDecimal taxRate = new BigDecimal("0.156"); //  Tax Provision/Pretax Income
+    BigDecimal marketRiskPremium = new BigDecimal("0.1"); // Average S&P500 annual return
 
-    BigDecimal wacc = dcfUtil.calculateWACC(costOfEquity, costOfDebt, equityValue, debtValue, taxRate);
+    try {
+        BigDecimal wacc = dcfUtil.calculateWACCFromFinancialAndMarketData(
+                riskFreeRate, beta, interestExpense, totalDebt, marketCapitalization, taxRate, marketRiskPremium
+        );
 
-    System.out.println("WACC: " + wacc);
+        System.out.println("WACC dla Mastercard: " + wacc);
+    } catch (IllegalArgumentException e) {
+        System.err.println("Błąd: " + e.getMessage());
+    }
 
     // Test 3: Last Year FCF, Growth Rate, etc.
     BigDecimal lastYearFCF = new BigDecimal("2284000000");

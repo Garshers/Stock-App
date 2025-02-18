@@ -52,7 +52,12 @@ public class DCFValuationUtil {
      * @throws ArithmeticException If the discount rate is less than or equal to either the initial or terminal growth rate
      *                             (as this would lead to a division by zero or negative value error in the Gordon Growth Model).
      */
-    public BigDecimal calculateDCF(BigDecimal lastYearFCF, BigDecimal initialGrowthRate, BigDecimal terminalGrowthRate, int highGrowthYears, int forecastYears, BigDecimal discountRate, long numberOfShares, BigDecimal netDebt) {
+    public BigDecimal calculateDCF(
+            BigDecimal lastYearFCF, BigDecimal initialGrowthRate, 
+            BigDecimal terminalGrowthRate, int highGrowthYears, 
+            int forecastYears, BigDecimal discountRate, 
+            long numberOfShares, BigDecimal netDebt) 
+        {
 
         if (discountRate.compareTo(initialGrowthRate) <= 0 || discountRate.compareTo(terminalGrowthRate) <= 0) {
             throw new ArithmeticException("Discount rate must be greater than both initial and terminal growth rates.");
@@ -102,7 +107,52 @@ public class DCFValuationUtil {
         return pricePerShare;
     }
 
-    public BigDecimal calculateWACC(BigDecimal costOfEquity, BigDecimal costOfDebt, BigDecimal equityValue, BigDecimal debtValue, BigDecimal taxRate) {
+    /**
+     * Calculates the Weighted Average Cost of Capital (WACC) using financial statement and market data.
+     *
+     * @param riskFreeRate          Risk-free rate of return (e.g., 10-year Treasury yield). From market data.
+     * @param beta                  Beta of the company. From financial data provider.
+     * @param interestExpense       Interest expense. From income statement.
+     * @param totalDebt             Total debt. From balance sheet.
+     * @param marketCapitalization  Market capitalization. From current market data.
+     * @param taxRate               Tax rate. From income statement.
+     * @param marketRiskPremium     Market risk premium. From market data.
+     * @return The calculated WACC.
+     * @throws IllegalArgumentException If any of the input parameters are invalid.
+     */
+    public BigDecimal calculateWACCFromFinancialAndMarketData(
+            BigDecimal riskFreeRate, BigDecimal beta, 
+            BigDecimal interestExpense, BigDecimal totalDebt, 
+            BigDecimal marketCapitalization, BigDecimal taxRate,
+            BigDecimal marketRiskPremium) 
+        {
+
+        BigDecimal costOfEquity = riskFreeRate.add(beta.multiply(marketRiskPremium));
+
+        if (totalDebt.compareTo(BigDecimal.ZERO) == 0) {
+            throw new IllegalArgumentException("Total debt cannot be zero.");
+        }
+
+        BigDecimal costOfDebt = interestExpense.divide(totalDebt, 10, RoundingMode.HALF_UP);
+        BigDecimal equityValue = marketCapitalization;
+        BigDecimal debtValue = totalDebt;
+
+        return calculateWACC(costOfEquity, costOfDebt, equityValue, debtValue, taxRate);
+
+    }
+
+    /**
+     * Calculates the Weighted Average Cost of Capital (WACC).
+     *
+     * @param costOfEquity Cost of equity.
+     * @param costOfDebt   Cost of debt.
+     * @param equityValue  Equity value.
+     * @param debtValue    Debt value.
+     * @param taxRate      Tax rate.
+     * @return The calculated WACC.
+     * @throws IllegalArgumentException If equity or debt values are not positive.
+     */
+    private BigDecimal calculateWACC(BigDecimal costOfEquity, BigDecimal costOfDebt, BigDecimal equityValue, BigDecimal debtValue, BigDecimal taxRate) {
         if (equityValue.compareTo(BigDecimal.ZERO) <= 0 || debtValue.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Equity and Debt values must be positive.");
         }
@@ -116,6 +166,6 @@ public class DCFValuationUtil {
 
         BigDecimal wacc = (costOfEquity.multiply(equityWeight)).add(afterTaxCostOfDebt.multiply(debtWeight));
 
-        return wacc;
+        return wacc.setScale(4, RoundingMode.HALF_UP);
     }
 }
