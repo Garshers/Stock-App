@@ -37,12 +37,13 @@ public class StockAppApplication {
     BigDecimal interestExpense = new BigDecimal("646000000");
     BigDecimal totalDebt = new BigDecimal("18226000000");
     BigDecimal marketCapitalization = new BigDecimal("514427000000");
-    BigDecimal taxRate = new BigDecimal("0.156"); //  Tax Provision/Pretax Income
+    BigDecimal taxProvision = new BigDecimal("2380000000");
+    BigDecimal pretaxIncome = new BigDecimal("15254000000");
     BigDecimal marketRiskPremium = new BigDecimal("0.1"); // Average S&P500 annual return
 
     try {
         BigDecimal wacc = dcfUtil.calculateWACCFromFinancialAndMarketData(
-                riskFreeRate, beta, interestExpense, totalDebt, marketCapitalization, taxRate, marketRiskPremium
+                riskFreeRate, beta, interestExpense, totalDebt, marketCapitalization, taxProvision, pretaxIncome, marketRiskPremium
         );
 
         System.out.println("WACC dla Mastercard: " + wacc);

@@ -70,7 +70,7 @@ public class DCFValuationUtil {
         // Project free cash flows for the forecast period (Not Discounted Cash Flow for forcast years)
         for (int i = 1; i <= forecastYears; i++) {
             BigDecimal growthRate = (i <= highGrowthYears) ? initialGrowthRate : terminalGrowthRate;
-            currentFCF = currentFCF.multiply(BigDecimal.ONE.add(growthRate));
+            currentFCF = currentFCF.multiply(BigDecimal.ONE.add(growthRate)).setScale(2, RoundingMode.HALF_UP);
             freeCashFlows.add(currentFCF);
             sumOfProjectedCashFlows = sumOfProjectedCashFlows.add(currentFCF);
         }
@@ -83,7 +83,7 @@ public class DCFValuationUtil {
         // Calculate the present value of the projected free cash flows (Discounted Cash Flow for forcast years)
         for (int i = 0; i < freeCashFlows.size(); i++) {
             BigDecimal divisor = BigDecimal.ONE.add(discountRate).pow(i + 1);
-            presentValue = presentValue.add(freeCashFlows.get(i).divide(divisor, 10, RoundingMode.HALF_UP));
+            presentValue = presentValue.add(freeCashFlows.get(i).divide(divisor, 10, RoundingMode.HALF_UP)).setScale(2, RoundingMode.HALF_UP);
         }
 
         System.out.println("Present Value of Projected FCFs: " + presentValue); // Log
@@ -91,7 +91,7 @@ public class DCFValuationUtil {
         // Calculate the terminal value using the Gordon Growth Model (Cash Flow beyond forcast years)
         BigDecimal terminalValue = freeCashFlows.get(freeCashFlows.size() - 1).multiply(BigDecimal.ONE.add(terminalGrowthRate)).divide(discountRate.subtract(terminalGrowthRate), 10, RoundingMode.HALF_UP);
         BigDecimal terminalValueDivisor = BigDecimal.ONE.add(discountRate).pow(forecastYears);
-        terminalValue = terminalValue.divide(terminalValueDivisor, 10, RoundingMode.HALF_UP);
+        terminalValue = terminalValue.divide(terminalValueDivisor, 10, RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
 
         presentValue = presentValue.add(terminalValue);
 
@@ -104,51 +104,68 @@ public class DCFValuationUtil {
         // Calculate price per share
         BigDecimal pricePerShare = equityValue.divide(new BigDecimal(numberOfShares), 10, RoundingMode.HALF_UP);
 
-        return pricePerShare;
+        return pricePerShare.setScale(2, RoundingMode.HALF_UP);
     }
 
     /**
      * Calculates the Weighted Average Cost of Capital (WACC) using financial statement and market data.
      *
-     * @param riskFreeRate          Risk-free rate of return (e.g., 10-year Treasury yield). From market data.
-     * @param beta                  Beta of the company. From financial data provider.
-     * @param interestExpense       Interest expense. From income statement.
-     * @param totalDebt             Total debt. From balance sheet.
-     * @param marketCapitalization  Market capitalization. From current market data.
-     * @param taxRate               Tax rate. From income statement.
-     * @param marketRiskPremium     Market risk premium. From market data.
+     * @param riskFreeRate          Risk-free rate of return (Rf) (e.g., 10-year Treasury yield). From market data.
+     * @param beta                  Beta of the company (β). From financial data provider.
+     * @param interestExpense       Interest expense (I). From the income statement.
+     * @param totalDebt             Total debt (D). From the balance sheet.
+     * @param marketCapitalization  Market capitalization (E). From current market data.
+     * @param taxProvision          Tax Provision (or Income Tax Expense) (ITE). From the income statement.
+     * @param pretaxIncome          Pretax Income (or Income Before Taxes) (IBT). From the income statement.
+     * @param marketRiskPremium     Market risk premium (Rm - Rf). From market data.
      * @return The calculated WACC.
      * @throws IllegalArgumentException If any of the input parameters are invalid.
      */
     public BigDecimal calculateWACCFromFinancialAndMarketData(
             BigDecimal riskFreeRate, BigDecimal beta, 
             BigDecimal interestExpense, BigDecimal totalDebt, 
-            BigDecimal marketCapitalization, BigDecimal taxRate,
-            BigDecimal marketRiskPremium) 
+            BigDecimal marketCapitalization, BigDecimal taxProvision,
+            BigDecimal pretaxIncome, BigDecimal marketRiskPremium) 
         {
-
+        // Calculate Cost of Equity:
+        // Re = Rf + (β * (Rm - Rf))
         BigDecimal costOfEquity = riskFreeRate.add(beta.multiply(marketRiskPremium));
 
+        // Calculate Cost of Debt:
+        // Rd = I / D
         if (totalDebt.compareTo(BigDecimal.ZERO) == 0) {
             throw new IllegalArgumentException("Total debt cannot be zero.");
         }
-
         BigDecimal costOfDebt = interestExpense.divide(totalDebt, 10, RoundingMode.HALF_UP);
+
+        // Calculate Tax Rate:
+        // Tc = ITE / IBT
+        BigDecimal taxRate;
+        if (marketCapitalization.compareTo(BigDecimal.ZERO) == 0) {
+            taxRate = BigDecimal.ZERO; // Handle the case where market capitalization is zero
+        } else {
+            taxRate = taxProvision.divide(marketCapitalization, 10, RoundingMode.HALF_UP); // Correct calculation
+        }
+
+        // Equity and Debt Values:
         BigDecimal equityValue = marketCapitalization;
         BigDecimal debtValue = totalDebt;
 
         return calculateWACC(costOfEquity, costOfDebt, equityValue, debtValue, taxRate);
-
     }
 
     /**
-     * Calculates the Weighted Average Cost of Capital (WACC).
+     * Calculates the Weighted Average Cost of Capital (WACC) using financial statement and market data.
+     * This method calculates the WACC based on the following formula:
+     * 
+     * WACC = (E / (V)) * Re + (D / V)* Rd * (1 – Tc)
+     * Where: V = E + D
      *
-     * @param costOfEquity Cost of equity.
-     * @param costOfDebt   Cost of debt.
-     * @param equityValue  Equity value.
-     * @param debtValue    Debt value.
-     * @param taxRate      Tax rate.
+     * @param costOfEquity Cost of equity. [Re]
+     * @param costOfDebt   Cost of debt. [Rd]
+     * @param equityValue  Equity value. [E]
+     * @param debtValue    Debt value. [D]
+     * @param taxRate      Tax rate. [Tc]
      * @return The calculated WACC.
      * @throws IllegalArgumentException If equity or debt values are not positive.
      */
@@ -157,14 +174,15 @@ public class DCFValuationUtil {
             throw new IllegalArgumentException("Equity and Debt values must be positive.");
         }
 
-        BigDecimal totalValue = equityValue.add(debtValue);
+        BigDecimal totalValue = equityValue.add(debtValue); // [V = E + D]
 
-        BigDecimal equityWeight = equityValue.divide(totalValue, 10, RoundingMode.HALF_UP);
-        BigDecimal debtWeight = debtValue.divide(totalValue, 10, RoundingMode.HALF_UP);
+        BigDecimal equityWeight = equityValue.divide(totalValue, 10, RoundingMode.HALF_UP); // [E / V]
+        BigDecimal debtWeight = debtValue.divide(totalValue, 10, RoundingMode.HALF_UP); // [D / V]
 
-        BigDecimal afterTaxCostOfDebt = costOfDebt.multiply(BigDecimal.ONE.subtract(taxRate));
+        BigDecimal afterTaxCostOfDebt = costOfDebt.multiply(BigDecimal.ONE.subtract(taxRate)); // [Rd * (1 - Tc)]
 
-        BigDecimal wacc = (costOfEquity.multiply(equityWeight)).add(afterTaxCostOfDebt.multiply(debtWeight));
+        BigDecimal wacc = (equityWeight.multiply(costOfEquity)).add(debtWeight.multiply(afterTaxCostOfDebt));
+                            // [(E / V) * Re]                  +    [(D / V) * (Rd * (1 - Tc))]
 
         return wacc.setScale(4, RoundingMode.HALF_UP);
     }
