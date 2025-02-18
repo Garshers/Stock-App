@@ -101,4 +101,21 @@ public class DCFValuationUtil {
 
         return pricePerShare;
     }
+
+    public BigDecimal calculateWACC(BigDecimal costOfEquity, BigDecimal costOfDebt, BigDecimal equityValue, BigDecimal debtValue, BigDecimal taxRate) {
+        if (equityValue.compareTo(BigDecimal.ZERO) <= 0 || debtValue.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Equity and Debt values must be positive.");
+        }
+
+        BigDecimal totalValue = equityValue.add(debtValue);
+
+        BigDecimal equityWeight = equityValue.divide(totalValue, 10, RoundingMode.HALF_UP);
+        BigDecimal debtWeight = debtValue.divide(totalValue, 10, RoundingMode.HALF_UP);
+
+        BigDecimal afterTaxCostOfDebt = costOfDebt.multiply(BigDecimal.ONE.subtract(taxRate));
+
+        BigDecimal wacc = (costOfEquity.multiply(equityWeight)).add(afterTaxCostOfDebt.multiply(debtWeight));
+
+        return wacc;
+    }
 }

@@ -26,10 +26,23 @@ public class StockAppApplication {
     freeCashFlows.add(new BigDecimal("14.0"));
     BigDecimal discountRateBigDecimal = new BigDecimal("0.10");
     BigDecimal terminalValueBigDecimal = new BigDecimal("100.0");
+
     BigDecimal dcfValue1 = dcfUtil.calculateDCF(freeCashFlows, discountRateBigDecimal, terminalValueBigDecimal);
+    
     System.out.println("DCF Value (List): " + dcfValue1);
 
-    // Test 2: Last Year FCF, Growth Rate, etc.
+    // Test 2: WAAC calculation
+    BigDecimal costOfEquity = new BigDecimal("0.10");
+    BigDecimal costOfDebt = new BigDecimal("0.05");
+    BigDecimal equityValue = new BigDecimal("1000000");
+    BigDecimal debtValue = new BigDecimal("500000");
+    BigDecimal taxRate = new BigDecimal("0.25");
+
+    BigDecimal wacc = dcfUtil.calculateWACC(costOfEquity, costOfDebt, equityValue, debtValue, taxRate);
+
+    System.out.println("WACC: " + wacc);
+
+    // Test 3: Last Year FCF, Growth Rate, etc.
     BigDecimal lastYearFCF = new BigDecimal("2284000000");
     BigDecimal initialGrowthRate = new BigDecimal("0.25"); // Initial high growth
     BigDecimal terminalGrowthRate = new BigDecimal("0.15"); // Sustainable long-term growth
