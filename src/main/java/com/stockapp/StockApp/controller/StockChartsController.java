@@ -1,10 +1,17 @@
 package com.stockapp.StockApp.controller;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stockapp.StockApp.model.IncomeStatement;
@@ -12,9 +19,11 @@ import com.stockapp.StockApp.model.Overview;
 import com.stockapp.StockApp.model.Stock;
 import com.stockapp.StockApp.model.URLCreator;
 import com.stockapp.StockApp.service.AlphaVantageService;
+import com.stockapp.StockApp.util.DCFValuationUtil;
+
 
 /**
- * Controller for the Stock Chart related API endpoints.
+ * Rest Controller for the Stock Chart related API endpoints.
  */
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -88,6 +97,90 @@ public class StockChartsController {
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
             throw new RuntimeException("Error fetching income statement data.", e);
+        }
+    }
+
+    @PostMapping("/api/number")
+    public ResponseEntity<Map<String, Object>> handleNumber(@RequestBody NumberData numberData) {
+        try {
+            int number = numberData.getNumber();
+            System.out.println("Otrzymano liczbę: " + number);
+
+            BigDecimal DCF= new BigDecimal(BigInteger.ZERO);
+            DCF = testDCFwithWAAC();
+
+            Map<String, Object> response = new HashMap<>();
+
+            response.put("message", "Obliczony DCF dla Mastercard: " + DCF);
+            response.put("number", DCF);
+
+            return ResponseEntity.ok(response);
+
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(createErrorResponse("Nieprawidłowy format liczby."));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(createErrorResponse("Błąd serwera: " + e.getMessage()));
+        }
+    }
+
+    private static class NumberData {
+        private int number;
+
+        public int getNumber() {
+            return number;
+        }
+
+        public void setNumber(int number) {
+            this.number = number;
+        }
+    }
+
+    private Map<String, Object> createErrorResponse(String message) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", message);
+        return errorResponse;
+    }
+
+    public BigDecimal testDCFwithWAAC(){
+        // Testing DCFValuationUtil
+        DCFValuationUtil dcfUtil = new DCFValuationUtil();
+
+        // Test 1: WAAC calculation for Mastercard (for 2024 data)
+        BigDecimal riskFreeRate = new BigDecimal("0.0474"); // 02/14/2025
+        BigDecimal beta = new BigDecimal("1.1"); // (5Y Monthly)
+        BigDecimal interestExpense = new BigDecimal("646000000");
+        BigDecimal totalDebt = new BigDecimal("18226000000");
+        BigDecimal marketCapitalization = new BigDecimal("514427000000");
+        BigDecimal taxProvision = new BigDecimal("2380000000");
+        BigDecimal pretaxIncome = new BigDecimal("15254000000");
+        BigDecimal marketRiskPremium = new BigDecimal("0.1"); // Average S&P500 annual return
+
+        try {
+            BigDecimal wacc = dcfUtil.calculateWACCFromFinancialAndMarketData(
+                    riskFreeRate, beta, interestExpense, totalDebt, marketCapitalization, taxProvision, pretaxIncome, marketRiskPremium
+            );
+
+            System.out.println("WACC dla Mastercard: " + wacc);
+
+            // Test 2: Last Year FCF calculation for Mastercard using WAAC as Discount Rate (for 2024 data)
+            BigDecimal lastYearFCF = new BigDecimal("13586000000");
+            BigDecimal initialGrowthRate = new BigDecimal("0.16"); // Initial high growth
+            BigDecimal linkingGrowthRate = new BigDecimal("0.7"); // Sustainable long-term growth
+            BigDecimal terminalGrowthRate = new BigDecimal("0.025"); // Sustainable long-term growth
+            int highGrowthYears = 3;
+            int forecastYears = 10;
+            BigDecimal discountRate = wacc;
+            long numberOfShares = 911512862;
+            BigDecimal netDebt = new BigDecimal("9784000000");
+
+            BigDecimal pricePerShare = dcfUtil.calculateDCF(lastYearFCF, initialGrowthRate, linkingGrowthRate, terminalGrowthRate, highGrowthYears, forecastYears, discountRate, numberOfShares, netDebt);
+
+            System.out.println("Price per share (before margin of safety): " + pricePerShare);
+            System.out.println("Price per share (including margin of safety): " + pricePerShare.multiply(new BigDecimal("0.9")));
+            return pricePerShare;
+        } catch (IllegalArgumentException e) {
+            System.err.println("Błąd: " + e.getMessage());
+            throw new RuntimeException("Błąd w testDCFwithWAAC: " + e.getMessage(), e);
         }
     }
 }
