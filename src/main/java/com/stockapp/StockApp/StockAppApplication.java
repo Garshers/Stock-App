@@ -1,8 +1,6 @@
 package com.stockapp.StockApp;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,19 +17,7 @@ public class StockAppApplication {
     // Testing DCFValuationUtil
     DCFValuationUtil dcfUtil = new DCFValuationUtil();
 
-    // Test 1: FCF List
-    List<BigDecimal> freeCashFlows = new ArrayList<>();
-    freeCashFlows.add(new BigDecimal("10.0"));
-    freeCashFlows.add(new BigDecimal("12.0"));
-    freeCashFlows.add(new BigDecimal("14.0"));
-    BigDecimal discountRateBigDecimal = new BigDecimal("0.10");
-    BigDecimal terminalValueBigDecimal = new BigDecimal("100.0");
-
-    BigDecimal dcfValue1 = dcfUtil.calculateDCF(freeCashFlows, discountRateBigDecimal, terminalValueBigDecimal);
-
-    System.out.println("DCF Value (List): " + dcfValue1);
-
-    // Test 2: WAAC calculation for Mastercard (2024 data)
+    // Test 1: WAAC calculation for Mastercard (for 2024 data)
     BigDecimal riskFreeRate = new BigDecimal("0.0474"); // 02/14/2025
     BigDecimal beta = new BigDecimal("1.1"); // (5Y Monthly)
     BigDecimal interestExpense = new BigDecimal("646000000");
@@ -47,23 +33,24 @@ public class StockAppApplication {
         );
 
         System.out.println("WACC dla Mastercard: " + wacc);
+
+        // Test 2: Last Year FCF calculation for Mastercard using WAAC as Discount Rate (for 2024 data)
+        BigDecimal lastYearFCF = new BigDecimal("13586000000");
+        BigDecimal initialGrowthRate = new BigDecimal("0.16"); // Initial high growth
+        BigDecimal linkingGrowthRate = new BigDecimal("0.7"); // Sustainable long-term growth
+        BigDecimal terminalGrowthRate = new BigDecimal("0.025"); // Sustainable long-term growth
+        int highGrowthYears = 3;
+        int forecastYears = 10;
+        BigDecimal discountRate = wacc;
+        long numberOfShares = 911512862;
+        BigDecimal netDebt = new BigDecimal("9784000000");
+
+        BigDecimal pricePerShare = dcfUtil.calculateDCF(lastYearFCF, initialGrowthRate, linkingGrowthRate, terminalGrowthRate, highGrowthYears, forecastYears, discountRate, numberOfShares, netDebt);
+
+        System.out.println("Price per share (before margin of safety): " + pricePerShare);
+        System.out.println("Price per share (including margin of safety): " + pricePerShare.multiply(new BigDecimal("0.9")));
     } catch (IllegalArgumentException e) {
         System.err.println("Błąd: " + e.getMessage());
     }
-
-    // Test 3: Last Year FCF, Growth Rate, etc.
-    BigDecimal lastYearFCF = new BigDecimal("2284000000");
-    BigDecimal initialGrowthRate = new BigDecimal("0.25"); // Initial high growth
-    BigDecimal terminalGrowthRate = new BigDecimal("0.15"); // Sustainable long-term growth
-    int highGrowthYears = 3;
-    int forecastYears = 10;
-    BigDecimal discountRate = new BigDecimal("0.26");
-    long numberOfShares = 203844410;
-    BigDecimal netDebt = new BigDecimal("2001000000");
-
-    BigDecimal pricePerShare = dcfUtil.calculateDCF(lastYearFCF, initialGrowthRate, terminalGrowthRate, highGrowthYears, forecastYears, discountRate, numberOfShares, netDebt);
-
-    System.out.println("Price per share: " + pricePerShare);
-
 	}
 }
