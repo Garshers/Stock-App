@@ -1,7 +1,6 @@
 package com.stockapp.StockApp.controller;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,22 +103,21 @@ public class StockChartsController {
     public ResponseEntity<Map<String, Object>> handleNumber(@RequestBody NumberData numberData) {
         try {
             int number = numberData.getNumber();
-            System.out.println("Otrzymano liczbę: " + number);
+            System.out.println("Recieved number: " + number);
 
-            BigDecimal DCF= new BigDecimal(BigInteger.ZERO);
-            DCF = testDCFwithWAAC();
+            BigDecimal DCF = testDCFwithWAAC();
 
             Map<String, Object> response = new HashMap<>();
 
-            response.put("message", "Obliczony DCF dla Mastercard: " + DCF);
-            response.put("number", DCF);
+            response.put("message", "Counted DCF for Mastercard: " + DCF);
+            response.put("value", DCF);
 
             return ResponseEntity.ok(response);
 
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(createErrorResponse("Nieprawidłowy format liczby."));
+            return ResponseEntity.badRequest().body(createErrorResponse("Invalid number type."));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(createErrorResponse("Błąd serwera: " + e.getMessage()));
+            return ResponseEntity.internalServerError().body(createErrorResponse("Server error: " + e.getMessage()));
         }
     }
 
@@ -128,10 +126,6 @@ public class StockChartsController {
 
         public int getNumber() {
             return number;
-        }
-
-        public void setNumber(int number) {
-            this.number = number;
         }
     }
 
@@ -165,7 +159,7 @@ public class StockChartsController {
             // Test 2: Last Year FCF calculation for Mastercard using WAAC as Discount Rate (for 2024 data)
             BigDecimal lastYearFCF = new BigDecimal("13586000000");
             BigDecimal initialGrowthRate = new BigDecimal("0.16"); // Initial high growth
-            BigDecimal linkingGrowthRate = new BigDecimal("0.7"); // Sustainable long-term growth
+            BigDecimal linkingGrowthRate = new BigDecimal("0.7"); // lining growth
             BigDecimal terminalGrowthRate = new BigDecimal("0.025"); // Sustainable long-term growth
             int highGrowthYears = 3;
             int forecastYears = 10;

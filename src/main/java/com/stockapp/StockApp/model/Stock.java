@@ -21,33 +21,11 @@ public class Stock {
         this.date = date;
     }
 
-    /**
-     * Returns the stock symbol.
-     *
-     * @return The stock symbol.
-     */
-    public String getSymbol() {
-        return symbol;
-    }
 
-    /**
-     * Returns the current price of the stock.
-     *
-     * @return The stock price.
-     */
-    public double getPrice() {
-        return price;
-    }
-
-    /**
-     * Returns the date of the price information.
-     *
-     * @return The date of the price.
-     */
-    public String getDate() {
-        return date;
-    }
-
+    public String getSymbol() { return symbol; }
+    public double getPrice() { return price; }
+    public String getDate() { return date; }
+    
     /**
      * Returns a string representation of the Stock object.
      *

@@ -23,7 +23,7 @@ public class HomePageController {
      * Retrieves a list of available companies.
      *
      * This endpoint returns a list of Company objects, each containing the 
-     * symbol and name of a company.  This data is typically used to populate
+     * symbol and name of a company.  This data is used to populate
      * the company selection list on the frontend.
      *
      * @return A list of Company objects.
@@ -56,23 +56,9 @@ public class HomePageController {
             this.name = name;
         }
 
-        /**
-         * Returns the company's stock symbol.
-         *
-         * @return The company's stock symbol.
-         */
-        public String getSymbol(){
-            return symbol;
-        }
 
-        /**
-         * Returns the full name of the company.
-         *
-         * @return The full name of the company.
-         */
-        public String getName(){
-            return name;
-        }
+        public String getSymbol(){return symbol;}
+        public String getName(){return name;}
     }
 
     @ControllerAdvice
