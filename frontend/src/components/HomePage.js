@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../static/css/homePageStyle.css';
 
 function HomePage() {
     const [symbol, setSymbol] = useState('');
@@ -19,9 +20,11 @@ function HomePage() {
 
     return (
         <div className="contentBox">
-            <label htmlFor="symbol">Enter company symbol:</label>
-            <input type="text" id="symbol" value={symbol} onChange={handleChange} />
-            <button onClick={handleSubmit}>Find</button>
+            <div className='browserBox'>
+                <label htmlFor="symbol">Enter company symbol:</label>
+                <input type="text" id="symbol" value={symbol} onChange={handleChange} className='inputBox'/>
+                <button onClick={handleSubmit} className='button'>Find</button>
+            </div>
         </div>
     );
 }

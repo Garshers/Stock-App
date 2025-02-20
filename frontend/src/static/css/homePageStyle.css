@@ -1,0 +1,20 @@
+.browserBox{
+    width: 100%;
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+    gap: 2px;
+}
+
+.inputBox{
+    width: 200px;
+    height: 30px;
+}
+
+.button{
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+}

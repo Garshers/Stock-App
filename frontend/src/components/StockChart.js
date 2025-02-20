@@ -93,6 +93,9 @@ function StockChart() {
             const frdataName = selectedData;
             const ctx = document.getElementById('incomeStatementChart').getContext('2d');
 
+            frlabels.reverse();
+            frdata.reverse();
+
             const newIncomeStatementChart = createChart(ctx, 'bar', frlabels, frdata, frdataName);
 
             setIncomeStatementChart(newIncomeStatementChart);
@@ -104,7 +107,7 @@ function StockChart() {
         setSelectedData(event.target.value);
     };
 
-    
+    {/* Supports changes of data in input cell */}
     const handleChange = (event) => {
         const inputValue = event.target.value;
         const parsedNumber = parseFloat(inputValue);
@@ -116,6 +119,7 @@ function StockChart() {
         }
     };
 
+    {/* handles comunication for number with backend */}
     const handleSubmit = async () => {
         try {
             const response = await fetch('http://localhost:8080/api/number', {
@@ -148,8 +152,9 @@ function StockChart() {
                     {/* Stock price chart */}
                     {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
+                    {/* Input value  */}
                     <div>
-                        <label htmlFor="number">Wprowadź liczbę:</label>
+                        <label htmlFor="number">Enter value:</label>
                         <input type="text" value={number} onChange={handleChange} />
                         <button onClick={handleSubmit}>Wyślij</button>
                     </div>
