@@ -128,7 +128,7 @@ a:hover {
 /* -------- Main Boxes -------- */
 .contentBox{
     width: 100%;
-    min-height: 100vh;
+    min-height: 78vh;
     height: fit-content;
     display: flex;
     flex-direction: row;

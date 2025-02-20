@@ -104,30 +104,38 @@ function StockChart() {
         setSelectedData(event.target.value);
     };
 
-    const handleChange = (event) => {
-        setNumber(parseInt(event.target.value) || 0);
-    };
     
-    const handleSubmit = async () => {
-    try {
-        const response = await fetch('http://localhost:8080/api/number', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ number }),
-        });
+    const handleChange = (event) => {
+        const inputValue = event.target.value;
+        const parsedNumber = parseFloat(inputValue);
 
-        if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(errorData || `HTTP error! status: ${response.status}`);
+        if (isNaN(parsedNumber)) {
+            setNumber(0);
+        } else {
+            setNumber(parsedNumber);
         }
+    };
 
-        const data = await response.json();
-        console.log('Success:', data);
-    } catch (error) {
-        console.error('Error:', error);
-    }
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/api/number', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ number }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(errorData || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Success:', data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     return (
@@ -142,12 +150,7 @@ function StockChart() {
 
                     <div>
                         <label htmlFor="number">Wprowadź liczbę:</label>
-                        <input
-                            type="number"
-                            id="number"
-                            value={number}
-                            onChange={handleChange}
-                        />
+                        <input type="text" value={number} onChange={handleChange} />
                         <button onClick={handleSubmit}>Wyślij</button>
                     </div>
 

@@ -121,7 +121,7 @@ public class StockChartsController {
         }
     }
 
-    private static class NumberData {
+    public static class NumberData {
         private int number;
 
         public int getNumber() {
