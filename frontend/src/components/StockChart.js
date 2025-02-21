@@ -13,6 +13,7 @@ function StockChart() {
 
     const [stocks, setStocks] = useState([]);
     const [incomeStatement, setIncomeStatement] = useState(null);
+    const [balanceSheet, setBalanceSheet] = useState(null);
     const [overviewData, setOverviewData] = useState(null);
 
     const [loadingStocks, setLoadingStocks] = useState(true);
@@ -159,9 +160,15 @@ function StockChart() {
                         <button onClick={handleSubmit}>Wyślij</button>
                     </div>
 
-                    {/* Button for getting income statement data */}
+                    {/* Button for getting annual report data */}
                     <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
                         {loadingIncomeStatement ? "Loading report..." : "Get Income Statement"}
+                    </button>
+                    <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
+                        {loadingIncomeStatement ? "Loading report..." : "Get Balance Sheet"}
+                    </button>
+                    <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
+                        {loadingIncomeStatement ? "Loading report..." : "Get Cash Flow Statement"}
                     </button>
 
                     {/* Box containing income statement (IS) data */}

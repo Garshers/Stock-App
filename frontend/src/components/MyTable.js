@@ -2,9 +2,10 @@ import React from 'react';
 import '../static/css/stockChartsStyle.css';
 
 const MyTable = ({ incomeStatement }) => {
-  //console.log(incomeStatement); //Log
+//console.log(incomeStatement); //Log
   
-  const headers = [
+// Headers for Income Statement Table
+const headersIncomeStatement = [
     { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
     { displayName: 'Gross Profit', dataName: 'grossProfit' },
     { displayName: 'Total Revenue', dataName: 'totalRevenue' },
@@ -30,12 +31,78 @@ const MyTable = ({ incomeStatement }) => {
     { displayName: 'EBIT', dataName: 'ebit' },
     { displayName: 'EBITDA', dataName: 'ebitda' },
     { displayName: 'Net Income', dataName: 'netIncome' },
-  ];
+];
 
-  return (
+// Headers for Balance Sheet Table
+const headersBalanceSheet = [
+    { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
+    { displayName: 'Reported Currency', dataName: 'reportedCurrency' },
+    { displayName: 'Operating Cashflow', dataName: 'operatingCashflow' },
+    { displayName: 'Payments for Operating Activities', dataName: 'paymentsForOperatingActivities' },
+    { displayName: 'Proceeds from Operating Activities', dataName: 'proceedsFromOperatingActivities' },
+    { displayName: 'Change in Operating Liabilities', dataName: 'changeInOperatingLiabilities' },
+    { displayName: 'Change in Operating Assets', dataName: 'changeInOperatingAssets' },
+    { displayName: 'Depreciation, Depletion and Amortization', dataName: 'depreciationDepletionAndAmortization' },
+    { displayName: 'Capital Expenditures', dataName: 'capitalExpenditures' },
+    { displayName: 'Change in Receivables', dataName: 'changeInReceivables' },
+    { displayName: 'Change in Inventory', dataName: 'changeInInventory' },
+    { displayName: 'Profit/Loss', dataName: 'profitLoss' },
+    { displayName: 'Cashflow from Investment', dataName: 'cashflowFromInvestment' },
+    { displayName: 'Cashflow from Financing', dataName: 'cashflowFromFinancing' },
+    { displayName: 'Proceeds from Repayments of Short Term Debt', dataName: 'proceedsFromRepaymentsOfShortTermDebt' },
+    { displayName: 'Payments for Repurchase of Common Stock', dataName: 'paymentsForRepurchaseOfCommonStock' },
+    { displayName: 'Payments for Repurchase of Equity', dataName: 'paymentsForRepurchaseOfEquity' },
+    { displayName: 'Payments for Repurchase of Preferred Stock', dataName: 'paymentsForRepurchaseOfPreferredStock' },
+    { displayName: 'Dividend Payout', dataName: 'dividendPayout' },
+    { displayName: 'Dividend Payout (Common Stock)', dataName: 'dividendPayoutCommonStock' },
+    { displayName: 'Dividend Payout (Preferred Stock)', dataName: 'dividendPayoutPreferredStock' },
+    { displayName: 'Proceeds from Issuance of Common Stock', dataName: 'proceedsFromIssuanceOfCommonStock' },
+    { displayName: 'Proceeds from Issuance of Long Term Debt and Capital Securities (Net)', dataName: 'proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet' },
+    { displayName: 'Proceeds from Issuance of Preferred Stock', dataName: 'proceedsFromIssuanceOfPreferredStock' },
+    { displayName: 'Proceeds from Repurchase of Equity', dataName: 'proceedsFromRepurchaseOfEquity' },
+    { displayName: 'Proceeds from Sale of Treasury Stock', dataName: 'proceedsFromSaleOfTreasuryStock' },
+    { displayName: 'Change in Cash and Cash Equivalents', dataName: 'changeInCashAndCashEquivalents' },
+    { displayName: 'Change in Exchange Rate', dataName: 'changeInExchangeRate' },
+    { displayName: 'Net Income', dataName: 'netIncome' },
+];
+
+// Headers for Cash Flow Table
+const headersCashFlow = [
+    { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
+    { displayName: 'Reported Currency', dataName: 'reportedCurrency' },
+    { displayName: 'Operating Cashflow', dataName: 'operatingCashflow' },
+    { displayName: 'Payments for Operating Activities', dataName: 'paymentsForOperatingActivities' },
+    { displayName: 'Proceeds from Operating Activities', dataName: 'proceedsFromOperatingActivities' },
+    { displayName: 'Change in Operating Liabilities', dataName: 'changeInOperatingLiabilities' },
+    { displayName: 'Change in Operating Assets', dataName: 'changeInOperatingAssets' },
+    { displayName: 'Depreciation, Depletion and Amortization', dataName: 'depreciationDepletionAndAmortization' },
+    { displayName: 'Capital Expenditures', dataName: 'capitalExpenditures' },
+    { displayName: 'Change in Receivables', dataName: 'changeInReceivables' },
+    { displayName: 'Change in Inventory', dataName: 'changeInInventory' },
+    { displayName: 'Profit/Loss', dataName: 'profitLoss' },
+    { displayName: 'Cashflow from Investment', dataName: 'cashflowFromInvestment' },
+    { displayName: 'Cashflow from Financing', dataName: 'cashflowFromFinancing' },
+    { displayName: 'Proceeds from Repayments of Short Term Debt', dataName: 'proceedsFromRepaymentsOfShortTermDebt' },
+    { displayName: 'Payments for Repurchase of Common Stock', dataName: 'paymentsForRepurchaseOfCommonStock' },
+    { displayName: 'Payments for Repurchase of Equity', dataName: 'paymentsForRepurchaseOfEquity' },
+    { displayName: 'Payments for Repurchase of Preferred Stock', dataName: 'paymentsForRepurchaseOfPreferredStock' },
+    { displayName: 'Dividend Payout', dataName: 'dividendPayout' },
+    { displayName: 'Dividend Payout (Common Stock)', dataName: 'dividendPayoutCommonStock' },
+    { displayName: 'Dividend Payout (Preferred Stock)', dataName: 'dividendPayoutPreferredStock' },
+    { displayName: 'Proceeds from Issuance of Common Stock', dataName: 'proceedsFromIssuanceOfCommonStock' },
+    { displayName: 'Proceeds from Issuance of Long Term Debt and Capital Securities (Net)', dataName: 'proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet' },
+    { displayName: 'Proceeds from Issuance of Preferred Stock', dataName: 'proceedsFromIssuanceOfPreferredStock' },
+    { displayName: 'Proceeds from Repurchase of Equity', dataName: 'proceedsFromRepurchaseOfEquity' },
+    { displayName: 'Proceeds from Sale of Treasury Stock', dataName: 'proceedsFromSaleOfTreasuryStock' },
+    { displayName: 'Change in Cash and Cash Equivalents', dataName: 'changeInCashAndCashEquivalents' },
+    { displayName: 'Change in Exchange Rate', dataName: 'changeInExchangeRate' },
+    { displayName: 'Net Income', dataName: 'netIncome' },
+];
+
+return (
     <div className='customTable'>
       <div className='customTableColumnHeader'>
-          {headers.map((header) => (
+          {headersIncomeStatement.map((header) => (
               <div className='customTableCellHeader' key={header.dataName}>
                   {header.displayName}
               </div>
@@ -44,7 +111,7 @@ const MyTable = ({ incomeStatement }) => {
 
       {incomeStatement.map((item, rowIndex) => (
           <div className='customTableColumn' key={rowIndex}>
-              {headers.map((header, colIndex) => (
+              {headersIncomeStatement.map((header, colIndex) => (
                   <div className='customTableCell' key={colIndex}>
                       {header.dataName === 'fiscalDateEnding' ? (
                           <div style={{ textAlign: 'center' }}>{item[header.dataName]}</div>

@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
  */
 public class CashFlow {
     private final LocalDate fiscalDateEnding;
-    private final String reportedCurrency;
     private final BigDecimal operatingCashflow;
     private final BigDecimal paymentsForOperatingActivities;
     private final BigDecimal proceedsFromOperatingActivities;
@@ -44,7 +43,6 @@ public class CashFlow {
      * Constructs a new BalanceSheet object.
      *
      * @param fiscalDateEnding                                          The ending date of the fiscal year (e.g., YYYY-MM-DD).
-     * @param reportedCurrency                                          The currency in which the report is denominated (e.g., USD, EUR).
      * @param operatingCashflow                                         Cash flow from operating activities.
      * @param paymentsForOperatingActivities                            Payments made for operating activities.
      * @param proceedsFromOperatingActivities                           Proceeds received from operating activities.
@@ -73,76 +71,52 @@ public class CashFlow {
      * @param changeInExchangeRate                                      Change in exchange rate.
      * @param netIncome                                                 Net income for the period.
      */
-    public CashFlow(String fiscalDateEnding, String reportedCurrency, String operatingCashflow,
-                       String paymentsForOperatingActivities, String proceedsFromOperatingActivities,
-                       String changeInOperatingLiabilities, String changeInOperatingAssets,
-                       String depreciationDepletionAndAmortization, String capitalExpenditures,
-                       String changeInReceivables, String changeInInventory, String profitLoss,
-                       String cashflowFromInvestment, String cashflowFromFinancing,
-                       String proceedsFromRepaymentsOfShortTermDebt, String paymentsForRepurchaseOfCommonStock,
-                       String paymentsForRepurchaseOfEquity, String paymentsForRepurchaseOfPreferredStock,
-                       String dividendPayout, String dividendPayoutCommonStock, String dividendPayoutPreferredStock,
-                       String proceedsFromIssuanceOfCommonStock, String proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet,
-                       String proceedsFromIssuanceOfPreferredStock, String proceedsFromRepurchaseOfEquity,
-                       String proceedsFromSaleOfTreasuryStock, String changeInCashAndCashEquivalents,
-                       String changeInExchangeRate, String netIncome) {
+    public CashFlow(String fiscalDateEnding, BigDecimal operatingCashflow,
+                       BigDecimal paymentsForOperatingActivities, BigDecimal proceedsFromOperatingActivities,
+                       BigDecimal changeInOperatingLiabilities, BigDecimal changeInOperatingAssets,
+                       BigDecimal depreciationDepletionAndAmortization, BigDecimal capitalExpenditures,
+                       BigDecimal changeInReceivables, BigDecimal changeInInventory, BigDecimal profitLoss,
+                       BigDecimal cashflowFromInvestment, BigDecimal cashflowFromFinancing,
+                       BigDecimal proceedsFromRepaymentsOfShortTermDebt, BigDecimal paymentsForRepurchaseOfCommonStock,
+                       BigDecimal paymentsForRepurchaseOfEquity, BigDecimal paymentsForRepurchaseOfPreferredStock,
+                       BigDecimal dividendPayout, BigDecimal dividendPayoutCommonStock, BigDecimal dividendPayoutPreferredStock,
+                       BigDecimal proceedsFromIssuanceOfCommonStock, BigDecimal proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet,
+                       BigDecimal proceedsFromIssuanceOfPreferredStock, BigDecimal proceedsFromRepurchaseOfEquity,
+                       BigDecimal proceedsFromSaleOfTreasuryStock, BigDecimal changeInCashAndCashEquivalents,
+                       BigDecimal changeInExchangeRate, BigDecimal netIncome) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        
         this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
-        this.reportedCurrency = reportedCurrency;
-        this.operatingCashflow = parseBigDecimal(operatingCashflow);
-        this.paymentsForOperatingActivities = parseBigDecimal(paymentsForOperatingActivities);
-        this.proceedsFromOperatingActivities = parseBigDecimal(proceedsFromOperatingActivities);
-        this.changeInOperatingLiabilities = parseBigDecimal(changeInOperatingLiabilities);
-        this.changeInOperatingAssets = parseBigDecimal(changeInOperatingAssets);
-        this.depreciationDepletionAndAmortization = parseBigDecimal(depreciationDepletionAndAmortization);
-        this.capitalExpenditures = parseBigDecimal(capitalExpenditures);
-        this.changeInReceivables = parseBigDecimal(changeInReceivables);
-        this.changeInInventory = parseBigDecimal(changeInInventory);
-        this.profitLoss = parseBigDecimal(profitLoss);
-        this.cashflowFromInvestment = parseBigDecimal(cashflowFromInvestment);
-        this.cashflowFromFinancing = parseBigDecimal(cashflowFromFinancing);
-        this.proceedsFromRepaymentsOfShortTermDebt = parseBigDecimal(proceedsFromRepaymentsOfShortTermDebt);
-        this.paymentsForRepurchaseOfCommonStock = parseBigDecimal(paymentsForRepurchaseOfCommonStock);
-        this.paymentsForRepurchaseOfEquity = parseBigDecimal(paymentsForRepurchaseOfEquity);
-        this.paymentsForRepurchaseOfPreferredStock = parseBigDecimal(paymentsForRepurchaseOfPreferredStock);
-        this.dividendPayout = parseBigDecimal(dividendPayout);
-        this.dividendPayoutCommonStock = parseBigDecimal(dividendPayoutCommonStock);
-        this.dividendPayoutPreferredStock = parseBigDecimal(dividendPayoutPreferredStock);
-        this.proceedsFromIssuanceOfCommonStock = parseBigDecimal(proceedsFromIssuanceOfCommonStock);
-        this.proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet = parseBigDecimal(proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet);
-        this.proceedsFromIssuanceOfPreferredStock = parseBigDecimal(proceedsFromIssuanceOfPreferredStock);
-        this.proceedsFromRepurchaseOfEquity = parseBigDecimal(proceedsFromRepurchaseOfEquity);
-        this.proceedsFromSaleOfTreasuryStock = parseBigDecimal(proceedsFromSaleOfTreasuryStock);
-        this.changeInCashAndCashEquivalents = parseBigDecimal(changeInCashAndCashEquivalents);
-        this.changeInExchangeRate = parseBigDecimal(changeInExchangeRate);
-        this.netIncome = parseBigDecimal(netIncome);
-    }
-
-    /**
-     * Parses a string value into a BigDecimal.  Handles null and "None" values.
-     * If a NumberFormatException occurs during parsing, an error message is printed
-     * to System.err and null is returned.
-     *
-     * @param value The string value to parse.
-     * @return The BigDecimal representation of the string, or null if the string
-     *         is null, "None", or cannot be parsed as a BigDecimal.
-     */
-    private BigDecimal parseBigDecimal(String value) {
-        if (value == null || value.equals("None")) {
-            return null;
-        }
-        try {
-            return new BigDecimal(value);
-        } catch (NumberFormatException e) {
-            System.err.println("Error parsing BigDecimal value: " + value + ". Returning null.");
-            return null;
-        }
+        this.operatingCashflow = operatingCashflow;
+        this.paymentsForOperatingActivities = paymentsForOperatingActivities;
+        this.proceedsFromOperatingActivities = proceedsFromOperatingActivities;
+        this.changeInOperatingLiabilities = changeInOperatingLiabilities;
+        this.changeInOperatingAssets = changeInOperatingAssets;
+        this.depreciationDepletionAndAmortization = depreciationDepletionAndAmortization;
+        this.capitalExpenditures = capitalExpenditures;
+        this.changeInReceivables = changeInReceivables;
+        this.changeInInventory = changeInInventory;
+        this.profitLoss = profitLoss;
+        this.cashflowFromInvestment = cashflowFromInvestment;
+        this.cashflowFromFinancing = cashflowFromFinancing;
+        this.proceedsFromRepaymentsOfShortTermDebt = proceedsFromRepaymentsOfShortTermDebt;
+        this.paymentsForRepurchaseOfCommonStock = paymentsForRepurchaseOfCommonStock;
+        this.paymentsForRepurchaseOfEquity = paymentsForRepurchaseOfEquity;
+        this.paymentsForRepurchaseOfPreferredStock = paymentsForRepurchaseOfPreferredStock;
+        this.dividendPayout = dividendPayout;
+        this.dividendPayoutCommonStock = dividendPayoutCommonStock;
+        this.dividendPayoutPreferredStock = dividendPayoutPreferredStock;
+        this.proceedsFromIssuanceOfCommonStock = proceedsFromIssuanceOfCommonStock;
+        this.proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet = proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet;
+        this.proceedsFromIssuanceOfPreferredStock = proceedsFromIssuanceOfPreferredStock;
+        this.proceedsFromRepurchaseOfEquity = proceedsFromRepurchaseOfEquity;
+        this.proceedsFromSaleOfTreasuryStock = proceedsFromSaleOfTreasuryStock;
+        this.changeInCashAndCashEquivalents = changeInCashAndCashEquivalents;
+        this.changeInExchangeRate = changeInExchangeRate;
+        this.netIncome = netIncome;
     }
 
     public LocalDate getFiscalDateEnding() { return fiscalDateEnding; }
-    public String getReportedCurrency() { return reportedCurrency; }
     public BigDecimal getOperatingCashflow() { return operatingCashflow; }
     public BigDecimal getPaymentsForOperatingActivities() { return paymentsForOperatingActivities; }
     public BigDecimal getProceedsFromOperatingActivities() { return proceedsFromOperatingActivities; }

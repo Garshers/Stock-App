@@ -1,46 +1,48 @@
 package com.stockapp.StockApp.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Represents a balance sheet for a company. This class stores the various
  * financial figures that make up a balance sheet.
  */
 public class BalanceSheet {
-    final private String fiscalDateEnding;
-    final private String reportedCurrency;
-    final private String operatingCashflow;
-    final private String paymentsForOperatingActivities;
-    final private String proceedsFromOperatingActivities;
-    final private String changeInOperatingLiabilities;
-    final private String changeInOperatingAssets;
-    final private String depreciationDepletionAndAmortization;
-    final private String capitalExpenditures;
-    final private String changeInReceivables;
-    final private String changeInInventory;
-    final private String profitLoss;
-    final private String cashflowFromInvestment;
-    final private String cashflowFromFinancing;
-    final private String proceedsFromRepaymentsOfShortTermDebt;
-    final private String paymentsForRepurchaseOfCommonStock;
-    final private String paymentsForRepurchaseOfEquity;
-    final private String paymentsForRepurchaseOfPreferredStock;
-    final private String dividendPayout;
-    final private String dividendPayoutCommonStock;
-    final private String dividendPayoutPreferredStock;
-    final private String proceedsFromIssuanceOfCommonStock;
-    final private String proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet;
-    final private String proceedsFromIssuanceOfPreferredStock;
-    final private String proceedsFromRepurchaseOfEquity;
-    final private String proceedsFromSaleOfTreasuryStock;
-    final private String changeInCashAndCashEquivalents;
-    final private String changeInExchangeRate;
-    final private String netIncome;
+    final private LocalDate fiscalDateEnding;
+    final private BigDecimal operatingCashflow;
+    final private BigDecimal paymentsForOperatingActivities;
+    final private BigDecimal proceedsFromOperatingActivities;
+    final private BigDecimal changeInOperatingLiabilities;
+    final private BigDecimal changeInOperatingAssets;
+    final private BigDecimal depreciationDepletionAndAmortization;
+    final private BigDecimal capitalExpenditures;
+    final private BigDecimal changeInReceivables;
+    final private BigDecimal changeInInventory;
+    final private BigDecimal profitLoss;
+    final private BigDecimal cashflowFromInvestment;
+    final private BigDecimal cashflowFromFinancing;
+    final private BigDecimal proceedsFromRepaymentsOfShortTermDebt;
+    final private BigDecimal paymentsForRepurchaseOfCommonStock;
+    final private BigDecimal paymentsForRepurchaseOfEquity;
+    final private BigDecimal paymentsForRepurchaseOfPreferredStock;
+    final private BigDecimal dividendPayout;
+    final private BigDecimal dividendPayoutCommonStock;
+    final private BigDecimal dividendPayoutPreferredStock;
+    final private BigDecimal proceedsFromIssuanceOfCommonStock;
+    final private BigDecimal proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet;
+    final private BigDecimal proceedsFromIssuanceOfPreferredStock;
+    final private BigDecimal proceedsFromRepurchaseOfEquity;
+    final private BigDecimal proceedsFromSaleOfTreasuryStock;
+    final private BigDecimal changeInCashAndCashEquivalents;
+    final private BigDecimal changeInExchangeRate;
+    final private BigDecimal netIncome;
 
 
     /**
      * Constructs a new BalanceSheet object.
      *
      * @param fiscalDateEnding The ending date of the fiscal year (e.g., YYYY-MM-DD).
-     * @param reportedCurrency The currency in which the report is denominated (e.g., USD, EUR).
      * @param operatingCashflow Cash flow from operating activities.
      * @param paymentsForOperatingActivities Payments made for operating activities.
      * @param proceedsFromOperatingActivities Proceeds received from operating activities.
@@ -69,21 +71,22 @@ public class BalanceSheet {
      * @param changeInExchangeRate Change in exchange rate.
      * @param netIncome Net income for the period.
      */
-    public BalanceSheet(String fiscalDateEnding, String reportedCurrency, String operatingCashflow,
-                       String paymentsForOperatingActivities, String proceedsFromOperatingActivities,
-                       String changeInOperatingLiabilities, String changeInOperatingAssets,
-                       String depreciationDepletionAndAmortization, String capitalExpenditures,
-                       String changeInReceivables, String changeInInventory, String profitLoss,
-                       String cashflowFromInvestment, String cashflowFromFinancing,
-                       String proceedsFromRepaymentsOfShortTermDebt, String paymentsForRepurchaseOfCommonStock,
-                       String paymentsForRepurchaseOfEquity, String paymentsForRepurchaseOfPreferredStock,
-                       String dividendPayout, String dividendPayoutCommonStock, String dividendPayoutPreferredStock,
-                       String proceedsFromIssuanceOfCommonStock, String proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet,
-                       String proceedsFromIssuanceOfPreferredStock, String proceedsFromRepurchaseOfEquity,
-                       String proceedsFromSaleOfTreasuryStock, String changeInCashAndCashEquivalents,
-                       String changeInExchangeRate, String netIncome) {
-        this.fiscalDateEnding = fiscalDateEnding;
-        this.reportedCurrency = reportedCurrency;
+    public BalanceSheet(String fiscalDateEnding, BigDecimal operatingCashflow,
+                       BigDecimal paymentsForOperatingActivities, BigDecimal proceedsFromOperatingActivities,
+                       BigDecimal changeInOperatingLiabilities, BigDecimal changeInOperatingAssets,
+                       BigDecimal depreciationDepletionAndAmortization, BigDecimal capitalExpenditures,
+                       BigDecimal changeInReceivables, BigDecimal changeInInventory, BigDecimal profitLoss,
+                       BigDecimal cashflowFromInvestment, BigDecimal cashflowFromFinancing,
+                       BigDecimal proceedsFromRepaymentsOfShortTermDebt, BigDecimal paymentsForRepurchaseOfCommonStock,
+                       BigDecimal paymentsForRepurchaseOfEquity, BigDecimal paymentsForRepurchaseOfPreferredStock,
+                       BigDecimal dividendPayout, BigDecimal dividendPayoutCommonStock, BigDecimal dividendPayoutPreferredStock,
+                       BigDecimal proceedsFromIssuanceOfCommonStock, BigDecimal proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet,
+                       BigDecimal proceedsFromIssuanceOfPreferredStock, BigDecimal proceedsFromRepurchaseOfEquity,
+                       BigDecimal proceedsFromSaleOfTreasuryStock, BigDecimal changeInCashAndCashEquivalents,
+                       BigDecimal changeInExchangeRate, BigDecimal netIncome) {
+                        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
         this.operatingCashflow = operatingCashflow;
         this.paymentsForOperatingActivities = paymentsForOperatingActivities;
         this.proceedsFromOperatingActivities = proceedsFromOperatingActivities;
@@ -113,33 +116,32 @@ public class BalanceSheet {
         this.netIncome = netIncome;
     }
 
-    public String getFiscalDateEnding() { return fiscalDateEnding; }
-    public String getReportedCurrency() { return reportedCurrency; }
-    public String getOperatingCashflow() { return operatingCashflow; }
-    public String getPaymentsForOperatingActivities() { return paymentsForOperatingActivities; }
-    public String getProceedsFromOperatingActivities() { return proceedsFromOperatingActivities; }
-    public String getChangeInOperatingLiabilities() { return changeInOperatingLiabilities; }
-    public String getChangeInOperatingAssets() { return changeInOperatingAssets; }
-    public String getDepreciationDepletionAndAmortization() { return depreciationDepletionAndAmortization; }
-    public String getCapitalExpenditures() { return capitalExpenditures; }
-    public String getChangeInReceivables() { return changeInReceivables; }
-    public String getChangeInInventory() { return changeInInventory; }
-    public String getProfitLoss() { return profitLoss; }
-    public String getCashflowFromInvestment() { return cashflowFromInvestment; }
-    public String getCashflowFromFinancing() { return cashflowFromFinancing; }
-    public String getProceedsFromRepaymentsOfShortTermDebt() { return proceedsFromRepaymentsOfShortTermDebt; }
-    public String getPaymentsForRepurchaseOfCommonStock() { return paymentsForRepurchaseOfCommonStock; }
-    public String getPaymentsForRepurchaseOfEquity() { return paymentsForRepurchaseOfEquity; }
-    public String getPaymentsForRepurchaseOfPreferredStock() { return paymentsForRepurchaseOfPreferredStock; }
-    public String getDividendPayout() { return dividendPayout; }
-    public String getDividendPayoutCommonStock() { return dividendPayoutCommonStock; }
-    public String getDividendPayoutPreferredStock() { return dividendPayoutPreferredStock; }
-    public String getProceedsFromIssuanceOfCommonStock() { return proceedsFromIssuanceOfCommonStock; }
-    public String getProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet() { return proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet; }
-    public String getProceedsFromIssuanceOfPreferredStock() { return proceedsFromIssuanceOfPreferredStock; }
-    public String getProceedsFromRepurchaseOfEquity() { return proceedsFromRepurchaseOfEquity; }
-    public String getProceedsFromSaleOfTreasuryStock() { return proceedsFromSaleOfTreasuryStock; }
-    public String getChangeInCashAndCashEquivalents() { return changeInCashAndCashEquivalents; }
-    public String getChangeInExchangeRate() { return changeInExchangeRate; }
-    public String getNetIncome() { return netIncome; }
+    public LocalDate getFiscalDateEnding() { return fiscalDateEnding; }
+    public BigDecimal getOperatingCashflow() { return operatingCashflow; }
+    public BigDecimal getPaymentsForOperatingActivities() { return paymentsForOperatingActivities; }
+    public BigDecimal getProceedsFromOperatingActivities() { return proceedsFromOperatingActivities; }
+    public BigDecimal getChangeInOperatingLiabilities() { return changeInOperatingLiabilities; }
+    public BigDecimal getChangeInOperatingAssets() { return changeInOperatingAssets; }
+    public BigDecimal getDepreciationDepletionAndAmortization() { return depreciationDepletionAndAmortization; }
+    public BigDecimal getCapitalExpenditures() { return capitalExpenditures; }
+    public BigDecimal getChangeInReceivables() { return changeInReceivables; }
+    public BigDecimal getChangeInInventory() { return changeInInventory; }
+    public BigDecimal getProfitLoss() { return profitLoss; }
+    public BigDecimal getCashflowFromInvestment() { return cashflowFromInvestment; }
+    public BigDecimal getCashflowFromFinancing() { return cashflowFromFinancing; }
+    public BigDecimal getProceedsFromRepaymentsOfShortTermDebt() { return proceedsFromRepaymentsOfShortTermDebt; }
+    public BigDecimal getPaymentsForRepurchaseOfCommonStock() { return paymentsForRepurchaseOfCommonStock; }
+    public BigDecimal getPaymentsForRepurchaseOfEquity() { return paymentsForRepurchaseOfEquity; }
+    public BigDecimal getPaymentsForRepurchaseOfPreferredStock() { return paymentsForRepurchaseOfPreferredStock; }
+    public BigDecimal getDividendPayout() { return dividendPayout; }
+    public BigDecimal getDividendPayoutCommonStock() { return dividendPayoutCommonStock; }
+    public BigDecimal getDividendPayoutPreferredStock() { return dividendPayoutPreferredStock; }
+    public BigDecimal getProceedsFromIssuanceOfCommonStock() { return proceedsFromIssuanceOfCommonStock; }
+    public BigDecimal getProceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet() { return proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet; }
+    public BigDecimal getProceedsFromIssuanceOfPreferredStock() { return proceedsFromIssuanceOfPreferredStock; }
+    public BigDecimal getProceedsFromRepurchaseOfEquity() { return proceedsFromRepurchaseOfEquity; }
+    public BigDecimal getProceedsFromSaleOfTreasuryStock() { return proceedsFromSaleOfTreasuryStock; }
+    public BigDecimal getChangeInCashAndCashEquivalents() { return changeInCashAndCashEquivalents; }
+    public BigDecimal getChangeInExchangeRate() { return changeInExchangeRate; }
+    public BigDecimal getNetIncome() { return netIncome; }
 }

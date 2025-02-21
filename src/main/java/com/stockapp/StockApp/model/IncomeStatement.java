@@ -1,5 +1,6 @@
 package com.stockapp.StockApp.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -8,30 +9,30 @@ import java.time.format.DateTimeFormatter;
  */
 public class IncomeStatement {
     private final LocalDate fiscalDateEnding;
-    private final Long grossProfit;
-    private final Long totalRevenue;
-    private final Long costOfRevenue;
-    private final Long costofGoodsAndServicesSold;
-    private final Long operatingIncome;
-    private final Long sellingGeneralAndAdministrative;
-    private final Long researchAndDevelopment;
-    private final Long operatingExpenses;
-    private final Long investmentIncomeNet;
-    private final Long netInterestIncome;
-    private final Long interestIncome;
-    private final Long interestExpense;
-    private final Long nonInterestIncome;
-    private final Long otherNonOperatingIncome;
-    private final Long depreciation;
-    private final Long depreciationAndAmortization;
-    private final Long incomeBeforeTax;
-    private final Long incomeTaxExpense;
-    private final Long interestAndDebtExpense;
-    private final Long netIncomeFromContinuingOperations;
-    private final Long comprehensiveIncomeNetOfTax;
-    private final Long ebit;
-    private final Long ebitda;
-    private final Long netIncome;
+    private final BigDecimal grossProfit;
+    private final BigDecimal totalRevenue;
+    private final BigDecimal costOfRevenue;
+    private final BigDecimal costofGoodsAndServicesSold;
+    private final BigDecimal operatingIncome;
+    private final BigDecimal sellingGeneralAndAdministrative;
+    private final BigDecimal researchAndDevelopment;
+    private final BigDecimal operatingExpenses;
+    private final BigDecimal investmentIncomeNet;
+    private final BigDecimal netInterestIncome;
+    private final BigDecimal interestIncome;
+    private final BigDecimal interestExpense;
+    private final BigDecimal nonInterestIncome;
+    private final BigDecimal otherNonOperatingIncome;
+    private final BigDecimal depreciation;
+    private final BigDecimal depreciationAndAmortization;
+    private final BigDecimal incomeBeforeTax;
+    private final BigDecimal incomeTaxExpense;
+    private final BigDecimal interestAndDebtExpense;
+    private final BigDecimal netIncomeFromContinuingOperations;
+    private final BigDecimal comprehensiveIncomeNetOfTax;
+    private final BigDecimal ebit;
+    private final BigDecimal ebitda;
+    private final BigDecimal netIncome;
 
     /**
      * Constructs a new IncomeStatement object.
@@ -42,16 +43,16 @@ public class IncomeStatement {
      * @param operatingIncome  The operating income for the fiscal year.
      * @param netIncome        The net income for the fiscal year.
      */
-    public IncomeStatement(String fiscalDateEnding, Long grossProfit,
-                           Long totalRevenue, Long operatingIncome, Long netIncome,
-                           Long costOfRevenue, Long costofGoodsAndServicesSold,
-                           Long sellingGeneralAndAdministrative, Long researchAndDevelopment,
-                           Long operatingExpenses, Long investmentIncomeNet, Long netInterestIncome,
-                           Long interestIncome, Long interestExpense, Long nonInterestIncome,
-                           Long otherNonOperatingIncome, Long depreciation, Long depreciationAndAmortization,
-                           Long incomeBeforeTax, Long incomeTaxExpense, Long interestAndDebtExpense,
-                           Long netIncomeFromContinuingOperations, Long comprehensiveIncomeNetOfTax,
-                           Long ebit, Long ebitda) {
+    public IncomeStatement(String fiscalDateEnding, BigDecimal grossProfit,
+                           BigDecimal totalRevenue, BigDecimal operatingIncome, BigDecimal netIncome,
+                           BigDecimal costOfRevenue, BigDecimal costofGoodsAndServicesSold,
+                           BigDecimal sellingGeneralAndAdministrative, BigDecimal researchAndDevelopment,
+                           BigDecimal operatingExpenses, BigDecimal investmentIncomeNet, BigDecimal netInterestIncome,
+                           BigDecimal interestIncome, BigDecimal interestExpense, BigDecimal nonInterestIncome,
+                           BigDecimal otherNonOperatingIncome, BigDecimal depreciation, BigDecimal depreciationAndAmortization,
+                           BigDecimal incomeBeforeTax, BigDecimal incomeTaxExpense, BigDecimal interestAndDebtExpense,
+                           BigDecimal netIncomeFromContinuingOperations, BigDecimal comprehensiveIncomeNetOfTax,
+                           BigDecimal ebit, BigDecimal ebitda) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
@@ -83,30 +84,30 @@ public class IncomeStatement {
 
 
     public LocalDate getFiscalDateEnding() { return fiscalDateEnding; }
-    public Long getGrossProfit() { return grossProfit; }
-    public Long getTotalRevenue() { return totalRevenue; }
-    public Long getCostOfRevenue() { return costOfRevenue; }
-    public Long getCostofGoodsAndServicesSold() { return costofGoodsAndServicesSold; }
-    public Long getOperatingIncome() { return operatingIncome; }
-    public Long getSellingGeneralAndAdministrative() { return sellingGeneralAndAdministrative; }
-    public Long getResearchAndDevelopment() { return researchAndDevelopment; }
-    public Long getOperatingExpenses() { return operatingExpenses; }
-    public Long getInvestmentIncomeNet() { return investmentIncomeNet; }
-    public Long getNetInterestIncome() { return netInterestIncome; }
-    public Long getInterestIncome() { return interestIncome; }
-    public Long getInterestExpense() { return interestExpense; }
-    public Long getNonInterestIncome() { return nonInterestIncome; }
-    public Long getOtherNonOperatingIncome() { return otherNonOperatingIncome; }
-    public Long getDepreciation() { return depreciation; }
-    public Long getDepreciationAndAmortization() { return depreciationAndAmortization; }
-    public Long getIncomeBeforeTax() { return incomeBeforeTax; }
-    public Long getIncomeTaxExpense() { return incomeTaxExpense; }
-    public Long getInterestAndDebtExpense() { return interestAndDebtExpense; }
-    public Long getNetIncomeFromContinuingOperations() { return netIncomeFromContinuingOperations; }
-    public Long getComprehensiveIncomeNetOfTax() { return comprehensiveIncomeNetOfTax; }
-    public Long getEbit() { return ebit; }
-    public Long getEbitda() { return ebitda; }
-    public Long getNetIncome() { return netIncome; }
+    public BigDecimal getGrossProfit() { return grossProfit; }
+    public BigDecimal getTotalRevenue() { return totalRevenue; }
+    public BigDecimal getCostOfRevenue() { return costOfRevenue; }
+    public BigDecimal getCostofGoodsAndServicesSold() { return costofGoodsAndServicesSold; }
+    public BigDecimal getOperatingIncome() { return operatingIncome; }
+    public BigDecimal getSellingGeneralAndAdministrative() { return sellingGeneralAndAdministrative; }
+    public BigDecimal getResearchAndDevelopment() { return researchAndDevelopment; }
+    public BigDecimal getOperatingExpenses() { return operatingExpenses; }
+    public BigDecimal getInvestmentIncomeNet() { return investmentIncomeNet; }
+    public BigDecimal getNetInterestIncome() { return netInterestIncome; }
+    public BigDecimal getInterestIncome() { return interestIncome; }
+    public BigDecimal getInterestExpense() { return interestExpense; }
+    public BigDecimal getNonInterestIncome() { return nonInterestIncome; }
+    public BigDecimal getOtherNonOperatingIncome() { return otherNonOperatingIncome; }
+    public BigDecimal getDepreciation() { return depreciation; }
+    public BigDecimal getDepreciationAndAmortization() { return depreciationAndAmortization; }
+    public BigDecimal getIncomeBeforeTax() { return incomeBeforeTax; }
+    public BigDecimal getIncomeTaxExpense() { return incomeTaxExpense; }
+    public BigDecimal getInterestAndDebtExpense() { return interestAndDebtExpense; }
+    public BigDecimal getNetIncomeFromContinuingOperations() { return netIncomeFromContinuingOperations; }
+    public BigDecimal getComprehensiveIncomeNetOfTax() { return comprehensiveIncomeNetOfTax; }
+    public BigDecimal getEbit() { return ebit; }
+    public BigDecimal getEbitda() { return ebitda; }
+    public BigDecimal getNetIncome() { return netIncome; }
     
     /**
      * Returns a string representation of the FinancialStatement object.
