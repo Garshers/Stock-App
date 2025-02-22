@@ -1,7 +1,7 @@
 package com.stockapp.StockApp.model;
 
 /**
- * The {@code URLCreator} class is responsible for generating URLs for the Alpha Vantage API.
+ * The URLCreator class is responsible for generating URLs for the Alpha Vantage API.
  * It constructs the URL based on the provided stock symbol, function type, and output size.
  * <p>
  * This class uses the builder pattern for constructing the URL, allowing for flexibility
@@ -17,11 +17,11 @@ public class URLCreator {
     final private OutputSize outputSize;
 
     /**
-     * Constructs a new {@code URLCreator} with the specified stock symbol, function type, and output size.
+     * Constructs a new URLCreator with the specified stock symbol, function type, and output size.
      *
      * @param symbol     The stock symbol (e.g., "AAPL", "MSFT").
      * @param function   The function type to be used in the API call.
-     * @param outputSize The output size of the API response (e.g., FULL, COMPACT).  Can be {@code null}.
+     * @param outputSize The output size of the API response (e.g., FULL, COMPACT).  Can be null.
      */
     public URLCreator(String symbol, FunctionType function, OutputSize outputSize) {
         this.symbol = symbol;
@@ -30,8 +30,8 @@ public class URLCreator {
     }
 
     /**
-     * Constructs a new {@code URLCreator} with the specified stock symbol and function type.
-     * The output size is set to {@code null}.
+     * Constructs a new URLCreator with the specified stock symbol and function type.
+     * The output size is set to null.
      *
      * @param symbol   The stock symbol (e.g., "AAPL", "MSFT").
      * @param function The function type to be used in the API call.
@@ -45,7 +45,7 @@ public class URLCreator {
     /**
      * Generates the URL for the Alpha Vantage API.
      *
-     * @return The generated URL as a {@code String}.
+     * @return The generated URL as a String.
      */
     public String generateUrl() {
         StringBuilder urlBuilder = new StringBuilder(BASE_URL);
@@ -60,23 +60,9 @@ public class URLCreator {
         return urlBuilder.toString();
     }
 
-    /**
-     * Returns the stock symbol.
-     *
-     * @return The stock symbol as a {@code String}.
-     */
-    public String getSymbol() {
-        return symbol;
-    }
 
-    /**
-     * Returns the function type.
-     *
-     * @return The function type as a {@code FunctionType}.
-     */
-    public FunctionType getFunction() {
-        return function;
-    }
+    public String getSymbol() { return symbol; }
+    public FunctionType getFunction() { return function; }
 
     /**
      * Enum representing the different function types available in the Alpha Vantage API.
@@ -90,7 +76,6 @@ public class URLCreator {
         BALANCE_SHEET("annualReports"),
         CASH_FLOW("annualReports");
 
-    
         private final String jsonFunction;
     
         FunctionType(String jsonFunction) {
@@ -101,9 +86,7 @@ public class URLCreator {
          * Returns the function name as expected by the AlphaVantage API.
          * @return the name of the function that the API expects.
          */
-        public String getJsonFunction() {
-            return jsonFunction;
-        }
+        public String getJsonFunction() { return jsonFunction; }
     }
 
     /**
@@ -123,8 +106,6 @@ public class URLCreator {
          * Returns the output size value as expected by the AlphaVantage API.
          * @return the value of the output size as a String.
          */
-        public String getOutput() {
-            return value;
-        }
+        public String getOutput() { return value; }
     }
 }

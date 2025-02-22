@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * The {@code Overview} class represents stock overview data retrieved from an API such as AlphaVantage.
+ * The Overview class represents stock overview data retrieved from an API such as AlphaVantage.
  * It encapsulates detailed fundamental analysis information about a company.
  */
 public class Overview {
@@ -58,7 +58,7 @@ public class Overview {
     private final LocalDate exDividendDate;
 
     /**
-     * Constructs an {@code Overview} object.
+     * Constructs an Overview object.
      *
      * @param symbol                     The stock symbol.
      * @param name                       The company name.

@@ -37,7 +37,7 @@ public class AlphaVantageService {
      * @return The JSON response from the URL as a String.
      * @throws Exception If an error occurs during the HTTP request.
      */
-    public String getStockData(String url) throws Exception {
+    public String getJSONData(String url) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(new URI(url)).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -80,6 +80,17 @@ public class AlphaVantageService {
         return stockList;
     }
 
+    /**
+     * Parses financial data from a JSON response into a list of objects.
+     * This private method is designed to be a universal parser for financial statements, 
+     * including Income Statements, Balance Sheets, and Cash Flow statements.
+     *
+     * @param <T>           The type of objects to be created and returned in the list.
+     * @param jsonResponse  The JSON response string to parse.
+     * @param functionType  The function type used to extract the JSON function key.
+     * @param objectCreator A function that creates an object of type T from a JsonObject.
+     * @return              A list of objects of type T, or an empty list if an error occurs or no data is found.
+     */
     private <T> List<T> parseFinancialData(String jsonResponse, URLCreator.FunctionType functionType, Function<JsonObject, T> objectCreator) {
         try {
             JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
@@ -107,12 +118,17 @@ public class AlphaVantageService {
         } catch (JsonParseException e) {
             System.err.println("Error parsing JSON: " + e.getMessage());
             return new ArrayList<>();
-        } catch (Exception e) {
-            System.err.println("A general error occurred: " + e.getMessage());
-            return new ArrayList<>();
         }
     }
 
+    /**
+     * Parses annual Income Statement data from a JSON response.
+     *
+     * @param symbol       The stock symbol.
+     * @param jsonResponse The JSON response string containing income statement data.
+     * @param functionType The AlphaVantage API function type used to retrieve the data.
+     * @return A List of Annual IncomeStatement objects parsed from the JSON response.
+     */
     public List<IncomeStatement> parseAnnualIncomeStatement(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
         return parseFinancialData(jsonResponse, functionType, jsonData -> {
             try {
@@ -150,6 +166,14 @@ public class AlphaVantageService {
         });
     }
 
+    /**
+     * Parses annual Balance Sheet data from a JSON response.
+     *
+     * @param symbol       The stock symbol.
+     * @param jsonResponse The JSON response string containing balance sheet data.
+     * @param functionType The AlphaVantage API function type used to retrieve the data.
+     * @return A List of Annual BalanceSheet objects parsed from the JSON response.
+     */
     public List<BalanceSheet> parseAnnualBalanceSheet(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
         return parseFinancialData(jsonResponse, functionType, jsonData -> {
             try {
@@ -190,6 +214,14 @@ public class AlphaVantageService {
         });
     }
 
+    /**
+     * Parses annual Cash Flow data from a JSON response.
+     *
+     * @param symbol       The stock symbol.
+     * @param jsonResponse The JSON response string containing cash flow data.
+     * @param functionType The AlphaVantage API function type used to retrieve the data.
+     * @return A List of Annual CashFlow objects parsed from the JSON response.
+     */
     public List<CashFlow> parseAnnualCashFlow(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
         return parseFinancialData(jsonResponse, functionType, jsonData -> {
             try {
@@ -299,6 +331,14 @@ public class AlphaVantageService {
     }
 
     // ***HELPER FUNCTIONS***
+
+    /**
+     * Retrieves a String value from a JSON object, handling null and invalid types.
+     *
+     * @param json The JSON object to retrieve the value from.
+     * @param key  The key under which the value is located in the JSON.
+     * @return The String value or null if the value does not exist, is null, or has an invalid type.
+     */
     private String safeGetString(JsonObject json, String key) {
         try {
             JsonElement element = json.get(key);
@@ -309,6 +349,13 @@ public class AlphaVantageService {
         }
     }
 
+    /**
+     * Retrieves a BigDecimal value from a JSON object, handling null, "None", and invalid types.
+     *
+     * @param json The JSON object to retrieve the value from.
+     * @param key  The key under which the value is located in the JSON.
+     * @return The BigDecimal value or null if the value does not exist, is null, "None", or has an invalid type.
+     */
     private BigDecimal safeGetBigDecimal(JsonObject json, String key) {
         try {
             JsonElement element = json.get(key);
@@ -331,12 +378,19 @@ public class AlphaVantageService {
         }
     }
 
+    /**
+     * Retrieves a Long value from a JSON object, handling null, "None", and invalid types.
+     *
+     * @param json The JSON object to retrieve the value from.
+     * @param key  The key under which the value is located in the JSON.
+     * @return The Long value or null if the value does not exist, is null, or has an invalid type.
+     */
     private Long safeGetLong(JsonObject json, String key) {
         try {
             JsonElement element = json.get(key);
             if (element != null && !element.isJsonNull()) {
                 String value = element.getAsString();
-                if (!"None".equalsIgnoreCase(value)) {
+                if ("None".equalsIgnoreCase(value)) {
                     return null;
                 }
                 try {
@@ -353,6 +407,13 @@ public class AlphaVantageService {
         }
     }
 
+    /**
+     * Retrieves an Integer value from a JSON object, handling null and invalid types.
+     *
+     * @param json The JSON object to retrieve the value from.
+     * @param key  The key under which the value is located in the JSON.
+     * @return The Integer value or null if the value does not exist, is null, or has an invalid type.
+     */
     private Integer safeGetInt(JsonObject json, String key) {
     try {
             JsonElement element = json.get(key);
@@ -372,6 +433,13 @@ public class AlphaVantageService {
         }
     }
 
+    /**
+     * Retrieves a LocalDate value from a JSON object, handling null and invalid date formats.
+     *
+     * @param json The JSON object to retrieve the value from.
+     * @param key  The key under which the value is located in the JSON.
+     * @return The LocalDate value or null if the value does not exist, is null, or has an invalid format.
+     */
     private LocalDate safeGetDate(JsonObject json, String key) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

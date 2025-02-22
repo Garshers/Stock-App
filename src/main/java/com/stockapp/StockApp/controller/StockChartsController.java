@@ -22,10 +22,16 @@ import com.stockapp.StockApp.model.URLCreator;
 import com.stockapp.StockApp.service.AlphaVantageService;
 import com.stockapp.StockApp.util.DCFValuationUtil;
 
-
-
 /**
- * Rest Controller for the Stock Chart related API endpoints.
+ * REST Controller for the Stock Chart related API endpoints.
+ * This controller provides endpoints for retrieving and processing stock market data, 
+ * including historical stock prices, financial statements (balance sheets, income statements, 
+ * cash flow statements), and other relevant information. 
+ * * It is designed to serve data to frontend applications, particularly those visualizing 
+ * stock market trends and financial performance.
+ * * The controller uses a service layer to handle data retrieval and parsing, ensuring 
+ * separation of concerns and maintainability. It also implements cross-origin resource 
+ * sharing (CORS) to allow requests from specific origins (e.g., a local React application).
  */
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -50,7 +56,7 @@ public class StockChartsController {
         System.out.println("stock url: " + url);
 
         try {
-            String jsonResponse = service.getStockData(url);
+            String jsonResponse = service.getJSONData(url);
             return service.parseStockData(stockURL.getSymbol(), jsonResponse, stockURL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching stock data: " + e.getMessage());
@@ -59,11 +65,12 @@ public class StockChartsController {
     }
 
     /**
-     * Retrieves Overview data for a given symbol.
-     *
+     * Retrieves Overview data for a given symbol from an external API endpoint.
+     * The data is then parsed and mapped to a Overview object.
+     * 
      * @param symbol The stock symbol.
      * @return A Overview object representing overview data.
-     * @throws RuntimeException If an error occurs during data retrieval.
+     * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockCharts/{symbol}/overview")
     public Overview getOverview(@PathVariable String symbol) {
@@ -72,7 +79,7 @@ public class StockChartsController {
         System.out.println("Overview url: " + url);
 
         try {
-            String jsonResponse = service.getStockData(url);
+            String jsonResponse = service.getJSONData(url);
             return service.parseOverview(URL.getSymbol(), jsonResponse, URL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
@@ -81,11 +88,12 @@ public class StockChartsController {
     }
 
     /**
-     * Retrieves annual inclome statment data for a given symbol.
+     * Retrieves annual income statement data for a given stock symbol from an external API endpoint.
+     * The data is then parsed and mapped to a list of IncomeStatement objects.
      *
      * @param symbol The stock symbol.
      * @return A list of Annual IncomeStatement objects representing the annual income statement data.
-     * @throws RuntimeException If an error occurs during data retrieval.
+     * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockCharts/{symbol}/incomeStatement")
     public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
@@ -94,7 +102,7 @@ public class StockChartsController {
         System.out.println("income statement url: " + url);
 
         try {
-            String jsonResponse = service.getStockData(url);
+            String jsonResponse = service.getJSONData(url);
             return service.parseAnnualIncomeStatement(URL.getSymbol(), jsonResponse, URL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
@@ -103,11 +111,12 @@ public class StockChartsController {
     }
 
     /**
-     * Retrieves annual balance sheet data for a given symbol.
+     * Retrieves annual balance sheet data for a given stock symbol from an external API endpoint.
+     * The data is then parsed and mapped to a list of BalanceSheet objects.
      *
      * @param symbol The stock symbol.
      * @return A list of Annual BalanceSheet objects representing the annual balance sheet data.
-     * @throws RuntimeException If an error occurs during data retrieval.
+     * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockCharts/{symbol}/balanceSheet")
     public List<BalanceSheet> getAnnualBalanceSheet(@RequestParam String symbol) {
@@ -116,7 +125,7 @@ public class StockChartsController {
         System.out.println("balance sheet url: " + url);
 
         try {
-            String jsonResponse = service.getStockData(url);
+            String jsonResponse = service.getJSONData(url);
             return service.parseAnnualBalanceSheet(URL.getSymbol(), jsonResponse, URL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching balance sheet data: " + e.getMessage());
@@ -150,9 +159,7 @@ public class StockChartsController {
     public static class NumberData {
         private int number;
 
-        public int getNumber() {
-            return number;
-        }
+        public int getNumber() { return number; }
     }
 
     private Map<String, Object> createErrorResponse(String message) {

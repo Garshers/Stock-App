@@ -36,11 +36,31 @@ public class IncomeStatement {
     /**
      * Constructs a new IncomeStatement object.
      *
-     * @param fiscalDateEnding The ending date of the fiscal year (e.g., YYYY-MM-DD).
-     * @param grossProfit      The gross profit for the fiscal year.
-     * @param totalRevenue     The total revenue for the fiscal year.
-     * @param operatingIncome  The operating income for the fiscal year.
-     * @param netIncome        The net income for the fiscal year.
+     * @param fiscalDateEnding                      The ending date of the fiscal year (e.g., YYYY-MM-DD).
+     * @param grossProfit                           The gross profit for the fiscal year.
+     * @param totalRevenue                          The total revenue for the fiscal year.
+     * @param operatingIncome                       The operating income for the fiscal year.
+     * @param netIncome                             The net income for the fiscal year.
+     * @param costOfRevenue                         The cost of revenue for the fiscal year.
+     * @param costofGoodsAndServicesSold            The cost of goods and services sold for the fiscal year.
+     * @param sellingGeneralAndAdministrative       The selling, general, and administrative expenses for the fiscal year.
+     * @param researchAndDevelopment                The research and development expenses for the fiscal year.
+     * @param operatingExpenses                     The operating expenses for the fiscal year.
+     * @param investmentIncomeNet                   The net investment income for the fiscal year.
+     * @param netInterestIncome                     The net interest income for the fiscal year.
+     * @param interestIncome                        The interest income for the fiscal year.
+     * @param interestExpense                       The interest expense for the fiscal year.
+     * @param nonInterestIncome                     The non-interest income for the fiscal year.
+     * @param otherNonOperatingIncome               The other non-operating income for the fiscal year.
+     * @param depreciation                          The depreciation for the fiscal year.
+     * @param depreciationAndAmortization           The depreciation and amortization for the fiscal year.
+     * @param incomeBeforeTax                       The income before tax for the fiscal year.
+     * @param incomeTaxExpense                      The income tax expense for the fiscal year.
+     * @param interestAndDebtExpense                The interest and debt expense for the fiscal year.
+     * @param netIncomeFromContinuingOperations     The net income from continuing operations for the fiscal year.
+     * @param comprehensiveIncomeNetOfTax           The comprehensive income net of tax for the fiscal year.
+     * @param ebit                                  Earnings before interest and taxes for the fiscal year.
+     * @param ebitda                                Earnings before interest, taxes, depreciation, and amortization for the fiscal year.
      */
     public IncomeStatement(LocalDate fiscalDateEnding, BigDecimal grossProfit,
                            BigDecimal totalRevenue, BigDecimal operatingIncome, BigDecimal netIncome,

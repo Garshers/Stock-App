@@ -57,8 +57,8 @@ public class HomePageController {
         }
 
 
-        public String getSymbol(){return symbol;}
-        public String getName(){return name;}
+        public String getSymbol() { return symbol; }
+        public String getName() { return name; }
     }
 
     @ControllerAdvice
