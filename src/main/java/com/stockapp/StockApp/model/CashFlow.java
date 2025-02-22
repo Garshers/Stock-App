@@ -2,7 +2,6 @@ package com.stockapp.StockApp.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Represents a cash flow statement for a company.  This class stores the various
@@ -71,7 +70,7 @@ public class CashFlow {
      * @param changeInExchangeRate                                      Change in exchange rate.
      * @param netIncome                                                 Net income for the period.
      */
-    public CashFlow(String fiscalDateEnding, BigDecimal operatingCashflow,
+    public CashFlow(LocalDate fiscalDateEnding, BigDecimal operatingCashflow,
                        BigDecimal paymentsForOperatingActivities, BigDecimal proceedsFromOperatingActivities,
                        BigDecimal changeInOperatingLiabilities, BigDecimal changeInOperatingAssets,
                        BigDecimal depreciationDepletionAndAmortization, BigDecimal capitalExpenditures,
@@ -85,8 +84,7 @@ public class CashFlow {
                        BigDecimal proceedsFromSaleOfTreasuryStock, BigDecimal changeInCashAndCashEquivalents,
                        BigDecimal changeInExchangeRate, BigDecimal netIncome) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
+        this.fiscalDateEnding = fiscalDateEnding;
         this.operatingCashflow = operatingCashflow;
         this.paymentsForOperatingActivities = paymentsForOperatingActivities;
         this.proceedsFromOperatingActivities = proceedsFromOperatingActivities;

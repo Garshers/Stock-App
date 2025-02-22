@@ -2,7 +2,6 @@ package com.stockapp.StockApp.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Represents an annual income statement for a company.
@@ -43,7 +42,7 @@ public class IncomeStatement {
      * @param operatingIncome  The operating income for the fiscal year.
      * @param netIncome        The net income for the fiscal year.
      */
-    public IncomeStatement(String fiscalDateEnding, BigDecimal grossProfit,
+    public IncomeStatement(LocalDate fiscalDateEnding, BigDecimal grossProfit,
                            BigDecimal totalRevenue, BigDecimal operatingIncome, BigDecimal netIncome,
                            BigDecimal costOfRevenue, BigDecimal costofGoodsAndServicesSold,
                            BigDecimal sellingGeneralAndAdministrative, BigDecimal researchAndDevelopment,
@@ -54,8 +53,7 @@ public class IncomeStatement {
                            BigDecimal netIncomeFromContinuingOperations, BigDecimal comprehensiveIncomeNetOfTax,
                            BigDecimal ebit, BigDecimal ebitda) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        this.fiscalDateEnding = LocalDate.parse(fiscalDateEnding, formatter);
+        this.fiscalDateEnding = fiscalDateEnding;
         this.grossProfit = grossProfit;
         this.totalRevenue = totalRevenue;
         this.operatingIncome = operatingIncome;

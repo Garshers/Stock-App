@@ -11,6 +11,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -79,190 +80,154 @@ public class AlphaVantageService {
         return stockList;
     }
 
-    /**
-     * Parses annual income statemens data from a JSON response.
-     *
-     * @param symbol       The stock symbol.
-     * @param jsonResponse The JSON response string containing annual income statement data.
-     * @param functionType The AlphaVantage API function type used to retrieve the data.
-     * @return A list of AnnualIncomeStatement objects parsed from the JSON response.
-     */
-    public List<IncomeStatement> parseAnnualIncomeStatement(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
-        JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+    private <T> List<T> parseFinancialData(String jsonResponse, URLCreator.FunctionType functionType, Function<JsonObject, T> objectCreator) {
+        try {
+            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+            String function = functionType.getJsonFunction();
+            JsonArray jsonArray = jsonObject.getAsJsonArray(function);
+            List<T> dataList = new ArrayList<>();
 
-        String Function = functionType.getJsonFunction();
-        JsonArray annualIncomeStatementJsonArray = jsonObject.getAsJsonArray(Function); 
-        List<IncomeStatement> annualIncomeStatementList = new ArrayList<>();
-        
-        for (int i = 0; i < annualIncomeStatementJsonArray.size(); i++) {
-            JsonObject jsonData = annualIncomeStatementJsonArray.get(i).getAsJsonObject();
-            
-            try {
-                IncomeStatement annualIncomeStatement = new IncomeStatement(
-                    safeGetString(jsonData, "fiscalDateEnding"),
-                    safeGetBigDecimal(jsonData, "grossProfit"),
-                    safeGetBigDecimal(jsonData, "totalRevenue"),
-                    safeGetBigDecimal(jsonData, "operatingIncome"),
-                    safeGetBigDecimal(jsonData, "netIncome"),
-                    safeGetBigDecimal(jsonData, "costOfRevenue"),
-                    safeGetBigDecimal(jsonData, "costofGoodsAndServicesSold"),
-                    safeGetBigDecimal(jsonData, "sellingGeneralAndAdministrative"),
-                    safeGetBigDecimal(jsonData, "researchAndDevelopment"),
-                    safeGetBigDecimal(jsonData, "operatingExpenses"),
-                    safeGetBigDecimal(jsonData, "investmentIncomeNet"),
-                    safeGetBigDecimal(jsonData, "netInterestIncome"),
-                    safeGetBigDecimal(jsonData, "interestIncome"),
-                    safeGetBigDecimal(jsonData, "interestExpense"),
-                    safeGetBigDecimal(jsonData, "nonInterestIncome"),
-                    safeGetBigDecimal(jsonData, "otherNonOperatingIncome"),
-                    safeGetBigDecimal(jsonData, "depreciation"),
-                    safeGetBigDecimal(jsonData, "depreciationAndAmortization"),
-                    safeGetBigDecimal(jsonData, "incomeBeforeTax"),
-                    safeGetBigDecimal(jsonData, "incomeTaxExpense"),
-                    safeGetBigDecimal(jsonData, "interestAndDebtExpense"),
-                    safeGetBigDecimal(jsonData, "netIncomeFromContinuingOperations"),
-                    safeGetBigDecimal(jsonData, "comprehensiveIncomeNetOfTax"),
-                    safeGetBigDecimal(jsonData, "ebit"),
-                    safeGetBigDecimal(jsonData, "ebitda")
-                );
-            
-                annualIncomeStatementList.add(annualIncomeStatement);
-            
-            } catch (JsonParseException e) {
-                System.err.println("Error parsing JSON: " + e.getMessage());
-            } catch (IllegalArgumentException e) {
-                System.err.println("Error creating IncomeStatement: " + e.getMessage());
-            } catch (Exception e) {
-                System.err.println("A general error occurred: " + e.getMessage());
+            if (jsonArray == null) {
+                System.err.println("Error: No data in JSON: " + function);
+                return dataList;
             }
+
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject jsonData = jsonArray.get(i).getAsJsonObject();
+                try {
+                    T object = objectCreator.apply(jsonData);
+                    if (object != null) {
+                        dataList.add(object);
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Error creating object: " + e.getMessage());
+                }
+            }
+            return dataList;
+        } catch (JsonParseException e) {
+            System.err.println("Error parsing JSON: " + e.getMessage());
+            return new ArrayList<>();
+        } catch (Exception e) {
+            System.err.println("A general error occurred: " + e.getMessage());
+            return new ArrayList<>();
         }
-        return annualIncomeStatementList;
     }
 
-    /**
-     * Parses annual balance sheet data from a JSON response.
-     *
-     * @param symbol       The stock symbol.
-     * @param jsonResponse The JSON response string containing annual balance sheet data.
-     * @param functionType The AlphaVantage API function type used to retrieve the data.
-     * @return A list of AnnualBalanceSheet objects parsed from the JSON response.
-     */
-    public List<BalanceSheet> parseAnnualBalanceSheet(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
-        JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-
-        String Function = functionType.getJsonFunction();
-        JsonArray annualBalanceSheetJsonArray = jsonObject.getAsJsonArray(Function); 
-        List<BalanceSheet> annualBalanceSheetList = new ArrayList<>();
-        
-        for (int i = 0; i < annualBalanceSheetJsonArray.size(); i++) {
-            JsonObject jsonData = annualBalanceSheetJsonArray.get(i).getAsJsonObject();
-            
+    public List<IncomeStatement> parseAnnualIncomeStatement(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
+        return parseFinancialData(jsonResponse, functionType, jsonData -> {
             try {
-                BalanceSheet annualBalanceSheet = new BalanceSheet(
-                    safeGetString(jsonData, "fiscalDateEnding"),
-                    safeGetBigDecimal(jsonData, "operatingCashflow"),
-                    safeGetBigDecimal(jsonData, "paymentsForOperatingActivities"),
-                    safeGetBigDecimal(jsonData, "proceedsFromOperatingActivities"),
-                    safeGetBigDecimal(jsonData, "changeInOperatingLiabilities"),
-                    safeGetBigDecimal(jsonData, "changeInOperatingAssets"),
-                    safeGetBigDecimal(jsonData, "depreciationDepletionAndAmortization"),
-                    safeGetBigDecimal(jsonData, "capitalExpenditures"),
-                    safeGetBigDecimal(jsonData, "changeInReceivables"),
-                    safeGetBigDecimal(jsonData, "changeInInventory"),
-                    safeGetBigDecimal(jsonData, "profitLoss"),
-                    safeGetBigDecimal(jsonData, "cashflowFromInvestment"),
-                    safeGetBigDecimal(jsonData, "cashflowFromFinancing"),
-                    safeGetBigDecimal(jsonData, "proceedsFromRepaymentsOfShortTermDebt"),
-                    safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfCommonStock"),
-                    safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfEquity"),
-                    safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfPreferredStock"),
-                    safeGetBigDecimal(jsonData, "dividendPayout"),
-                    safeGetBigDecimal(jsonData, "dividendPayoutCommonStock"),
-                    safeGetBigDecimal(jsonData, "dividendPayoutPreferredStock"),
-                    safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfCommonStock"),
-                    safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"),
-                    safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfPreferredStock"),
-                    safeGetBigDecimal(jsonData, "proceedsFromRepurchaseOfEquity"),
-                    safeGetBigDecimal(jsonData, "proceedsFromSaleOfTreasuryStock"),
-                    safeGetBigDecimal(jsonData, "changeInCashAndCashEquivalents"),
-                    safeGetBigDecimal(jsonData, "changeInExchangeRate"),
-                    safeGetBigDecimal(jsonData, "netIncome")
+                return new IncomeStatement(
+                        safeGetDate(jsonData, "fiscalDateEnding"),
+                        safeGetBigDecimal(jsonData, "grossProfit"),
+                        safeGetBigDecimal(jsonData, "totalRevenue"),
+                        safeGetBigDecimal(jsonData, "operatingIncome"),
+                        safeGetBigDecimal(jsonData, "netIncome"),
+                        safeGetBigDecimal(jsonData, "costOfRevenue"),
+                        safeGetBigDecimal(jsonData, "costofGoodsAndServicesSold"),
+                        safeGetBigDecimal(jsonData, "sellingGeneralAndAdministrative"),
+                        safeGetBigDecimal(jsonData, "researchAndDevelopment"),
+                        safeGetBigDecimal(jsonData, "operatingExpenses"),
+                        safeGetBigDecimal(jsonData, "investmentIncomeNet"),
+                        safeGetBigDecimal(jsonData, "netInterestIncome"),
+                        safeGetBigDecimal(jsonData, "interestIncome"),
+                        safeGetBigDecimal(jsonData, "interestExpense"),
+                        safeGetBigDecimal(jsonData, "nonInterestIncome"),
+                        safeGetBigDecimal(jsonData, "otherNonOperatingIncome"),
+                        safeGetBigDecimal(jsonData, "depreciation"),
+                        safeGetBigDecimal(jsonData, "depreciationAndAmortization"),
+                        safeGetBigDecimal(jsonData, "incomeBeforeTax"),
+                        safeGetBigDecimal(jsonData, "incomeTaxExpense"),
+                        safeGetBigDecimal(jsonData, "interestAndDebtExpense"),
+                        safeGetBigDecimal(jsonData, "netIncomeFromContinuingOperations"),
+                        safeGetBigDecimal(jsonData, "comprehensiveIncomeNetOfTax"),
+                        safeGetBigDecimal(jsonData, "ebit"),
+                        safeGetBigDecimal(jsonData, "ebitda")
                 );
-            
-                annualBalanceSheetList.add(annualBalanceSheet);
-            
-            } catch (JsonParseException e) {
-                System.err.println("Error parsing JSON: " + e.getMessage());
-            } catch (IllegalArgumentException e) {
-                System.err.println("Error creating IncomeStatement: " + e.getMessage());
             } catch (Exception e) {
-                System.err.println("A general error occurred: " + e.getMessage());
+                System.err.println("A general error occurred creating IncomeStatement: " + e.getMessage());
+                return null;
             }
-        }
-        return annualBalanceSheetList;
+        });
     }
 
-        /**
-     * Parses annual balance sheet data from a JSON response.
-     *
-     * @param symbol       The stock symbol.
-     * @param jsonResponse The JSON response string containing annual balance sheet data.
-     * @param functionType The AlphaVantage API function type used to retrieve the data.
-     * @return A list of AnnualBalanceSheet objects parsed from the JSON response.
-     */
-    public List<CashFlow> parseAnnualCashFlow(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
-        JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-
-        String Function = functionType.getJsonFunction();
-        JsonArray annualCashFlowJsonArray = jsonObject.getAsJsonArray(Function); 
-        List<CashFlow> annualCashFlowList = new ArrayList<>();
-        
-        for (int i = 0; i < annualCashFlowJsonArray.size(); i++) {
-            JsonObject jsonData = annualCashFlowJsonArray.get(i).getAsJsonObject();
-            
+    public List<BalanceSheet> parseAnnualBalanceSheet(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
+        return parseFinancialData(jsonResponse, functionType, jsonData -> {
             try {
-                CashFlow annualCashFlow = new CashFlow(
-                    safeGetString(jsonData, "fiscalDateEnding"),
-                    safeGetBigDecimal(jsonData, "operatingCashflow"),
-                    safeGetBigDecimal(jsonData, "paymentsForOperatingActivities"),
-                    safeGetBigDecimal(jsonData, "proceedsFromOperatingActivities"),
-                    safeGetBigDecimal(jsonData, "changeInOperatingLiabilities"),
-                    safeGetBigDecimal(jsonData, "changeInOperatingAssets"),
-                    safeGetBigDecimal(jsonData, "depreciationDepletionAndAmortization"),
-                    safeGetBigDecimal(jsonData, "capitalExpenditures"),
-                    safeGetBigDecimal(jsonData, "changeInReceivables"),
-                    safeGetBigDecimal(jsonData, "changeInInventory"),
-                    safeGetBigDecimal(jsonData, "profitLoss"),
-                    safeGetBigDecimal(jsonData, "cashflowFromInvestment"),
-                    safeGetBigDecimal(jsonData, "cashflowFromFinancing"),
-                    safeGetBigDecimal(jsonData, "proceedsFromRepaymentsOfShortTermDebt"),
-                    safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfCommonStock"),
-                    safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfEquity"),
-                    safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfPreferredStock"),
-                    safeGetBigDecimal(jsonData, "dividendPayout"),
-                    safeGetBigDecimal(jsonData, "dividendPayoutCommonStock"),
-                    safeGetBigDecimal(jsonData, "dividendPayoutPreferredStock"),
-                    safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfCommonStock"),
-                    safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"),
-                    safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfPreferredStock"),
-                    safeGetBigDecimal(jsonData, "proceedsFromRepurchaseOfEquity"),
-                    safeGetBigDecimal(jsonData, "proceedsFromSaleOfTreasuryStock"),
-                    safeGetBigDecimal(jsonData, "changeInCashAndCashEquivalents"),
-                    safeGetBigDecimal(jsonData, "changeInExchangeRate"),
-                    safeGetBigDecimal(jsonData, "netIncome")
+                return new BalanceSheet(
+                        safeGetDate(jsonData, "fiscalDateEnding"),
+                        safeGetBigDecimal(jsonData, "operatingCashflow"),
+                        safeGetBigDecimal(jsonData, "paymentsForOperatingActivities"),
+                        safeGetBigDecimal(jsonData, "proceedsFromOperatingActivities"),
+                        safeGetBigDecimal(jsonData, "changeInOperatingLiabilities"),
+                        safeGetBigDecimal(jsonData, "changeInOperatingAssets"),
+                        safeGetBigDecimal(jsonData, "depreciationDepletionAndAmortization"),
+                        safeGetBigDecimal(jsonData, "capitalExpenditures"),
+                        safeGetBigDecimal(jsonData, "changeInReceivables"),
+                        safeGetBigDecimal(jsonData, "changeInInventory"),
+                        safeGetBigDecimal(jsonData, "profitLoss"),
+                        safeGetBigDecimal(jsonData, "cashflowFromInvestment"),
+                        safeGetBigDecimal(jsonData, "cashflowFromFinancing"),
+                        safeGetBigDecimal(jsonData, "proceedsFromRepaymentsOfShortTermDebt"),
+                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfCommonStock"),
+                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfEquity"),
+                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfPreferredStock"),
+                        safeGetBigDecimal(jsonData, "dividendPayout"),
+                        safeGetBigDecimal(jsonData, "dividendPayoutCommonStock"),
+                        safeGetBigDecimal(jsonData, "dividendPayoutPreferredStock"),
+                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfCommonStock"),
+                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"),
+                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfPreferredStock"),
+                        safeGetBigDecimal(jsonData, "proceedsFromRepurchaseOfEquity"),
+                        safeGetBigDecimal(jsonData, "proceedsFromSaleOfTreasuryStock"),
+                        safeGetBigDecimal(jsonData, "changeInCashAndCashEquivalents"),
+                        safeGetBigDecimal(jsonData, "changeInExchangeRate"),
+                        safeGetBigDecimal(jsonData, "netIncome")
                 );
-            
-                annualCashFlowList.add(annualCashFlow);
-            
-            } catch (JsonParseException e) {
-                System.err.println("Error parsing JSON: " + e.getMessage());
-            } catch (IllegalArgumentException e) {
-                System.err.println("Error creating IncomeStatement: " + e.getMessage());
             } catch (Exception e) {
-                System.err.println("A general error occurred: " + e.getMessage());
+                System.err.println("A general error occurred creating BalanceSheet: " + e.getMessage());
+                return null;
             }
-        }
-        return annualCashFlowList;
+        });
+    }
+
+    public List<CashFlow> parseAnnualCashFlow(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
+        return parseFinancialData(jsonResponse, functionType, jsonData -> {
+            try {
+                return new CashFlow(
+                        safeGetDate(jsonData, "fiscalDateEnding"),
+                        safeGetBigDecimal(jsonData, "operatingCashflow"),
+                        safeGetBigDecimal(jsonData, "paymentsForOperatingActivities"),
+                        safeGetBigDecimal(jsonData, "proceedsFromOperatingActivities"),
+                        safeGetBigDecimal(jsonData, "changeInOperatingLiabilities"),
+                        safeGetBigDecimal(jsonData, "changeInOperatingAssets"),
+                        safeGetBigDecimal(jsonData, "depreciationDepletionAndAmortization"),
+                        safeGetBigDecimal(jsonData, "capitalExpenditures"),
+                        safeGetBigDecimal(jsonData, "changeInReceivables"),
+                        safeGetBigDecimal(jsonData, "changeInInventory"),
+                        safeGetBigDecimal(jsonData, "profitLoss"),
+                        safeGetBigDecimal(jsonData, "cashflowFromInvestment"),
+                        safeGetBigDecimal(jsonData, "cashflowFromFinancing"),
+                        safeGetBigDecimal(jsonData, "proceedsFromRepaymentsOfShortTermDebt"),
+                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfCommonStock"),
+                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfEquity"),
+                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfPreferredStock"),
+                        safeGetBigDecimal(jsonData, "dividendPayout"),
+                        safeGetBigDecimal(jsonData, "dividendPayoutCommonStock"),
+                        safeGetBigDecimal(jsonData, "dividendPayoutPreferredStock"),
+                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfCommonStock"),
+                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"),
+                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfPreferredStock"),
+                        safeGetBigDecimal(jsonData, "proceedsFromRepurchaseOfEquity"),
+                        safeGetBigDecimal(jsonData, "proceedsFromSaleOfTreasuryStock"),
+                        safeGetBigDecimal(jsonData, "changeInCashAndCashEquivalents"),
+                        safeGetBigDecimal(jsonData, "changeInExchangeRate"),
+                        safeGetBigDecimal(jsonData, "netIncome")
+                );
+            } catch (Exception e) {
+                System.err.println("A general error occurred creating CashFlow: " + e.getMessage());
+                return null;
+            }
+        });
     }
 
     /**
@@ -271,14 +236,13 @@ public class AlphaVantageService {
      * @param symbol       The stock symbol.
      * @param jsonResponse The JSON response string containing overview data.
      * @param functionType The AlphaVantage API function type used to retrieve the data.
-     * @return A list of Overview objects parsed from the JSON response.
+     * @return A Overview object parsed from the JSON response.
      */
     public Overview parseOverview(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
         JsonObject jsonData = JsonParser.parseString(jsonResponse).getAsJsonObject();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        
+
         try {
-            Overview overview = new Overview(
+            return new Overview(
                 safeGetString(jsonData, "Symbol"),
                 safeGetString(jsonData, "Name"),
                 safeGetString(jsonData, "Description"),
@@ -288,7 +252,7 @@ public class AlphaVantageService {
                 safeGetString(jsonData, "Sector"),
                 safeGetString(jsonData, "Industry"),
                 safeGetString(jsonData, "FiscalYearEnd"),
-                safeGetDate(jsonData, "LatestQuarter", dateFormatter),
+                safeGetDate(jsonData, "LatestQuarter"),
                 safeGetBigDecimal(jsonData, "MarketCapitalization"),
                 safeGetBigDecimal(jsonData, "EBITDA"),
                 safeGetBigDecimal(jsonData, "PERatio"),
@@ -325,12 +289,9 @@ public class AlphaVantageService {
                 safeGetBigDecimal(jsonData, "50DayMovingAverage"),
                 safeGetBigDecimal(jsonData, "200DayMovingAverage"),
                 safeGetLong(jsonData, "SharesOutstanding"),
-                safeGetDate(jsonData, "DividendDate", dateFormatter),
-                safeGetDate(jsonData, "ExDividendDate", dateFormatter)
+                safeGetDate(jsonData, "DividendDate"),
+                safeGetDate(jsonData, "ExDividendDate")
             );
-
-            return overview;
-
         } catch (Exception e) {
             System.err.println("Error prasing overview: " + e.getMessage());
             return null;
@@ -353,11 +314,14 @@ public class AlphaVantageService {
             JsonElement element = json.get(key);
             if (element != null && !element.isJsonNull()) {
                 String value = element.getAsString();
+                if ("None".equalsIgnoreCase(value)) {
+                    return null; // JSON can be "None" for some values
+                }
                 try {
-                return new BigDecimal(value);
+                    return new BigDecimal(value);
                 } catch (NumberFormatException ex) {
-                System.err.println("Error parsing BigDecimal for key '" + key + "': " + value);
-                return null;
+                    System.err.println("Error parsing BigDecimal for key '" + key + "': " + value);
+                    return null;
                 }
             }
             return null;
@@ -373,13 +337,12 @@ public class AlphaVantageService {
             if (element != null && !element.isJsonNull()) {
                 String value = element.getAsString();
                 if (!"None".equalsIgnoreCase(value)) {
-                    try {
-                        return Long.valueOf(value);
-                    } catch (NumberFormatException e) {
-                        System.err.println("Error parsing Long for key '" + key + "': " + value);
-                        return null;
-                    }
-                } else {
+                    return null;
+                }
+                try {
+                    return Long.valueOf(value);
+                } catch (NumberFormatException e) {
+                    System.err.println("Error parsing Long for key '" + key + "': " + value);
                     return null;
                 }
             }
@@ -409,8 +372,9 @@ public class AlphaVantageService {
         }
     }
 
-    private LocalDate safeGetDate(JsonObject json, String key, DateTimeFormatter formatter) {
+    private LocalDate safeGetDate(JsonObject json, String key) {
         try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             JsonElement element = json.get(key);
             if (element != null && !element.isJsonNull()) {
                 String dateString = element.getAsString();
