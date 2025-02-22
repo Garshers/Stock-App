@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stockapp.StockApp.model.BalanceSheet;
 import com.stockapp.StockApp.model.IncomeStatement;
 import com.stockapp.StockApp.model.Overview;
 import com.stockapp.StockApp.model.Stock;
 import com.stockapp.StockApp.model.URLCreator;
 import com.stockapp.StockApp.service.AlphaVantageService;
 import com.stockapp.StockApp.util.DCFValuationUtil;
+
 
 
 /**
@@ -30,7 +33,7 @@ public class StockChartsController {
     private final AlphaVantageService service = new AlphaVantageService();
 
     /**
-     * Retrieves stock data for a given symbol.
+     * Retrieves stock (price over time) data for a given symbol.
      *
      * @param symbol The stock symbol.
      * @return A list of Stock objects representing the stock data.
@@ -56,10 +59,10 @@ public class StockChartsController {
     }
 
     /**
-     * Retrieves annual inclome statment data for a given symbol.
+     * Retrieves Overview data for a given symbol.
      *
      * @param symbol The stock symbol.
-     * @return A list of Annual Income Statement objects representing the annual income statement data.
+     * @return A Overview object representing overview data.
      * @throws RuntimeException If an error occurs during data retrieval.
      */
     @GetMapping("/api/stockCharts/{symbol}/overview")
@@ -81,23 +84,46 @@ public class StockChartsController {
      * Retrieves annual inclome statment data for a given symbol.
      *
      * @param symbol The stock symbol.
-     * @return A list of Annual Income Statement objects representing the annual income statement data.
+     * @return A list of Annual IncomeStatement objects representing the annual income statement data.
      * @throws RuntimeException If an error occurs during data retrieval.
      */
     @GetMapping("/api/stockCharts/{symbol}/incomeStatement")
     public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
-        URLCreator stockIncomeStatementURL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
-        String url = stockIncomeStatementURL.generateUrl();
+        URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
+        String url = URL.generateUrl();
         System.out.println("income statement url: " + url);
 
         try {
             String jsonResponse = service.getStockData(url);
-            return service.parseAnnualIncomeStatement(stockIncomeStatementURL.getSymbol(), jsonResponse, stockIncomeStatementURL.getFunction());
+            return service.parseAnnualIncomeStatement(URL.getSymbol(), jsonResponse, URL.getFunction());
         } catch (Exception e) {
             System.err.println("ERROR fetching income statement data: " + e.getMessage());
             throw new RuntimeException("Error fetching income statement data.", e);
         }
     }
+
+    /**
+     * Retrieves annual balance sheet data for a given symbol.
+     *
+     * @param symbol The stock symbol.
+     * @return A list of Annual BalanceSheet objects representing the annual balance sheet data.
+     * @throws RuntimeException If an error occurs during data retrieval.
+     */
+    @GetMapping("/api/stockCharts/{symbol}/balanceSheet")
+    public List<BalanceSheet> getAnnualBalanceSheet(@RequestParam String symbol) {
+        URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.BALANCE_SHEET);
+        String url = URL.generateUrl();
+        System.out.println("balance sheet url: " + url);
+
+        try {
+            String jsonResponse = service.getStockData(url);
+            return service.parseAnnualBalanceSheet(URL.getSymbol(), jsonResponse, URL.getFunction());
+        } catch (Exception e) {
+            System.err.println("ERROR fetching balance sheet data: " + e.getMessage());
+            throw new RuntimeException("Error fetching balance sheet data.", e);
+        }
+    }
+    
 
     @PostMapping("/api/number")
     public ResponseEntity<Map<String, Object>> handleNumber(@RequestBody NumberData numberData) {
