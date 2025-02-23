@@ -46,7 +46,7 @@ public class StockChartsController {
      * @throws IllegalArgumentException If the provided symbol is null or empty.
      * @throws RuntimeException If an error occurs during data retrieval.
      */
-    @GetMapping("/api/stockCharts/{symbol}/stocks")
+    @GetMapping("/api/stockDashboard/{symbol}/stocks")
     public List<Stock> getStockData(@PathVariable String symbol) {
         if (symbol == null || symbol.isEmpty()){
             throw new IllegalArgumentException("Please provide a stock symbol.");
@@ -72,7 +72,7 @@ public class StockChartsController {
      * @return A Overview object representing overview data.
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
-    @GetMapping("/api/stockCharts/{symbol}/overview")
+    @GetMapping("/api/stockDashboard/{symbol}/overview")
     public Overview getOverview(@PathVariable String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
         String url = URL.generateUrl();
@@ -95,7 +95,7 @@ public class StockChartsController {
      * @return A list of Annual IncomeStatement objects representing the annual income statement data.
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
-    @GetMapping("/api/stockCharts/{symbol}/incomeStatement")
+    @GetMapping("/api/stockDashboard/{symbol}/incomeStatement")
     public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
         String url = URL.generateUrl();
@@ -118,7 +118,7 @@ public class StockChartsController {
      * @return A list of Annual BalanceSheet objects representing the annual balance sheet data.
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
-    @GetMapping("/api/stockCharts/{symbol}/balanceSheet")
+    @GetMapping("/api/stockDashboard/{symbol}/balanceSheet")
     public List<BalanceSheet> getAnnualBalanceSheet(@RequestParam String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.BALANCE_SHEET);
         String url = URL.generateUrl();
