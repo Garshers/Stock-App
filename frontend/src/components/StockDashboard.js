@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Chart } from 'chart.js/auto';
-import '../static/css/headerFooter.css';
-import '../static/css/stockChartsStyle.css';
-import MyTable from './MyTable.js';
+import '../assets/stockDashboardStyle.css';
+import CustomTable from './CustomTable.js';
 
 function StockChart() {
     const { symbol } = useParams();
@@ -14,10 +13,13 @@ function StockChart() {
     const [stocks, setStocks] = useState([]);
     const [incomeStatement, setIncomeStatement] = useState(null);
     const [balanceSheet, setBalanceSheet] = useState(null);
+    const [freeCashFlow, setFreeCashFlow] = useState(null);
     const [overviewData, setOverviewData] = useState(null);
 
     const [loadingStocks, setLoadingStocks] = useState(true);
-    const [loadingIncomeStatement, setLoadingIncomeStatement] = useState(false);
+    const [loadingBalanceSheet, setLoadingIncomeStatement] = useState(false);
+    const [loadingIncomeStatement, setLoadingBalanceSheet] = useState(false);
+    const [loadingFreeCashFlow, setLoadingFreeCashFlow] = useState(false);
     const [loadingOverview, setLoadingOverview] = useState(true);
 
     const [selectedData, setSelectedData] = useState('netIncome');
@@ -25,11 +27,14 @@ function StockChart() {
     const [stockChart, setStockChart] = useState(null);
     const [incomeStatementChart, setIncomeStatementChart] = useState(null);
 
-    {/* Fetches stock data from API */}
+    /**
+     * useEffect hook to fetch stock data from the API.
+     * Runs when the stock symbol changes.
+     */
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                const url = `http://localhost:8080/api/stockCharts/${symbol}/stocks`;
+                const url = `http://localhost:8080/api/stockDashboard/${symbol}/stocks`;
                 const response = await axios.get(url);
                 setStocks(response.data);
             } catch (error) {
@@ -42,11 +47,13 @@ function StockChart() {
         fetchStockData();
     }, [symbol]);
 
-    {/* Fetches income statement data from API */}
+    /**
+     * Async function to fetch income statement data from the API.
+     */
     const fetchIncomeStatementData = async () => {
         setLoadingIncomeStatement(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/stockCharts/${symbol}/incomeStatement`);
+            const response = await axios.get(`http://localhost:8080/api/stockDashboard/${symbol}/incomeStatement`);
             setIncomeStatement(response.data);
             console.log(response.data);
         } catch (error) {
@@ -56,12 +63,15 @@ function StockChart() {
         }
     };
 
-    {/* Fetches overview data from API */}
+    /**
+     * useEffect hook to fetch overview data from the API.
+     * Runs when the stock symbol changes.
+     */
     useEffect(() => {
         const fetchOverviewData = async () => {
             setLoadingOverview(true);
             try {
-                const response = await axios.get(`http://localhost:8080/api/stockCharts/${symbol}/overview`);
+                const response = await axios.get(`http://localhost:8080/api/stockDashboard/${symbol}/overview`);
                 setOverviewData(response.data);
             } catch (error) {
                 console.error("Error fetching overview data:", error);
@@ -73,7 +83,10 @@ function StockChart() {
         fetchOverviewData();
     }, [symbol]);
 
-    {/* Creates stock chart */}
+    /**
+     * useEffect hook to create the stock chart.
+     * Runs when the stock data changes.
+     */
     useEffect(() => {
         if (stocks.length > 0) {
             const labels = stocks.map(stock => stock.date);
@@ -86,7 +99,10 @@ function StockChart() {
         }
     }, [stocks]);
 
-    {/* Creates Income Statement chart */}
+    /**
+     * useEffect hook to create the income statement chart.
+     * Runs when the income statement data or selected data changes.
+     */
     useEffect(() => {
         if (incomeStatement && incomeStatement.length > 0) {
             const frlabels = incomeStatement.map(item => item.fiscalDateEnding);
@@ -101,14 +117,20 @@ function StockChart() {
 
             setIncomeStatementChart(newIncomeStatementChart);
         }
-    }, [incomeStatement, selectedData]); // Runs when those are changed
+    }, [incomeStatement, selectedData]);
 
-    {/* Supports changes of data selection dropdown */}
+    /**
+     * Function to handle the change of data selection in the dropdown.
+     * @param {Event} event - The change event.
+     */
     const handleDataSelectionChange = (event) => {
         setSelectedData(event.target.value);
     };
 
-    {/* Supports changes of data in input cell */}
+    /**
+     * Function to handle the change of value in the input field.
+     * @param {Event} event - The change event.
+     */
     const handleChange = (event) => {
         const inputValue = event.target.value;
         const parsedNumber = parseFloat(inputValue);
@@ -120,7 +142,9 @@ function StockChart() {
         }
     };
 
-    {/* handles comunication for number with backend */}
+    /**
+     * Async function to submit data to the backend.
+     */
     const handleSubmit = async () => {
         try {
             const response = await fetch('http://localhost:8080/api/number', {
@@ -148,8 +172,6 @@ function StockChart() {
             <div className="contentBox">
                 <div className="mainLeftBox"></div>
                 <div className="mainCenterBox">
-                    <h2>Stocks</h2>
-
                     {/* Stock price chart */}
                     {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
@@ -157,7 +179,7 @@ function StockChart() {
                     <div>
                         <label htmlFor="number">Enter value:</label>
                         <input type="text" value={number} onChange={handleChange} />
-                        <button onClick={handleSubmit}>Wyślij</button>
+                        <button onClick={handleSubmit}>Send</button>
                     </div>
 
                     {/* Button for getting annual report data */}
@@ -185,7 +207,7 @@ function StockChart() {
                             <canvas id="incomeStatementChart"></canvas>
 
                             {/* Custom table showing IS data */}
-                            <MyTable incomeStatement={incomeStatement} />
+                            <CustomTable tableData={incomeStatement} />
                         </div>
                     ) : loadingIncomeStatement ? (
                         <div>Loading income statement data...</div>

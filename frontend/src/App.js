@@ -1,10 +1,11 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CompanyList from './components/HomePage.js';
-import StockChart from './components/StockChart';
-import { Header } from './components/header.js';
-import Footer from './components/footer.js';
+import HomePage from './components/HomePage.js';
+import StockChart from './components/StockDashboard.js';
+import Footer from './components/HeaderAndFooter/footer.js';
+import { Header } from './components/HeaderAndFooter/header.js';
+import './components/HeaderAndFooter/headerFooter.css';
 
 function App() {
   return (
@@ -12,8 +13,8 @@ function App() {
           <div className="App">
             <Header />
               <Routes>
-                  <Route path="/" element={<CompanyList />} />
-                  <Route path="/stockChart/:symbol" element={<StockChart />} />
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/stockDashboard/:symbol" element={<StockChart />} />
               </Routes>
             <Footer />
           </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../static/css/homePageStyle.css';
+import '../assets/homePageStyle.css';
 
 function HomePage() {
     const [symbol, setSymbol] = useState('');
@@ -12,7 +12,7 @@ function HomePage() {
 
     const handleSubmit = () => {
         if (symbol) {
-            navigate(`/stockChart/${symbol}`);
+            navigate(`/stockDashboard/${symbol}`);
         } else {
             alert('Please enter a company symbol.');
         }

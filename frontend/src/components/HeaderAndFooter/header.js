@@ -17,7 +17,8 @@ export function Header() {
 
     return (
         <header>
-            <div id="header-frame" className="header-frame">
+            <div className='header-space'></div>
+            <div id="header-frame" className={`header-frame ${isScrolled ? 'scrolled' : ''}`}>
                 <div className="leftBox">
                     {/*<img className="responsive-image" src="images/icon.png" alt="Icon" />*/}
                 </div>

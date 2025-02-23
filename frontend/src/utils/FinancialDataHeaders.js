@@ -1,11 +1,4 @@
-import React from 'react';
-import '../static/css/stockChartsStyle.css';
-
-const MyTable = ({ incomeStatement }) => {
-//console.log(incomeStatement); //Log
-  
-// Headers for Income Statement Table
-const headersIncomeStatement = [
+export const headersIncomeStatement = [
     { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
     { displayName: 'Gross Profit', dataName: 'grossProfit' },
     { displayName: 'Total Revenue', dataName: 'totalRevenue' },
@@ -33,8 +26,7 @@ const headersIncomeStatement = [
     { displayName: 'Net Income', dataName: 'netIncome' },
 ];
 
-// Headers for Balance Sheet Table
-const headersBalanceSheet = [
+export const headersBalanceSheet = [
     { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
     { displayName: 'Reported Currency', dataName: 'reportedCurrency' },
     { displayName: 'Operating Cashflow', dataName: 'operatingCashflow' },
@@ -66,8 +58,7 @@ const headersBalanceSheet = [
     { displayName: 'Net Income', dataName: 'netIncome' },
 ];
 
-// Headers for Cash Flow Table
-const headersCashFlow = [
+export const headersCashFlow = [
     { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
     { displayName: 'Reported Currency', dataName: 'reportedCurrency' },
     { displayName: 'Operating Cashflow', dataName: 'operatingCashflow' },
@@ -98,32 +89,3 @@ const headersCashFlow = [
     { displayName: 'Change in Exchange Rate', dataName: 'changeInExchangeRate' },
     { displayName: 'Net Income', dataName: 'netIncome' },
 ];
-
-return (
-    <div className='customTable'>
-      <div className='customTableColumnHeader'>
-          {headersIncomeStatement.map((header) => (
-              <div className='customTableCellHeader' key={header.dataName}>
-                  {header.displayName}
-              </div>
-          ))}
-      </div>
-
-      {incomeStatement.map((item, rowIndex) => (
-          <div className='customTableColumn' key={rowIndex}>
-              {headersIncomeStatement.map((header, colIndex) => (
-                  <div className='customTableCell' key={colIndex}>
-                      {header.dataName === 'fiscalDateEnding' ? (
-                          <div style={{ textAlign: 'center' }}>{item[header.dataName]}</div>
-                      ) : (
-                          item[header.dataName]
-                      )}
-                  </div>
-              ))}
-          </div>
-        ))}
-    </div>
-  );
-};
-
-export default MyTable;
