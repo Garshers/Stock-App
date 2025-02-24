@@ -4,6 +4,8 @@ import axios from 'axios';
 import { Chart } from 'chart.js/auto';
 import '../assets/stockDashboardStyle.css';
 import CustomTable from './CustomTable.js';
+import { fetchData } from '../services/StockAPIService.js';
+import { headersIncomeStatement, headersBalanceSheet, headersCashFlowStatement } from '../utils/FinancialDataHeaders.js';
 
 function StockChart() {
     const { symbol } = useParams();
@@ -13,13 +15,13 @@ function StockChart() {
     const [stocks, setStocks] = useState([]);
     const [incomeStatement, setIncomeStatement] = useState(null);
     const [balanceSheet, setBalanceSheet] = useState(null);
-    const [freeCashFlow, setFreeCashFlow] = useState(null);
+    const [cashFlowStatement, setCashFlowStatement] = useState(null);
     const [overviewData, setOverviewData] = useState(null);
 
     const [loadingStocks, setLoadingStocks] = useState(true);
     const [loadingBalanceSheet, setLoadingIncomeStatement] = useState(false);
     const [loadingIncomeStatement, setLoadingBalanceSheet] = useState(false);
-    const [loadingFreeCashFlow, setLoadingFreeCashFlow] = useState(false);
+    const [loadingCashFlowStatement, setLoadingCashFlowStatement] = useState(false);
     const [loadingOverview, setLoadingOverview] = useState(true);
 
     const [selectedData, setSelectedData] = useState('netIncome');
@@ -34,9 +36,8 @@ function StockChart() {
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                const url = `http://localhost:8080/api/stockDashboard/${symbol}/stocks`;
-                const response = await axios.get(url);
-                setStocks(response.data);
+                const data = await fetchData(`${symbol}/stocks`);
+                setStocks(data);
             } catch (error) {
                 console.error("Error fetching stocks:", error);
             } finally {
@@ -53,13 +54,43 @@ function StockChart() {
     const fetchIncomeStatementData = async () => {
         setLoadingIncomeStatement(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/stockDashboard/${symbol}/incomeStatement`);
-            setIncomeStatement(response.data);
-            console.log(response.data);
+            const data = await fetchData(`${symbol}/incomeStatement`);
+            setIncomeStatement(data);
         } catch (error) {
-            console.error("Error fetching financial statement:", error);
+            console.error("Error fetching income statement:", error);
         } finally {
             setLoadingIncomeStatement(false);
+        }
+    };
+
+    /**
+     * Async function to fetch balance sheet data from the API.
+     */
+    const fetchBalanceSheetData = async () => {
+        setLoadingBalanceSheet(true);
+        try {
+            const data = await fetchData(`${symbol}/balanceSheet`);
+            console.log(data);
+            setBalanceSheet(data);
+        } catch (error) {
+            console.error("Error fetching balance sheet:", error);
+        } finally {
+            setLoadingBalanceSheet(false);
+        }
+    };
+
+    /**
+     * Async function to fetch cash flow statement data from the API.
+     */
+    const fetchCashFlowStatementData = async () => {
+        setLoadingCashFlowStatement(true);
+        try {
+            const data = await fetchData(`${symbol}/cashFlowStatement`);
+            setCashFlowStatement(data);
+        } catch (error) {
+            console.error("Error fetching cash flow statement:", error);
+        } finally {
+            setLoadingCashFlowStatement(false);
         }
     };
 
@@ -71,8 +102,8 @@ function StockChart() {
         const fetchOverviewData = async () => {
             setLoadingOverview(true);
             try {
-                const response = await axios.get(`http://localhost:8080/api/stockDashboard/${symbol}/overview`);
-                setOverviewData(response.data);
+                const data = await fetchData(`${symbol}/overview`);
+                setOverviewData(data);
             } catch (error) {
                 console.error("Error fetching overview data:", error);
             } finally {
@@ -175,44 +206,91 @@ function StockChart() {
                     {/* Stock price chart */}
                     {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
-                    {/* Input value  */}
+                    {/* Input value block */}
                     <div>
                         <label htmlFor="number">Enter value:</label>
                         <input type="text" value={number} onChange={handleChange} />
                         <button onClick={handleSubmit}>Send</button>
                     </div>
 
-                    {/* Button for getting annual report data */}
+                    {/* Buttons for getting annual report data */}
                     <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
                         {loadingIncomeStatement ? "Loading report..." : "Get Income Statement"}
                     </button>
-                    <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
-                        {loadingIncomeStatement ? "Loading report..." : "Get Balance Sheet"}
+                    <button onClick={fetchBalanceSheetData} disabled={loadingBalanceSheet}>
+                        {loadingBalanceSheet ? "Loading report..." : "Get Balance Sheet"}
                     </button>
-                    <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
-                        {loadingIncomeStatement ? "Loading report..." : "Get Cash Flow Statement"}
+                    <button onClick={fetchCashFlowStatementData} disabled={loadingCashFlowStatement}>
+                        {loadingCashFlowStatement ? "Loading report..." : "Get Cash Flow Statement"}
                     </button>
 
                     {/* Box containing income statement (IS) data */}
                     {incomeStatement && incomeStatement.length > 0 ? (
                         <div className='incomeStatementBox'>
-                            <h2>Annual Report</h2>
+                            <h2>Annual Income Statement</h2>
                             {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
-                                <option value="netIncome">Net Income</option>
-                                <option value="grossProfit">Gross Profit</option>
-                                <option value="totalRevenue">Total Revenue</option>
-                                <option value="operatingIncome">Operating Income</option>
+                                {headersIncomeStatement.map((header) => (
+                                    <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
+                                        {header.displayName}
+                                    </option>
+                                ))}
                             </select>
                             <canvas id="incomeStatementChart"></canvas>
 
                             {/* Custom table showing IS data */}
-                            <CustomTable tableData={incomeStatement} />
+                            <CustomTable tableData={incomeStatement} headers={headersIncomeStatement}/>
                         </div>
                     ) : loadingIncomeStatement ? (
                         <div>Loading income statement data...</div>
                     ) : (
                         <div>No annual income statement data available.</div>
+                    )}
+
+                    {/* Box containing balance sheet (BS) data */}
+                    {balanceSheet && balanceSheet.length > 0 ? (
+                        <div className='incomeStatementBox'>
+                            <h2>Annual Balance Sheet</h2>
+                            {/* Chart and chart selection section */}
+                            <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
+                                {headersBalanceSheet.map((header) => (
+                                    <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
+                                        {header.displayName}
+                                    </option>
+                                ))}
+                            </select>
+                            <canvas id="balanceSheetChart"></canvas>
+
+                            {/* Custom table showing IS data */}
+                            <CustomTable tableData={balanceSheet} headers={headersBalanceSheet}/>
+                        </div>
+                    ) : loadingBalanceSheet ? (
+                        <div>Loading balance sheet data...</div>
+                    ) : (
+                        <div>No annual balance sheet data available.</div>
+                    )}
+
+                    {/* Box containing cash flow statement (CFS) data */}
+                    {cashFlowStatement && cashFlowStatement.length > 0 ? (
+                        <div className='incomeStatementBox'>
+                            <h2>Annual cash flow statement</h2>
+                            {/* Chart and chart selection section */}
+                            <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
+                                {headersCashFlowStatement.map((header) => (
+                                    <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
+                                        {header.displayName}
+                                    </option>
+                                ))}
+                            </select>
+                            <canvas id="cashFlowStatementChart"></canvas>
+
+                            {/* Custom table showing IS data */}
+                            <CustomTable tableData={cashFlowStatement} headers={headersCashFlowStatement}/>
+                        </div>
+                    ) : loadingCashFlowStatement ? (
+                        <div>Loading cash flow statement data...</div>
+                    ) : (
+                        <div>No annual cash flow statement data available.</div>
                     )}
 
                 </div>

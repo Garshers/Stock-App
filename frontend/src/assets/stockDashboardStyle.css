@@ -46,7 +46,7 @@ tbody tr:hover {
 
 /* -------- Custom table styling -------- */
 .customTable {
-    width: 90%;
+    width: 98%;
     min-height: 100px;
     height: auto;
     overflow-x: auto;
@@ -73,10 +73,10 @@ tbody tr:hover {
 .customTableCell, .customTableCellHeader {
     width: fit-content;
     min-width: 100%;
-    min-height: 35px;
+    min-height: 22px;
     overflow: hidden;
     padding: 6px 10px;
-    border: 0.5px solid #ddd;
+    border: 0px solid #ddd;
 }
 
 .customTableCell {

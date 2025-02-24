@@ -1,14 +1,13 @@
 import React from 'react';
 import '../assets/stockDashboardStyle.css';
-import { headersIncomeStatement } from '../utils/FinancialDataHeaders.js';
 
-const CustomTable = ({ tableData }) => {
+const CustomTable = ({ tableData, headers }) => {
 //console.log(tableData); //Log
   
 return (
     <div className='customTable'>
       <div className='customTableColumnHeader'>
-          {headersIncomeStatement.map((header) => (
+          {headers.map((header) => (
               <div className='customTableCellHeader' key={header.dataName}>
                   {header.displayName}
               </div>
@@ -17,7 +16,7 @@ return (
 
       {tableData.map((item, rowIndex) => (
           <div className='customTableColumn' key={rowIndex}>
-              {headersIncomeStatement.map((header, colIndex) => (
+              {headers.map((header, colIndex) => (
                   <div className='customTableCell' key={colIndex}>
                       {header.dataName === 'fiscalDateEnding' ? (
                           <div style={{ textAlign: 'center' }}>{item[header.dataName]}</div>
