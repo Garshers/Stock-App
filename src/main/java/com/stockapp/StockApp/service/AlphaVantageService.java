@@ -178,34 +178,43 @@ public class AlphaVantageService {
         return parseFinancialData(jsonResponse, functionType, jsonData -> {
             try {
                 return new BalanceSheet(
-                        safeGetDate(jsonData, "fiscalDateEnding"),
-                        safeGetBigDecimal(jsonData, "operatingCashflow"),
-                        safeGetBigDecimal(jsonData, "paymentsForOperatingActivities"),
-                        safeGetBigDecimal(jsonData, "proceedsFromOperatingActivities"),
-                        safeGetBigDecimal(jsonData, "changeInOperatingLiabilities"),
-                        safeGetBigDecimal(jsonData, "changeInOperatingAssets"),
-                        safeGetBigDecimal(jsonData, "depreciationDepletionAndAmortization"),
-                        safeGetBigDecimal(jsonData, "capitalExpenditures"),
-                        safeGetBigDecimal(jsonData, "changeInReceivables"),
-                        safeGetBigDecimal(jsonData, "changeInInventory"),
-                        safeGetBigDecimal(jsonData, "profitLoss"),
-                        safeGetBigDecimal(jsonData, "cashflowFromInvestment"),
-                        safeGetBigDecimal(jsonData, "cashflowFromFinancing"),
-                        safeGetBigDecimal(jsonData, "proceedsFromRepaymentsOfShortTermDebt"),
-                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfCommonStock"),
-                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfEquity"),
-                        safeGetBigDecimal(jsonData, "paymentsForRepurchaseOfPreferredStock"),
-                        safeGetBigDecimal(jsonData, "dividendPayout"),
-                        safeGetBigDecimal(jsonData, "dividendPayoutCommonStock"),
-                        safeGetBigDecimal(jsonData, "dividendPayoutPreferredStock"),
-                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfCommonStock"),
-                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfLongTermDebtAndCapitalSecuritiesNet"),
-                        safeGetBigDecimal(jsonData, "proceedsFromIssuanceOfPreferredStock"),
-                        safeGetBigDecimal(jsonData, "proceedsFromRepurchaseOfEquity"),
-                        safeGetBigDecimal(jsonData, "proceedsFromSaleOfTreasuryStock"),
-                        safeGetBigDecimal(jsonData, "changeInCashAndCashEquivalents"),
-                        safeGetBigDecimal(jsonData, "changeInExchangeRate"),
-                        safeGetBigDecimal(jsonData, "netIncome")
+                    safeGetDate(jsonData, "fiscalDateEnding"),
+                    safeGetBigDecimal(jsonData, "totalAssets"),
+                    safeGetBigDecimal(jsonData, "totalCurrentAssets"),
+                    safeGetBigDecimal(jsonData, "cashAndCashEquivalentsAtCarryingValue"),
+                    safeGetBigDecimal(jsonData, "cashAndShortTermInvestments"),
+                    safeGetBigDecimal(jsonData, "inventory"),
+                    safeGetBigDecimal(jsonData, "currentNetReceivables"),
+                    safeGetBigDecimal(jsonData, "totalNonCurrentAssets"),
+                    safeGetBigDecimal(jsonData, "propertyPlantEquipment"),
+                    safeGetBigDecimal(jsonData, "accumulatedDepreciationAmortizationPPE"),
+                    safeGetBigDecimal(jsonData, "intangibleAssets"),
+                    safeGetBigDecimal(jsonData, "intangibleAssetsExcludingGoodwill"),
+                    safeGetBigDecimal(jsonData, "goodwill"),
+                    safeGetBigDecimal(jsonData, "investments"),
+                    safeGetBigDecimal(jsonData, "longTermInvestments"),
+                    safeGetBigDecimal(jsonData, "shortTermInvestments"),
+                    safeGetBigDecimal(jsonData, "otherCurrentAssets"),
+                    safeGetBigDecimal(jsonData, "otherNonCurrentAssets"),
+                    safeGetBigDecimal(jsonData, "totalLiabilities"),
+                    safeGetBigDecimal(jsonData, "totalCurrentLiabilities"),
+                    safeGetBigDecimal(jsonData, "currentAccountsPayable"),
+                    safeGetBigDecimal(jsonData, "deferredRevenue"),
+                    safeGetBigDecimal(jsonData, "currentDebt"),
+                    safeGetBigDecimal(jsonData, "shortTermDebt"),
+                    safeGetBigDecimal(jsonData, "totalNonCurrentLiabilities"),
+                    safeGetBigDecimal(jsonData, "capitalLeaseObligations"),
+                    safeGetBigDecimal(jsonData, "longTermDebt"),
+                    safeGetBigDecimal(jsonData, "currentLongTermDebt"),
+                    safeGetBigDecimal(jsonData, "longTermDebtNoncurrent"),
+                    safeGetBigDecimal(jsonData, "shortLongTermDebtTotal"),
+                    safeGetBigDecimal(jsonData, "otherCurrentLiabilities"),
+                    safeGetBigDecimal(jsonData, "otherNonCurrentLiabilities"),
+                    safeGetBigDecimal(jsonData, "totalShareholderEquity"),
+                    safeGetBigDecimal(jsonData, "treasuryStock"),
+                    safeGetBigDecimal(jsonData, "retainedEarnings"),
+                    safeGetBigDecimal(jsonData, "commonStock"),
+                    safeGetBigDecimal(jsonData, "commonStockSharesOutstanding")
                 );
             } catch (Exception e) {
                 System.err.println("A general error occurred creating BalanceSheet: " + e.getMessage());
@@ -330,7 +339,7 @@ public class AlphaVantageService {
         }
     }
 
-    // ***HELPER FUNCTIONS***
+    // *************************************HELPER FUNCTIONS********************************************
 
     /**
      * Retrieves a String value from a JSON object, handling null and invalid types.

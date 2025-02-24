@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stockapp.StockApp.model.BalanceSheet;
+import com.stockapp.StockApp.model.CashFlow;
 import com.stockapp.StockApp.model.IncomeStatement;
 import com.stockapp.StockApp.model.Overview;
 import com.stockapp.StockApp.model.Stock;
@@ -47,7 +47,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval.
      */
     @GetMapping("/api/stockDashboard/{symbol}/stocks")
-    public List<Stock> getStockData(@PathVariable String symbol) {
+    public List<Stock> getStockData(@PathVariable("symbol") String symbol) {
         if (symbol == null || symbol.isEmpty()){
             throw new IllegalArgumentException("Please provide a stock symbol.");
         }
@@ -73,7 +73,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockDashboard/{symbol}/overview")
-    public Overview getOverview(@PathVariable String symbol) {
+    public Overview getOverview(@PathVariable("symbol") String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
         String url = URL.generateUrl();
         System.out.println("Overview url: " + url);
@@ -96,7 +96,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockDashboard/{symbol}/incomeStatement")
-    public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable String symbol) {
+    public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable("symbol") String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
         String url = URL.generateUrl();
         System.out.println("income statement url: " + url);
@@ -119,7 +119,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockDashboard/{symbol}/balanceSheet")
-    public List<BalanceSheet> getAnnualBalanceSheet(@RequestParam String symbol) {
+    public List<BalanceSheet> getAnnualBalanceSheet(@PathVariable("symbol") String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.BALANCE_SHEET);
         String url = URL.generateUrl();
         System.out.println("balance sheet url: " + url);
@@ -130,6 +130,29 @@ public class StockChartsController {
         } catch (Exception e) {
             System.err.println("ERROR fetching balance sheet data: " + e.getMessage());
             throw new RuntimeException("Error fetching balance sheet data.", e);
+        }
+    }
+
+    /**
+     * Retrieves annual cash flow statement data for a given stock symbol from an external API endpoint.
+     * The data is then parsed and mapped to a list of CashFlow objects.
+     *
+     * @param symbol The stock symbol.
+     * @return A list of Annual CashFlow objects representing the annual balance sheet data.
+     * @throws RuntimeException If an error occurs during data retrieval or parsing.
+     */
+    @GetMapping("/api/stockDashboard/{symbol}/cashFlowStatement")
+    public List<CashFlow> getAnnualCashFlow(@PathVariable("symbol") String symbol) {
+        URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.CASH_FLOW);
+        String url = URL.generateUrl();
+        System.out.println("cash flow url: " + url);
+
+        try {
+            String jsonResponse = service.getJSONData(url);
+            return service.parseAnnualCashFlow(URL.getSymbol(), jsonResponse, URL.getFunction());
+        } catch (Exception e) {
+            System.err.println("ERROR fetching cash flow data: " + e.getMessage());
+            throw new RuntimeException("Error fetching cash flow data.", e);
         }
     }
     
