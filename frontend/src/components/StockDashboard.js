@@ -5,7 +5,7 @@ import { Chart } from 'chart.js/auto';
 import '../assets/stockDashboardStyle.css';
 import CustomTable from './CustomTable.js';
 import { fetchData } from '../services/StockAPIService.js';
-import { headersIncomeStatement, headersBalanceSheet, headersCashFlowStatement } from '../utils/FinancialDataHeaders.js';
+import * as headers from '../utils/FinancialDataHeaders.js';
 
 function StockChart() {
     const { symbol } = useParams();
@@ -49,49 +49,39 @@ function StockChart() {
     }, [symbol]);
 
     /**
+     * Universal function to fetch annual report data from the API.
+     */
+    const fetchDataAndSetState = async (tableKey, setState, setLoadingState) => {
+        setLoadingState(true);
+        try {
+            const data = await fetchData(`${symbol}/${tableKey}`);
+            setState(data);
+        } catch (error) {
+            console.error(`Error fetching ${tableKey}:`, error);
+        } finally {
+            setLoadingState(false);
+        }
+    };
+    
+    /**
      * Async function to fetch income statement data from the API.
      */
     const fetchIncomeStatementData = async () => {
-        setLoadingIncomeStatement(true);
-        try {
-            const data = await fetchData(`${symbol}/incomeStatement`);
-            setIncomeStatement(data);
-        } catch (error) {
-            console.error("Error fetching income statement:", error);
-        } finally {
-            setLoadingIncomeStatement(false);
-        }
+        await fetchDataAndSetState("incomeStatement", setIncomeStatement, setLoadingIncomeStatement);
     };
-
+    
     /**
      * Async function to fetch balance sheet data from the API.
      */
     const fetchBalanceSheetData = async () => {
-        setLoadingBalanceSheet(true);
-        try {
-            const data = await fetchData(`${symbol}/balanceSheet`);
-            console.log(data);
-            setBalanceSheet(data);
-        } catch (error) {
-            console.error("Error fetching balance sheet:", error);
-        } finally {
-            setLoadingBalanceSheet(false);
-        }
+        await fetchDataAndSetState("balanceSheet", setBalanceSheet, setLoadingBalanceSheet);
     };
-
+    
     /**
      * Async function to fetch cash flow statement data from the API.
      */
     const fetchCashFlowStatementData = async () => {
-        setLoadingCashFlowStatement(true);
-        try {
-            const data = await fetchData(`${symbol}/cashFlowStatement`);
-            setCashFlowStatement(data);
-        } catch (error) {
-            console.error("Error fetching cash flow statement:", error);
-        } finally {
-            setLoadingCashFlowStatement(false);
-        }
+        await fetchDataAndSetState("cashFlowStatement", setCashFlowStatement, setLoadingCashFlowStatement);
     };
 
     /**
@@ -230,7 +220,7 @@ function StockChart() {
                             <h2>Annual Income Statement</h2>
                             {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
-                                {headersIncomeStatement.map((header) => (
+                                {headers.headersIncomeStatement.map((header) => (
                                     <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
                                         {header.displayName}
                                     </option>
@@ -239,7 +229,7 @@ function StockChart() {
                             <canvas id="incomeStatementChart"></canvas>
 
                             {/* Custom table showing IS data */}
-                            <CustomTable tableData={incomeStatement} headers={headersIncomeStatement}/>
+                            <CustomTable tableData={incomeStatement} headers={headers.headersIncomeStatement}/>
                         </div>
                     ) : loadingIncomeStatement ? (
                         <div>Loading income statement data...</div>
@@ -253,7 +243,7 @@ function StockChart() {
                             <h2>Annual Balance Sheet</h2>
                             {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
-                                {headersBalanceSheet.map((header) => (
+                                {headers.headersBalanceSheet.map((header) => (
                                     <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
                                         {header.displayName}
                                     </option>
@@ -262,7 +252,7 @@ function StockChart() {
                             <canvas id="balanceSheetChart"></canvas>
 
                             {/* Custom table showing IS data */}
-                            <CustomTable tableData={balanceSheet} headers={headersBalanceSheet}/>
+                            <CustomTable tableData={balanceSheet} headers={headers.headersBalanceSheet}/>
                         </div>
                     ) : loadingBalanceSheet ? (
                         <div>Loading balance sheet data...</div>
@@ -276,7 +266,7 @@ function StockChart() {
                             <h2>Annual cash flow statement</h2>
                             {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
-                                {headersCashFlowStatement.map((header) => (
+                                {headers.headersCashFlowStatement.map((header) => (
                                     <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
                                         {header.displayName}
                                     </option>
@@ -285,7 +275,7 @@ function StockChart() {
                             <canvas id="cashFlowStatementChart"></canvas>
 
                             {/* Custom table showing IS data */}
-                            <CustomTable tableData={cashFlowStatement} headers={headersCashFlowStatement}/>
+                            <CustomTable tableData={cashFlowStatement} headers={headers.headersCashFlowStatement}/>
                         </div>
                     ) : loadingCashFlowStatement ? (
                         <div>Loading cash flow statement data...</div>
@@ -314,10 +304,11 @@ function StockChart() {
                                     .map(([key, value]) => {
                                     
                                     const formattedKey = key
-                                    .replace(/([A-Z])(?=[A-Z][a-z])/g, '$1 ')             // Add space between a capital letter followed by another capital and a lowercase letter (EvToEBITDA -> Ev To EBITDA)
-                                    .replace(/([A-Z]+)(?=[A-Z][a-z]|$)/g, '$1 ')          // Add space after an acronym, unless it's followed by another capital and a lowercase letter or the end of the string (DividendPerShare -> Dividend Per Share)
-                                    .replace(/([a-z])([A-Z]+)(?=[A-Z][a-z]|$)/g, '$1 $2') // Add space between a lowercase letter and an acronym, unless the acronym is followed by another capital letter and a lowercase letter or the end of the string (adjustedEBITDA -> Adjusted EBITDA)
-                                    .replace(/^./, str => str.toUpperCase());             // Capitalize the first letter
+                                        .replace(/([A-Z])([A-Z])(?=[a-z])|([a-z])([A-Z])/g, '$1$3 $2$4')// Add space between capital letters followed by a lowercase, or between a lowercase and a capital
+                                        .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')                      // Add space between acronyms and a capital letter followed by a lowercase
+                                        .replace(/([a-zA-Z])(\d+)/g, '$1 $2')                           // Add space between a letter and a number
+                                        .replace(/(\d+)([a-zA-Z])/g, '$1 $2')                           // Add space between a number and a letter
+                                        .replace(/^./, str => str.toUpperCase());                       // Capitalize the first letter
 
                                     return (
                                         <tr key={key}>
