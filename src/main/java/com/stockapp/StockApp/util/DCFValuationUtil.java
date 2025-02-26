@@ -30,9 +30,8 @@ public class DCFValuationUtil {
      */
     public BigDecimal calculateDCF(
             BigDecimal lastYearFCF, BigDecimal initialGrowthRate, 
-            BigDecimal linkingGrowthRate,
-            BigDecimal terminalGrowthRate, int highGrowthYears, 
-            int forecastYears, BigDecimal discountRate, 
+            BigDecimal linkingGrowthRate, BigDecimal terminalGrowthRate,
+            int highGrowthYears, int forecastYears, BigDecimal discountRate, 
             long numberOfShares, BigDecimal netDebt) 
         {
 
@@ -41,15 +40,21 @@ public class DCFValuationUtil {
         }
 
         BigDecimal currentFCF = lastYearFCF;
+        // System.out.println("0) current FCF: " + currentFCF + ""); // Log
+
         BigDecimal presentValue = BigDecimal.ZERO;
 
         // Calculate the present value of projected free cash flows
-        for (int i = 1; i <= forecastYears; i++) {
-            BigDecimal growthRate = (i <= highGrowthYears) ? linkingGrowthRate : terminalGrowthRate;
+        for (int i = 0; i < forecastYears; i++) {
+            BigDecimal growthRate = (i < highGrowthYears) ? initialGrowthRate : linkingGrowthRate;
             currentFCF = currentFCF.multiply(BigDecimal.ONE.add(growthRate));
+            // System.out.println(i+1 + ") current FCF: " + currentFCF); // Log
 
-            BigDecimal discountFactor = BigDecimal.ONE.add(discountRate).pow(i);
+            BigDecimal discountFactor = BigDecimal.ONE.add(discountRate).pow(i+1);
+            // System.out.println("discount rate: " + discountRate); // Log
+            // System.out.println("discount factor: " + discountFactor); // Log
             presentValue = presentValue.add(currentFCF.divide(discountFactor, 10, RoundingMode.HALF_UP));
+            // System.out.println(i+1 + ") present Value: " + presentValue + "\n"); // Log
         }
 
         // Calculate the terminal value using the Gordon Growth Model
@@ -59,6 +64,8 @@ public class DCFValuationUtil {
         BigDecimal terminalValueDiscountFactor = BigDecimal.ONE.add(discountRate).pow(forecastYears);
         terminalValue = terminalValue.divide(terminalValueDiscountFactor, 10, RoundingMode.HALF_UP);
 
+        // System.out.println(terminalValue); // Log
+        
         // Total present value including terminal value
         presentValue = presentValue.add(terminalValue);
 
