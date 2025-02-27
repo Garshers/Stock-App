@@ -10,7 +10,7 @@ import * as headers from '../utils/FinancialDataHeaders.js';
 function StockChart() {
     const { symbol } = useParams();
 
-    const [number, setNumber] = useState(0);
+    const [dcfData, setDcfData] = useState(Array(10).fill(0));
 
     const [stocks, setStocks] = useState([]);
     const [incomeStatement, setIncomeStatement] = useState(null);
@@ -81,7 +81,7 @@ function StockChart() {
      * Async function to fetch cash flow statement data from the API.
      */
     const fetchCashFlowStatementData = async () => {
-        await fetchDataAndSetState("cashFlowStatement", setCashFlowStatement, setLoadingCashFlowStatement);
+        await fetchDataAndSetState("cashFlowS", setCashFlowStatement, setLoadingCashFlowStatement);
     };
 
     /**
@@ -149,18 +149,17 @@ function StockChart() {
     };
 
     /**
-     * Function to handle the change of value in the input field.
+     * Function to handle the change of values in the input field.
      * @param {Event} event - The change event.
+     * @param {number} index - Index of input List.
      */
-    const handleChange = (event) => {
+    const handleChange = (index, event) => {
         const inputValue = event.target.value;
         const parsedNumber = parseFloat(inputValue);
 
-        if (isNaN(parsedNumber)) {
-            setNumber(0);
-        } else {
-            setNumber(parsedNumber);
-        }
+        const newDcfData = [...dcfData];
+        newDcfData[index] = isNaN(parsedNumber) ? 0 : parsedNumber;
+        setDcfData(newDcfData);
     };
 
     /**
@@ -168,12 +167,12 @@ function StockChart() {
      */
     const handleSubmit = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/number', {
+            const response = await fetch('http://localhost:8080/api/dcfData', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ number }),
+                body: JSON.stringify({ dcfData }),
             });
 
             if (!response.ok) {
@@ -198,8 +197,16 @@ function StockChart() {
 
                     {/* Input value block */}
                     <div>
-                        <label htmlFor="number">Enter value:</label>
-                        <input type="text" value={number} onChange={handleChange} />
+                        {dcfData.map((number, index) => (
+                            <div key={index}>
+                                <label htmlFor={`number-${index}`}>Enter value {index + 1}:</label>
+                                <input
+                                    type="text"
+                                    value={number}
+                                    onChange={(event) => handleChange(index, event)}
+                                />
+                            </div>
+                        ))}
                         <button onClick={handleSubmit}>Send</button>
                     </div>
 
@@ -216,7 +223,7 @@ function StockChart() {
 
                     {/* Box containing income statement (IS) data */}
                     {incomeStatement && incomeStatement.length > 0 ? (
-                        <div className='incomeStatementBox'>
+                        <div className='annualDataBox'>
                             <h2>Annual Income Statement</h2>
                             {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
@@ -239,7 +246,7 @@ function StockChart() {
 
                     {/* Box containing balance sheet (BS) data */}
                     {balanceSheet && balanceSheet.length > 0 ? (
-                        <div className='incomeStatementBox'>
+                        <div className='annualDataBox'>
                             <h2>Annual Balance Sheet</h2>
                             {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
@@ -262,7 +269,7 @@ function StockChart() {
 
                     {/* Box containing cash flow statement (CFS) data */}
                     {cashFlowStatement && cashFlowStatement.length > 0 ? (
-                        <div className='incomeStatementBox'>
+                        <div className='annualDataBox'>
                             <h2>Annual cash flow statement</h2>
                             {/* Chart and chart selection section */}
                             <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>

@@ -73,10 +73,14 @@ tbody tr:hover {
 .customTableCell, .customTableCellHeader {
     width: fit-content;
     min-width: 100%;
-    min-height: 22px;
+    min-height: 18px;
     overflow: hidden;
-    padding: 6px 10px;
+    padding: 6px 8px;
     border-top: 1px solid #ddd;
+    font-size: small;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .customTableCell {
@@ -175,7 +179,7 @@ a:hover {
     overflow-x: auto;
 }
 
-.incomeStatementBox{
+.annualDataBox{
     width: 100%;
     height: fit-content;
     display: flex;

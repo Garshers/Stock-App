@@ -32,11 +32,14 @@ public class DCFValuationUtil {
             BigDecimal lastYearFCF, BigDecimal initialGrowthRate, 
             BigDecimal linkingGrowthRate, BigDecimal terminalGrowthRate,
             int highGrowthYears, int forecastYears, BigDecimal discountRate, 
-            long numberOfShares, BigDecimal netDebt) 
+            BigDecimal numberOfShares, BigDecimal netDebt) 
         {
 
         if (discountRate.compareTo(terminalGrowthRate) <= 0) {
             throw new ArithmeticException("Discount rate must be greater than terminal growth rate.");
+        }
+        if (discountRate.compareTo(BigDecimal.ZERO) <= 0 || lastYearFCF.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Invalid input values: discount rate must be positive, and lastYearFCF cannot be negative.");
         }
 
         BigDecimal currentFCF = lastYearFCF;
@@ -73,7 +76,7 @@ public class DCFValuationUtil {
         BigDecimal equityValue = presentValue.subtract(netDebt);
 
         // Calculate price per share
-        return equityValue.divide(BigDecimal.valueOf(numberOfShares), 2, RoundingMode.HALF_UP);
+        return equityValue.divide(numberOfShares, 2, RoundingMode.HALF_UP);
     }
 
     /**

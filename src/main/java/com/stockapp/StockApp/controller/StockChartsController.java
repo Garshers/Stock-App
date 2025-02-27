@@ -157,17 +157,16 @@ public class StockChartsController {
     }
     
 
-    @PostMapping("/api/number")
-    public ResponseEntity<Map<String, Object>> handleNumber(@RequestBody NumberData numberData) {
+    @PostMapping("/api/dcfData")
+    public ResponseEntity<Map<String, Object>> handleDcfData(@RequestBody DcfData dcfData) {
         try {
-            int number = numberData.getNumber();
-            System.out.println("Recieved number: " + number);
+            List<Double> numbers = dcfData.getDcfData();
+            System.out.println("Received DCF data: " + numbers);
 
             BigDecimal DCF = testDCFwithWAAC();
 
             Map<String, Object> response = new HashMap<>();
-
-            response.put("message", "Counted DCF for Visa: " + DCF);
+            response.put("message", "Counted DCF for InPost: " + DCF);
             response.put("value", DCF);
 
             return ResponseEntity.ok(response);
@@ -179,10 +178,16 @@ public class StockChartsController {
         }
     }
 
-    public static class NumberData {
-        private int number;
+    public static class DcfData {
+        private List<Double> dcfData;
 
-        public int getNumber() { return number; }
+        public List<Double> getDcfData() {
+            return dcfData;
+        }
+
+        public void setDcfData(List<Double> dcfData) {
+            this.dcfData = dcfData;
+        }
     }
 
     private Map<String, Object> createErrorResponse(String message) {
@@ -197,32 +202,32 @@ public class StockChartsController {
 
         BigDecimal riskFreeRate = new BigDecimal("0.0461");     // 02/14/2025 - bonds
         BigDecimal marketRiskPremium = new BigDecimal("0.1");   // Average S&P500 annual return
-        BigDecimal beta = new BigDecimal("0.96");                           // (5Y Monthly) [summary]
-        BigDecimal marketCapitalization = new BigDecimal("679368760000");   // [summary]
-        long numberOfShares = 1729000000;                                       // [statistics]
-        BigDecimal interestExpense = new BigDecimal("636000000");   // [IS]
-        BigDecimal taxProvision = new BigDecimal("4102000000");     // [IS]
-        BigDecimal pretaxIncome = new BigDecimal("24074000000");    // [IS]
-        BigDecimal totalDebt = new BigDecimal("20836000000");       // [BS]
-        BigDecimal netDebt = new BigDecimal("8861000000");          // [BS]
-        BigDecimal lastYearFCF = new BigDecimal("18693000000");     // [CFS]
-        BigDecimal initialGrowthRate = new BigDecimal("0.1292");    // Initial high growth
-        BigDecimal linkingGrowthRate = new BigDecimal("0.1");       // lining growth
-        BigDecimal terminalGrowthRate = new BigDecimal("0.025");    // Sustainable long-term growth
+        BigDecimal beta = new BigDecimal("0.99");                        // (5Y Monthly) [summary]
+        BigDecimal marketCapitalization = new BigDecimal("2122000000000");  // [summary]
+        BigDecimal numberOfShares = new BigDecimal("5500000000");         // [statistics]
+        BigDecimal interestExpense = new BigDecimal("268000000");  // [IS]
+        BigDecimal taxProvision = new BigDecimal("19697000000");     // [IS]
+        BigDecimal pretaxIncome = new BigDecimal("119815000000");    // [IS]
+        BigDecimal totalDebt = new BigDecimal("25461000000");       // [BS]
+        BigDecimal netDebt = new BigDecimal("17000000000");         // [BS]
+        BigDecimal lastYearFCF = new BigDecimal("72764000000");     // [CFS]
+        BigDecimal initialGrowthRate = new BigDecimal("0.12");   // Initial high growth
+        BigDecimal linkingGrowthRate = new BigDecimal("0.08");   // lining growth
+        BigDecimal terminalGrowthRate = new BigDecimal("0.025");// Sustainable long-term growth
         int highGrowthYears = 3;
         int forecastYears = 10;
         
         try {
-            // Test 1: WAAC calculation for Visa (for 2024 data)
+            // Test 1: WAAC calculation for InPost (for 2024 data)
             BigDecimal wacc = dcfUtil.calculateWACCFromFinancialAndMarketData(
                     riskFreeRate, beta, interestExpense, totalDebt, marketCapitalization, taxProvision, pretaxIncome, marketRiskPremium
             );
 
-            // Test 2: Last Year FCF calculation for Visa using WAAC as Discount Rate (for 2024 data)
+            // Test 2: Last Year FCF calculation for InPost using WAAC as Discount Rate (for 2024 data)
             BigDecimal discountRate = wacc;
             BigDecimal pricePerShare = dcfUtil.calculateDCF(lastYearFCF, initialGrowthRate, linkingGrowthRate, terminalGrowthRate, highGrowthYears, forecastYears, discountRate, numberOfShares, netDebt);
 
-            System.out.println("WACC dla Visa: " + wacc);
+            System.out.println("WACC dla InPost: " + wacc);
             System.out.println("Price per share (before margin of safety): " + pricePerShare);
             System.out.println("Price per share (including margin of safety): " + pricePerShare.multiply(new BigDecimal("0.9")));
             return pricePerShare;
