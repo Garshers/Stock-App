@@ -11,6 +11,7 @@ function StockChart() {
     const { symbol } = useParams();
 
     const [dcfData, setDcfData] = useState(Array(10).fill(0));
+    const [dcfResult, setDcfResult] = useState(null);
 
     const [stocks, setStocks] = useState([]);
     const [incomeStatement, setIncomeStatement] = useState(null);
@@ -81,7 +82,7 @@ function StockChart() {
      * Async function to fetch cash flow statement data from the API.
      */
     const fetchCashFlowStatementData = async () => {
-        await fetchDataAndSetState("cashFlowS", setCashFlowStatement, setLoadingCashFlowStatement);
+        await fetchDataAndSetState("cashFlowStatement", setCashFlowStatement, setLoadingCashFlowStatement);
     };
 
     /**
@@ -163,7 +164,7 @@ function StockChart() {
     };
 
     /**
-     * Async function to submit data to the backend.
+     * Async function to submit data to the backend and recieve dcf data back.
      */
     const handleSubmit = async () => {
         try {
@@ -182,6 +183,8 @@ function StockChart() {
 
             const data = await response.json();
             console.log('Success:', data);
+            setDcfResult(data.value);
+            console.log('data.value:', data.value);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -208,6 +211,12 @@ function StockChart() {
                             </div>
                         ))}
                         <button onClick={handleSubmit}>Send</button>
+                        {dcfResult !== null && dcfResult !== undefined && (
+                            <div>
+                                <h2>DCF Result:</h2>
+                                <p>{dcfResult}</p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Buttons for getting annual report data */}
