@@ -10,7 +10,7 @@ import * as headers from '../utils/FinancialDataHeaders.js';
 function StockChart() {
     const { symbol } = useParams();
 
-    const [dcfData, setDcfData] = useState(Array(10).fill(0));
+    const [dcfData, setDcfData] = useState(Array(10).fill(null));
     const [dcfResult, setDcfResult] = useState(null);
 
     const [stocks, setStocks] = useState([]);
@@ -159,8 +159,31 @@ function StockChart() {
         const parsedNumber = parseFloat(inputValue);
 
         const newDcfData = [...dcfData];
-        newDcfData[index] = isNaN(parsedNumber) ? 0 : parsedNumber;
+        newDcfData[index] = inputValue === "" ? null : isNaN(parsedNumber) ? null : parsedNumber;
         setDcfData(newDcfData);
+    };
+
+    /**
+     * Handles the keydown event in input fields.
+     * Enables navigation between input fields using the up and down arrow keys.
+     *
+     * @param {React.KeyboardEvent} event - The keyboard event object.
+     * @param {number} index - The index of the currently active input field.
+     */
+    const handleKeyDown = (event, index) => {
+        if (event.key === "ArrowDown") {
+            event.preventDefault(); // Prevents the default action
+            const nextInput = document.getElementById(`number-${index + 1}`);
+            if (nextInput) {
+                nextInput.focus();
+            }
+        } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            const prevInput = document.getElementById(`number-${index - 1}`);
+            if (prevInput) {
+                prevInput.focus();
+            }
+        }
     };
 
     /**
@@ -198,15 +221,18 @@ function StockChart() {
                     {/* Stock price chart */}
                     {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
-                    {/* Input value block */}
+                    {/* Input block */}
                     <div>
+                        <h2>Enter YoY prediction, relative to the prior year's value (between 0 and 1):</h2>
                         {dcfData.map((number, index) => (
                             <div key={index}>
-                                <label htmlFor={`number-${index}`}>Enter value {index + 1}:</label>
+                                <label htmlFor={`number-${index}`}>Year {index + 1}: </label>
                                 <input
-                                    type="text"
-                                    value={number}
+                                    type="number" 
+                                    value={number === null ? "" : number}
                                     onChange={(event) => handleChange(index, event)}
+                                    onKeyDown={(event) => handleKeyDown(event, index)}
+                                    id={`number-${index}`}
                                 />
                             </div>
                         ))}
