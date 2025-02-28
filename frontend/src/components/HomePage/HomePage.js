@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../assets/homePageStyle.css';
+import './homePageStyle.css';
 
 function HomePage() {
     const [symbol, setSymbol] = useState('');

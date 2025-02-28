@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Chart } from 'chart.js/auto';
-import '../assets/stockDashboardStyle.css';
-import CustomTable from './CustomTable.js';
-import { fetchData } from '../services/StockAPIService.js';
-import * as headers from '../utils/FinancialDataHeaders.js';
+import './stockDashboardStyle.css';
+import CustomTable from '../CustomTable.js';
+import { fetchData } from '../../services/StockAPIService.js';
+import * as headers from '../../utils/FinancialDataHeaders.js';
 
 function StockChart() {
     const { symbol } = useParams();
@@ -193,9 +193,7 @@ function StockChart() {
         try {
             const response = await fetch('http://localhost:8080/api/dcfData', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: {'Content-Type': 'application/json',},
                 body: JSON.stringify({ dcfData }),
             });
 

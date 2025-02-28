@@ -1,5 +1,5 @@
 import React from 'react';
-import '../assets/stockDashboardStyle.css';
+import './StockDashboard/stockDashboardStyle.css';
 
 const CustomTable = ({ tableData, headers }) => {
 //console.log(tableData); //Log
