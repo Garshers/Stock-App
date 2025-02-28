@@ -43,6 +43,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Spring Cache (To prevent multiple API asks with the same URL) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
 		<!-- Spring Boot Web (API REST, HTTP endpoints) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

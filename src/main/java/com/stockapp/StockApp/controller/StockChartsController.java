@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval.
      */
     @GetMapping("/api/stockDashboard/{symbol}/stocks")
+    @Cacheable(value = "stocks", key = "#symbol")
     public List<Stock> getStockData(@PathVariable("symbol") String symbol) {
         if (symbol == null || symbol.isEmpty()){
             throw new IllegalArgumentException("Please provide a stock symbol.");
@@ -73,6 +75,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockDashboard/{symbol}/overview")
+    @Cacheable(value = "overview", key = "#symbol")
     public Overview getOverview(@PathVariable("symbol") String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.OVERVIEW);
         String url = URL.generateUrl();
@@ -96,6 +99,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockDashboard/{symbol}/incomeStatement")
+    @Cacheable(value = "incomeStatement", key = "#symbol")
     public List<IncomeStatement> getAnnualIncomeStatements(@PathVariable("symbol") String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.INCOME_STATEMENT);
         String url = URL.generateUrl();
@@ -119,6 +123,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockDashboard/{symbol}/balanceSheet")
+    @Cacheable(value = "balanceSheet", key = "#symbol")
     public List<BalanceSheet> getAnnualBalanceSheet(@PathVariable("symbol") String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.BALANCE_SHEET);
         String url = URL.generateUrl();
@@ -142,6 +147,7 @@ public class StockChartsController {
      * @throws RuntimeException If an error occurs during data retrieval or parsing.
      */
     @GetMapping("/api/stockDashboard/{symbol}/cashFlowStatement")
+    @Cacheable(value = "cashFlowStatement", key = "#symbol")
     public List<CashFlow> getAnnualCashFlow(@PathVariable("symbol") String symbol) {
         URLCreator URL = new URLCreator(symbol, URLCreator.FunctionType.CASH_FLOW);
         String url = URL.generateUrl();
@@ -160,6 +166,9 @@ public class StockChartsController {
     @PostMapping("/api/dcfData")
     public ResponseEntity<Map<String, Object>> handleDcfData(@RequestBody DcfData dcfData) {
         try {
+            if (dcfData == null || dcfData.getDcfData() == null) {
+                return ResponseEntity.badRequest().body(createErrorResponse("DCF data is missing."));
+            }
             List<Double> numbers = dcfData.getDcfData();
             System.out.println("Received DCF data: " + numbers);
 
@@ -172,7 +181,7 @@ public class StockChartsController {
             return ResponseEntity.ok(response);
 
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(createErrorResponse("Invalid number type."));
+            return ResponseEntity.badRequest().body(createErrorResponse("Invalid number format."));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(createErrorResponse("Server error: " + e.getMessage()));
         }
