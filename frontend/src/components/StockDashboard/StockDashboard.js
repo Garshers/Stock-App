@@ -155,7 +155,7 @@ function StockChart() {
      * @param {number} index - Index of input List.
      */
     const handleChange = (index, event) => {
-        const inputValue = event.target.value;
+        const inputValue = event.target.value.replace(',', '.');
         const parsedNumber = parseFloat(inputValue);
 
         const newDcfData = [...dcfData];

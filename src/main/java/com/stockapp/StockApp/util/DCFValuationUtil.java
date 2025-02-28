@@ -2,38 +2,36 @@ package com.stockapp.StockApp.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * Utility class for Discounted Cash Flow (DCF) valuation calculations.
  */
 public class DCFValuationUtil {
+    
     /**
      * Calculates the price per share using the Discounted Cash Flow (DCF) method.
-     * This method incorporates a phased growth model, allowing for different growth rates
-     * during the forecast period. It calculates the present value of future free cash flows,
-     * including a terminal value calculated using the Gordon Growth Model, and then
-     * derives the price per share by subtracting net debt and dividing by the number
-     * of outstanding shares.
+     * This method projects future free cash flows based on provided growth rates, 
+     * calculates their present value, and adds a terminal value using the Gordon Growth Model.
+     * Finally, it derives the price per share by subtracting net debt and dividing by the number of outstanding shares.
      *
-     * @param lastYearFCF           The free cash flow from the last year.
-     * @param initialGrowthRate     The initial annual growth rate of free cash flow
-     * @param linkingGrowthRate     The annual growth rate linking initial (high) and terminal (stable) growth rates
-     * @param terminalGrowthRate    The long-term, sustainable annual growth rate of free cash flow
-     * @param highGrowthYears       The number of years for which the initial growth rate is applied.
-     * @param forecastYears         The total number of years for which free cash flows are projected.
-     * @param discountRate          The discount rate used to calculate the present value of future cash flows.
-     * @param numberOfShares        The number of outstanding shares.
-     * @param netDebt               The net debt of the company (total debt minus cash and cash equivalents).
+     * @param lastYearFCF     The free cash flow from the last year.
+     * @param growthRates     A list of annual growth rates for free cash flow, including the terminal growth rate as the last element.
+     * @param discountRate    The discount rate used to calculate the present value of future cash flows.
+     * @param numberOfShares  The number of outstanding shares.
+     * @param netDebt         The net debt of the company (total debt minus cash and cash equivalents).
      * @return The calculated price per share.
-     * @throws ArithmeticException If the discount rate is less than or equal to either the initial or terminal growth rate
-     *                             (as this would lead to a division by zero or negative value error in the Gordon Growth Model).
+     * @throws ArithmeticException      If the discount rate is less than or equal to the terminal growth rate.
+     * @throws IllegalArgumentException If the discount rate is not positive or lastYearFCF is negative.
      */
     public BigDecimal calculateDCF(
-            BigDecimal lastYearFCF, BigDecimal initialGrowthRate, 
-            BigDecimal linkingGrowthRate, BigDecimal terminalGrowthRate,
-            int highGrowthYears, int forecastYears, BigDecimal discountRate, 
-            BigDecimal numberOfShares, BigDecimal netDebt) 
+            BigDecimal lastYearFCF, List<BigDecimal> growthRates, 
+            BigDecimal discountRate, BigDecimal numberOfShares,
+            BigDecimal netDebt)
         {
+
+        int n = growthRates.size() - 1;
+        BigDecimal terminalGrowthRate = growthRates.get(n);
 
         if (discountRate.compareTo(terminalGrowthRate) <= 0) {
             throw new ArithmeticException("Discount rate must be greater than terminal growth rate.");
@@ -43,31 +41,21 @@ public class DCFValuationUtil {
         }
 
         BigDecimal currentFCF = lastYearFCF;
-        // System.out.println("0) current FCF: " + currentFCF + ""); // Log
-
         BigDecimal presentValue = BigDecimal.ZERO;
 
         // Calculate the present value of projected free cash flows
-        for (int i = 0; i < forecastYears; i++) {
-            BigDecimal growthRate = (i < highGrowthYears) ? initialGrowthRate : linkingGrowthRate;
-            currentFCF = currentFCF.multiply(BigDecimal.ONE.add(growthRate));
-            // System.out.println(i+1 + ") current FCF: " + currentFCF); // Log
-
+        for (int i = 0; i < n; i++) {
+            currentFCF = currentFCF.multiply(BigDecimal.ONE.add(growthRates.get(i)));
             BigDecimal discountFactor = BigDecimal.ONE.add(discountRate).pow(i+1);
-            // System.out.println("discount rate: " + discountRate); // Log
-            // System.out.println("discount factor: " + discountFactor); // Log
             presentValue = presentValue.add(currentFCF.divide(discountFactor, 10, RoundingMode.HALF_UP));
-            // System.out.println(i+1 + ") present Value: " + presentValue + "\n"); // Log
         }
 
         // Calculate the terminal value using the Gordon Growth Model
         BigDecimal terminalValue = currentFCF.multiply(BigDecimal.ONE.add(terminalGrowthRate))
                 .divide(discountRate.subtract(terminalGrowthRate), 10, RoundingMode.HALF_UP);
 
-        BigDecimal terminalValueDiscountFactor = BigDecimal.ONE.add(discountRate).pow(forecastYears);
+        BigDecimal terminalValueDiscountFactor = BigDecimal.ONE.add(discountRate).pow(n);
         terminalValue = terminalValue.divide(terminalValueDiscountFactor, 10, RoundingMode.HALF_UP);
-
-        // System.out.println(terminalValue); // Log
         
         // Total present value including terminal value
         presentValue = presentValue.add(terminalValue);

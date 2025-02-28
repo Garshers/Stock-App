@@ -169,14 +169,16 @@ public class StockChartsController {
             if (dcfData == null || dcfData.getDcfData() == null) {
                 return ResponseEntity.badRequest().body(createErrorResponse("DCF data is missing."));
             }
-            List<Double> numbers = dcfData.getDcfData();
-            System.out.println("Received DCF data: " + numbers);
+            List<BigDecimal> values = dcfData.getDcfData();
+            System.out.println("Received DCF data: " + values);
 
-            BigDecimal DCF = testDCFwithWAAC();
+            BigDecimal DCF = testDCFwithWAAC(values);
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Counted DCF for InPost: " + DCF);
             response.put("value", DCF);
+
+            System.out.println("Price per share: " + DCF);
 
             return ResponseEntity.ok(response);
 
@@ -188,13 +190,13 @@ public class StockChartsController {
     }
 
     public static class DcfData {
-        private List<Double> dcfData;
+        private List<BigDecimal> dcfData;
 
-        public List<Double> getDcfData() {
+        public List<BigDecimal> getDcfData() {
             return dcfData;
         }
 
-        public void setDcfData(List<Double> dcfData) {
+        public void setDcfData(List<BigDecimal> dcfData) {
             this.dcfData = dcfData;
         }
     }
@@ -205,7 +207,7 @@ public class StockChartsController {
         return errorResponse;
     }
 
-    public BigDecimal testDCFwithWAAC(){
+    public BigDecimal testDCFwithWAAC(List<BigDecimal> growthRates){
         // Testing DCFValuationUtil
         DCFValuationUtil dcfUtil = new DCFValuationUtil();
 
@@ -220,11 +222,6 @@ public class StockChartsController {
         BigDecimal totalDebt = new BigDecimal("25461000000");       // [BS]
         BigDecimal netDebt = new BigDecimal("17000000000");         // [BS]
         BigDecimal lastYearFCF = new BigDecimal("72764000000");     // [CFS]
-        BigDecimal initialGrowthRate = new BigDecimal("0.12");   // Initial high growth
-        BigDecimal linkingGrowthRate = new BigDecimal("0.08");   // lining growth
-        BigDecimal terminalGrowthRate = new BigDecimal("0.025");// Sustainable long-term growth
-        int highGrowthYears = 3;
-        int forecastYears = 10;
         
         try {
             // Test 1: WAAC calculation for InPost (for 2024 data)
@@ -234,7 +231,7 @@ public class StockChartsController {
 
             // Test 2: Last Year FCF calculation for InPost using WAAC as Discount Rate (for 2024 data)
             BigDecimal discountRate = wacc;
-            BigDecimal pricePerShare = dcfUtil.calculateDCF(lastYearFCF, initialGrowthRate, linkingGrowthRate, terminalGrowthRate, highGrowthYears, forecastYears, discountRate, numberOfShares, netDebt);
+            BigDecimal pricePerShare = dcfUtil.calculateDCF(lastYearFCF, growthRates, discountRate, numberOfShares, netDebt);
 
             System.out.println("WACC dla InPost: " + wacc);
             System.out.println("Price per share (before margin of safety): " + pricePerShare);
