@@ -191,6 +191,30 @@ a:hover {
     border: 0px solid red;
 }
 
+/* -------- Links styling -------- */
+
+.inputBox{
+    width: 50%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+}
+
+.inputRow{
+    padding: 1px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.InputLabel{
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+    margin-right: 10px;
+}
+
 @media (max-width: 900px) {
     table {
         width: 100%;

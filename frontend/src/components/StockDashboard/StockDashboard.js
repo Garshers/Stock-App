@@ -4,13 +4,13 @@ import axios from 'axios';
 import { Chart } from 'chart.js/auto';
 import './stockDashboardStyle.css';
 import CustomTable from '../CustomTable.js';
-import { fetchData } from '../../services/StockAPIService.js';
+import * as fetches from '../../services/StockAPIService.js';
 import * as headers from '../../utils/FinancialDataHeaders.js';
 
 function StockChart() {
     const { symbol } = useParams();
 
-    const [dcfData, setDcfData] = useState(Array(10).fill(null));
+    const [growthRates, setGrowthRates] = useState(Array(11).fill(null));
     const [dcfResult, setDcfResult] = useState(null);
 
     const [stocks, setStocks] = useState([]);
@@ -20,8 +20,8 @@ function StockChart() {
     const [overviewData, setOverviewData] = useState(null);
 
     const [loadingStocks, setLoadingStocks] = useState(true);
-    const [loadingBalanceSheet, setLoadingIncomeStatement] = useState(false);
-    const [loadingIncomeStatement, setLoadingBalanceSheet] = useState(false);
+    const [loadingBalanceSheet, setLoadingBalanceSheet] = useState(false);
+    const [loadingIncomeStatement, setLoadingIncomeStatement] = useState(false);
     const [loadingCashFlowStatement, setLoadingCashFlowStatement] = useState(false);
     const [loadingOverview, setLoadingOverview] = useState(true);
 
@@ -37,7 +37,7 @@ function StockChart() {
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                const data = await fetchData(`${symbol}/stocks`);
+                const data = await fetches.fetchData(`${symbol}/stocks`);
                 setStocks(data);
             } catch (error) {
                 console.error("Error fetching stocks:", error);
@@ -55,7 +55,7 @@ function StockChart() {
     const fetchDataAndSetState = async (tableKey, setState, setLoadingState) => {
         setLoadingState(true);
         try {
-            const data = await fetchData(`${symbol}/${tableKey}`);
+            const data = await fetches.fetchData(`${symbol}/${tableKey}`);
             setState(data);
         } catch (error) {
             console.error(`Error fetching ${tableKey}:`, error);
@@ -93,7 +93,7 @@ function StockChart() {
         const fetchOverviewData = async () => {
             setLoadingOverview(true);
             try {
-                const data = await fetchData(`${symbol}/overview`);
+                const data = await fetches.fetchData(`${symbol}/overview`);
                 setOverviewData(data);
             } catch (error) {
                 console.error("Error fetching overview data:", error);
@@ -129,7 +129,8 @@ function StockChart() {
         if (incomeStatement && incomeStatement.length > 0) {
             const frlabels = incomeStatement.map(item => item.fiscalDateEnding);
             const frdata = incomeStatement.map(item => item[selectedData]);
-            const frdataName = selectedData;
+            const selectedHeader = headers.headersIncomeStatement.find(header => header.dataName === selectedData);
+            const frdataName = selectedHeader ? selectedHeader.displayName : selectedData;
             const ctx = document.getElementById('incomeStatementChart').getContext('2d');
 
             frlabels.reverse();
@@ -147,20 +148,6 @@ function StockChart() {
      */
     const handleDataSelectionChange = (event) => {
         setSelectedData(event.target.value);
-    };
-
-    /**
-     * Function to handle the change of values in the input field.
-     * @param {Event} event - The change event.
-     * @param {number} index - Index of input List.
-     */
-    const handleChange = (index, event) => {
-        const inputValue = event.target.value.replace(',', '.');
-        const parsedNumber = parseFloat(inputValue);
-
-        const newDcfData = [...dcfData];
-        newDcfData[index] = inputValue === "" ? null : isNaN(parsedNumber) ? null : parsedNumber;
-        setDcfData(newDcfData);
     };
 
     /**
@@ -187,6 +174,20 @@ function StockChart() {
     };
 
     /**
+     * Function to handle the change of values in the input field.
+     * @param {Event} event - The change event.
+     * @param {number} index - Index of input List.
+     */
+    const handleChange = (index, event) => {
+        const inputValue = event.target.value.replace(',', '.');
+        const parsedNumber = parseFloat(inputValue);
+
+        const newGrowthRates = [...growthRates];
+        newGrowthRates[index] = (inputValue === "" ? null : isNaN(parsedNumber) ? null : parsedNumber);
+        setGrowthRates(newGrowthRates);
+    };
+
+    /**
      * Async function to submit data to the backend and recieve dcf data back.
      */
     const handleSubmit = async () => {
@@ -194,12 +195,18 @@ function StockChart() {
             const response = await fetch('http://localhost:8080/api/dcfData', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json',},
-                body: JSON.stringify({ dcfData }),
+                body: JSON.stringify({ growthRates }),
             });
 
             if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(errorData || `HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                if (errorData && errorData.error) {
+                    alert(errorData.error);
+                    return;
+                }
+    
+                const errorText = await response.text();
+                throw new Error(errorText || `HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
@@ -222,25 +229,26 @@ function StockChart() {
                     {/* Input block */}
                     <div>
                         <h2>Enter YoY prediction, relative to the prior year's value (between 0 and 1):</h2>
-                        {dcfData.map((number, index) => (
-                            <div key={index}>
-                                <label htmlFor={`number-${index}`}>Year {index + 1}: </label>
-                                <input
-                                    type="number" 
-                                    value={number === null ? "" : number}
-                                    onChange={(event) => handleChange(index, event)}
-                                    onKeyDown={(event) => handleKeyDown(event, index)}
-                                    id={`number-${index}`}
-                                />
+                        {dcfResult !== null && dcfResult !== undefined && (
+                            <h2>DCF Result: {dcfResult}</h2>
+                        )}
+                        {growthRates.map((number, index) => (
+                            <div key={index} className='inputBox'>
+                                <div className='inputRow'>
+                                    <label htmlFor={`number-${index}`} className='InputLabel'>
+                                        {index === growthRates.length - 1 ? "Terminal Value: " : `Year ${index + 1}: `}
+                                    </label>
+                                    <input
+                                        type="number" 
+                                        value={number === null ? "" : number}
+                                        onChange={(event) => handleChange(index, event)}
+                                        onKeyDown={(event) => handleKeyDown(event, index)}
+                                        id={`number-${index}`}
+                                    />
+                                </div>
                             </div>
                         ))}
                         <button onClick={handleSubmit}>Send</button>
-                        {dcfResult !== null && dcfResult !== undefined && (
-                            <div>
-                                <h2>DCF Result:</h2>
-                                <p>{dcfResult}</p>
-                            </div>
-                        )}
                     </div>
 
                     {/* Buttons for getting annual report data */}
@@ -259,7 +267,7 @@ function StockChart() {
                         <div className='annualDataBox'>
                             <h2>Annual Income Statement</h2>
                             {/* Chart and chart selection section */}
-                            <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
+                            <select id="dataSelectionIncomeStatement" value={selectedData} onChange={handleDataSelectionChange}>
                                 {headers.headersIncomeStatement.map((header) => (
                                     <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
                                         {header.displayName}
@@ -282,7 +290,7 @@ function StockChart() {
                         <div className='annualDataBox'>
                             <h2>Annual Balance Sheet</h2>
                             {/* Chart and chart selection section */}
-                            <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
+                            <select id="dataSelectionBalanceSheet" value={selectedData} onChange={handleDataSelectionChange}>
                                 {headers.headersBalanceSheet.map((header) => (
                                     <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
                                         {header.displayName}
@@ -305,7 +313,7 @@ function StockChart() {
                         <div className='annualDataBox'>
                             <h2>Annual cash flow statement</h2>
                             {/* Chart and chart selection section */}
-                            <select id="dataSelection" value={selectedData} onChange={handleDataSelectionChange}>
+                            <select id="dataSelectionCasfFlowStatement" value={selectedData} onChange={handleDataSelectionChange}>
                                 {headers.headersCashFlowStatement.map((header) => (
                                     <option key={header.dataName} value={header.dataName} disabled={header.dataName === 'fiscalDateEnding'}>
                                         {header.displayName}
