@@ -164,12 +164,13 @@ public class StockChartsController {
     
 
     @PostMapping("/api/dcfData")
-    public ResponseEntity<Map<String, Object>> handleDcfData(@RequestBody DcfData dcfData) {
+    public ResponseEntity<Map<String, Object>> handleDCFConnection(@RequestBody GrowthRates growthRates) {
         try {
-            if (dcfData == null || dcfData.getDcfData() == null) {
+            
+            if (growthRates == null || growthRates.getGrowthRates() == null) {
                 return ResponseEntity.badRequest().body(createErrorResponse("DCF data is missing."));
             }
-            List<BigDecimal> values = dcfData.getDcfData();
+            List<BigDecimal> values = growthRates.getGrowthRates();
             System.out.println("Received DCF data: " + values);
 
             BigDecimal DCF = testDCFwithWAAC(values);
@@ -189,15 +190,27 @@ public class StockChartsController {
         }
     }
 
-    public static class DcfData {
-        private List<BigDecimal> dcfData;
+    public static class GrowthRates {
+        private List<BigDecimal> GrowthRates;
 
-        public List<BigDecimal> getDcfData() {
-            return dcfData;
+        public List<BigDecimal> getGrowthRates() {
+            return GrowthRates;
         }
 
-        public void setDcfData(List<BigDecimal> dcfData) {
-            this.dcfData = dcfData;
+        public void setGrowthRates(List<BigDecimal> GrowthRate) {
+            this.GrowthRates = GrowthRate;
+        }
+    }
+
+    public static class statementDataForDCF {
+        private Map<String, BigDecimal> statementDataForDCF;
+
+        public Map<String, BigDecimal> getstatementDataForDCF() {
+            return statementDataForDCF;
+        }
+
+        public void setstatementDataForDCF(Map<String, BigDecimal> statementDataForDCF) {
+            this.statementDataForDCF = statementDataForDCF;
         }
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
  * Utility class for Discounted Cash Flow (DCF) valuation calculations.
  */
 public class DCFValuationUtil {
-    
+
     /**
      * Calculates the price per share using the Discounted Cash Flow (DCF) method.
      * This method projects future free cash flows based on provided growth rates, 
@@ -31,7 +31,7 @@ public class DCFValuationUtil {
         {
 
         int n = growthRates.size() - 1;
-        BigDecimal terminalGrowthRate = growthRates.get(n);
+        BigDecimal terminalGrowthRate = growthRates.get(n) == null ? BigDecimal.ZERO : growthRates.get(n);
 
         if (discountRate.compareTo(terminalGrowthRate) <= 0) {
             throw new ArithmeticException("Discount rate must be greater than terminal growth rate.");
@@ -45,7 +45,10 @@ public class DCFValuationUtil {
 
         // Calculate the present value of projected free cash flows
         for (int i = 0; i < n; i++) {
-            currentFCF = currentFCF.multiply(BigDecimal.ONE.add(growthRates.get(i)));
+            BigDecimal growthRate = growthRates.get(i);
+            growthRate = (growthRate == null ? BigDecimal.ZERO : growthRate);
+
+            currentFCF = currentFCF.multiply(BigDecimal.ONE.add(growthRate));
             BigDecimal discountFactor = BigDecimal.ONE.add(discountRate).pow(i+1);
             presentValue = presentValue.add(currentFCF.divide(discountFactor, 10, RoundingMode.HALF_UP));
         }
