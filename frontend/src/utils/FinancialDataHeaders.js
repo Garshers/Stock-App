@@ -1,4 +1,4 @@
-export const headersIncomeStatement = [
+export const incomeStatement = [
     { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
     { displayName: 'Gross Profit', dataName: 'grossProfit' },
     { displayName: 'Total Revenue', dataName: 'totalRevenue' },
@@ -26,9 +26,8 @@ export const headersIncomeStatement = [
     { displayName: 'Net Income', dataName: 'netIncome' },
 ];
 
-export const headersBalanceSheet = [
+export const balanceSheet = [
     { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
-    { displayName: 'Reported Currency', dataName: 'reportedCurrency' },
     { displayName: 'Total Assets', dataName: 'totalAssets' },
     { displayName: 'Total Current Assets', dataName: 'totalCurrentAssets' },
     { displayName: 'Cash and Cash Equivalents at Carrying Value', dataName: 'cashAndCashEquivalentsAtCarryingValue' },
@@ -65,9 +64,10 @@ export const headersBalanceSheet = [
     { displayName: 'Retained Earnings', dataName: 'retainedEarnings' },
     { displayName: 'Common Stock', dataName: 'commonStock' },
     { displayName: 'Common Stock Shares Outstanding', dataName: 'commonStockSharesOutstanding' },
+    { displayName: 'Net Income', dataName: 'netIncome' }
 ];
 
-export const headersCashFlowStatement = [
+export const cashFlowStatement = [
     { displayName: 'Fiscal Year End Date', dataName: 'fiscalDateEnding' },
     { displayName: 'Operating Cashflow', dataName: 'operatingCashflow' },
     { displayName: 'Payments for Operating Activities', dataName: 'paymentsForOperatingActivities' },
