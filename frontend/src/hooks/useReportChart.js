@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 import { createChart } from '../utils/createChart.js'
 
 /**
- * Hook React, który tworzy i aktualizuje wykres na podstawie dostarczonych danych.
+ * React Hook that creates and updates a chart based on the provided data.
  *
- * @param {Array} data - Tablica danych do wyświetlenia na wykresie.
- * @param {string} selectedData - Nazwa wybranej kolumny danych do wyświetlenia.
- * @param {object} headers - Obiekt zawierający informacje o nagłówkach kolumn.
- * @param {string} chartId - Identyfikator elementu canvas, na którym ma być narysowany wykres.
- * @param {string} chartType - Typ wykresu (np. 'line', 'bar', 'pie').
- * @param {function} setChart - Funkcja ustawiająca stan wykresu w komponencie nadrzędnym.
+ * @param {Array} data - The data array to be displayed on the chart.
+ * @param {string} selectedData - The name of the selected data column to display.
+ * @param {object} headers - An object containing information about the column headers.
+ * @param {string} chartId - The identifier of the canvas element where the chart is to be drawn.
+ * @param {string} chartType - The type of chart (e.g., 'line', 'bar', 'pie').
+ * @param {function} setChart - A function to set the chart state in the parent component.
  */
 const useReportChart = (data, selectedData, headers, chartId, chartType, setChart) => {
     useEffect(() => {
