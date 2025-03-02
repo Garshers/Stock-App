@@ -4,6 +4,14 @@ This Java application will enable users to retrieve and analyze stock market dat
 
 ---
 
+## Technologies Used
+
+-   **Backend:** Java, Spring Boot, Maven
+-   **Frontend:** React, Chart.js, HTML, CSS, JavaScript
+-   **API:** Alpha Vantage API
+
+---
+
 ## Prerequisites
 
 Before you can run the application, ensure you have the following installed:
@@ -24,44 +32,43 @@ Before you can run the application, ensure you have the following installed:
 
 **API Key:**
 
-- You'll need an API key from a financial data provider.  Alpha Vantage is a common choice, but others may be used.  Sign up with your chosen provider to get a free or paid API key.
-
+- Project was created based on Alpha Vantage API. Sign up to get a free or paid API key.
 
 ---
 
 ## Features
 
-**Backend:**
+**Backend (Java/Spring Boot):**
 
-- Fetches stock price data from a financial API.
-- Validates and processes JSON responses from the API.
-- [Not implemented] Stores fetched and user data in a database.
-- Provides REST endpoints for the frontend to access data.
+-   **REST API:** Exposes endpoints for fetching stock data, financial statements, and performing DCF valuations.
+-   **Data Retrieval:** Fetches real-time and historical stock data from the Alpha Vantage API.
+-   **Data Processing:** Validates and processes JSON responses from the financial API.
+-   **DCF Valuation:** Calculates Discounted Cash Flow valuations using Weighted Average Cost of Capital (WACC) and user-defined growth rates.
+-   **Database Integration:** Stores and retrieves financial data. [Not implemented]
+-   **Error Handling:** Implements robust error handling for API requests and calculations.
 
 **Frontend:**
 
-- Displays stock information in a graphical user interface (GUI) using charts and tables.
-- [Not implemented] Allows users to search for stocks by symbol.
-- Creates charts of historical stock prices.
-- Displays key financial metrics.
-- Provides a dashboard for portfolio display.
-- [Not implemented] Manages user authentication and authorization.
+-   **Dynamic Data Display:** Displays stock data and financial metrics in interactive charts and tables.
+-   **Stock Search:** Enables users to search for stocks by symbol.
+-   **Historical Charts:** Generates charts for historical stock prices and financial data.
+-   **Financial Statements:** Displays Income Statements, Balance Sheets, and Cash Flow Statements.
+-   **DCF Input:** Allows users to input growth rates for DCF calculations.
+-   **DCF Results:** Presents DCF valuation results, providing insights into stock value.
+-   **User Interface:** User-friendly interface designed for clear data visualization and interaction. [Not implemented]
+-   **Responsive Design:** Ensures the application is accessible on various devices. [Not implemented]
 
 ---
 
 ## **Getting Started**
 
 ### **1. Clone the Repository**
-
 ```bash
-git clone https://github.com/your-repo/stock-market-app.git
-cd stock-market-app
+git clone https://github.com/Garshers/Stock-App.git
 ```
 
 ### **2. Configure the API Key**
-
 - Add your API key to the application configuration. Update the `URLCreator` file:
-
 ```java
 private static final String API_KEY = "demo";
 ```
@@ -69,24 +76,18 @@ private static final String API_KEY = "demo";
 ### **3. Backend Setup**
 
 #### Using Maven:
-
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
 
 #### Using an IDE:
-
 - Open the project in IntelliJ IDEA or Eclipse.
 - Run the `StockAppApplication` class.
 
----
-
 ### **4. Frontend Setup**
-
 - Navigate to the frontend directory
 - Start the development server:
-
 ```bash
    npm start
 ```
@@ -102,7 +103,7 @@ https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=Y
 ```
 
 ---
-netstat 
+
 ## Generating Documentation (Javadoc)
 This project uses Maven for building and dependency management. To generate the project documentation, including Javadoc, follow these steps:
 
