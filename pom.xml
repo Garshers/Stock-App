@@ -61,12 +61,6 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 
-		<!-- Gson (Convert Java Objects into JSON and back) -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<build>

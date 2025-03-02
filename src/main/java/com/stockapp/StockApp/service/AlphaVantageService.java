@@ -13,22 +13,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
-import com.stockapp.StockApp.model.BalanceSheet;
-import com.stockapp.StockApp.model.CashFlow;
-import com.stockapp.StockApp.model.IncomeStatement;
-import com.stockapp.StockApp.model.Overview;
-import com.stockapp.StockApp.model.Stock;
-import com.stockapp.StockApp.model.URLCreator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stockapp.StockApp.model.*;
 
 /**
  * Service class for interacting with the Alpha Vantage API.
  */
 public class AlphaVantageService {
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Retrieves data from the specified URL.
@@ -58,26 +52,30 @@ public class AlphaVantageService {
      * @throws IllegalArgumentException If the "5. adjusted close" value is missing for a date.
      */
     public List<Stock> parseStockData(String symbol, String jsonResponse, URLCreator.FunctionType functionType) {
-        JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
-
-        String timeSeriesFunction = functionType.getJsonFunction();
-        JsonObject timeSeries = jsonObject.getAsJsonObject(timeSeriesFunction);
-        if (timeSeries == null) {
-            throw new RuntimeException("Not found '" + timeSeriesFunction + "' in JSON answer.");
-        }
-
-        List<Stock> stockList = new ArrayList<>();
-        for (String date : timeSeries.keySet()) {
-            JsonObject dailyData = timeSeries.getAsJsonObject(date);
-            if (!dailyData.has("5. adjusted close")) {
-                throw new IllegalArgumentException("Missing '5. adjusted close' for date: " + date);
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            String timeSeriesFunction = functionType.getJsonFunction();
+            JsonNode timeSeries = rootNode.get(timeSeriesFunction);
+            if (timeSeries == null) {
+                throw new RuntimeException("Not found '" + timeSeriesFunction + "' in JSON answer.");
             }
-            double closePrice = dailyData.get("5. adjusted close").getAsDouble();
-            stockList.add(new Stock(symbol, closePrice, date));
-        }
-        Collections.reverse(stockList);
 
-        return stockList;
+            List<Stock> stockList = new ArrayList<>();
+            timeSeries.fields().forEachRemaining(entry -> {
+                String date = entry.getKey();
+                JsonNode dailyData = entry.getValue();
+                JsonNode closeNode = dailyData.get("5. adjusted close");
+                if (closeNode == null) {
+                    throw new IllegalArgumentException("Missing '5. adjusted close' for date: " + date);
+                }
+                double closePrice = closeNode.asDouble();
+                stockList.add(new Stock(symbol, closePrice, date));
+            });
+            Collections.reverse(stockList);
+            return stockList;
+        } catch (JsonProcessingException | RuntimeException e) {
+            throw new RuntimeException("Error parsing stock data: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -91,20 +89,19 @@ public class AlphaVantageService {
      * @param objectCreator A function that creates an object of type T from a JsonObject.
      * @return              A list of objects of type T, or an empty list if an error occurs or no data is found.
      */
-    private <T> List<T> parseFinancialData(String jsonResponse, URLCreator.FunctionType functionType, Function<JsonObject, T> objectCreator) {
+    private <T> List<T> parseFinancialData(String jsonResponse, URLCreator.FunctionType functionType, Function<JsonNode, T> objectCreator) {
         try {
-            JsonObject jsonObject = JsonParser.parseString(jsonResponse).getAsJsonObject();
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
             String function = functionType.getJsonFunction();
-            JsonArray jsonArray = jsonObject.getAsJsonArray(function);
+            JsonNode jsonArray = rootNode.get(function);
             List<T> dataList = new ArrayList<>();
 
-            if (jsonArray == null) {
-                System.err.println("Error: No data in JSON: " + function);
+            if (jsonArray == null || !jsonArray.isArray()) {
+                System.err.println("Error: No data or not array in JSON: " + function);
                 return dataList;
             }
 
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonObject jsonData = jsonArray.get(i).getAsJsonObject();
+            jsonArray.forEach(jsonData -> {
                 try {
                     T object = objectCreator.apply(jsonData);
                     if (object != null) {
@@ -113,9 +110,9 @@ public class AlphaVantageService {
                 } catch (IllegalArgumentException e) {
                     System.err.println("Error creating object: " + e.getMessage());
                 }
-            }
+            });
             return dataList;
-        } catch (JsonParseException e) {
+        } catch (JsonProcessingException e) {
             System.err.println("Error parsing JSON: " + e.getMessage());
             return new ArrayList<>();
         }
@@ -280,9 +277,8 @@ public class AlphaVantageService {
      * @return A Overview object parsed from the JSON response.
      */
     public Overview parseOverview(String symbol, String jsonResponse, URLCreator.FunctionType functionType){
-        JsonObject jsonData = JsonParser.parseString(jsonResponse).getAsJsonObject();
-
         try {
+            JsonNode jsonData = objectMapper.readTree(jsonResponse);
             return new Overview(
                 safeGetString(jsonData, "Symbol"),
                 safeGetString(jsonData, "Name"),
@@ -333,7 +329,7 @@ public class AlphaVantageService {
                 safeGetDate(jsonData, "DividendDate"),
                 safeGetDate(jsonData, "ExDividendDate")
             );
-        } catch (Exception e) {
+        } catch (JsonProcessingException e) {
             System.err.println("Error prasing overview: " + e.getMessage());
             return null;
         }
@@ -348,14 +344,12 @@ public class AlphaVantageService {
      * @param key  The key under which the value is located in the JSON.
      * @return The String value or null if the value does not exist, is null, or has an invalid type.
      */
-    private String safeGetString(JsonObject json, String key) {
-        try {
-            JsonElement element = json.get(key);
-            return element != null && !element.isJsonNull() ? element.getAsString() : null;
-        } catch (ClassCastException e) {
-            System.err.println("Error: Invalid type for key '" + key + "'. Expected String.");
-            return null;
+    private String safeGetString(JsonNode json, String key) {
+        JsonNode node = json.get(key);
+        if (node != null && !node.isNull() && node.isTextual()) {
+            return node.asText();
         }
+        return null;
     }
 
     /**
@@ -365,26 +359,25 @@ public class AlphaVantageService {
      * @param key  The key under which the value is located in the JSON.
      * @return The BigDecimal value or null if the value does not exist, is null, "None", or has an invalid type.
      */
-    private BigDecimal safeGetBigDecimal(JsonObject json, String key) {
-        try {
-            JsonElement element = json.get(key);
-            if (element != null && !element.isJsonNull()) {
-                String value = element.getAsString();
-                if ("None".equalsIgnoreCase(value)) {
-                    return null; // JSON can be "None" for some values
-                }
+    private BigDecimal safeGetBigDecimal(JsonNode json, String key) {
+        JsonNode node = json.get(key);
+        if (node != null && !node.isNull()) {
+            if (node.isTextual() && "None".equalsIgnoreCase(node.asText())) {
+                return null;
+            }
+            if (node.isNumber()) {
+                return new BigDecimal(node.asText());
+            }
+            if (node.isTextual()) {
                 try {
-                    return new BigDecimal(value);
-                } catch (NumberFormatException ex) {
-                    System.err.println("Error parsing BigDecimal for key '" + key + "': " + value);
+                    return new BigDecimal(node.asText());
+                } catch (NumberFormatException e) {
+                    System.err.println("Error parsing BigDecimal for key '" + key + "': " + node.asText());
                     return null;
                 }
             }
-            return null;
-        } catch (ClassCastException e) {
-            System.err.println("Error: Invalid type for key '" + key + "'. Expected BigDecimal.");
-            return null;
         }
+        return null;
     }
 
     /**
@@ -394,26 +387,25 @@ public class AlphaVantageService {
      * @param key  The key under which the value is located in the JSON.
      * @return The Long value or null if the value does not exist, is null, or has an invalid type.
      */
-    private Long safeGetLong(JsonObject json, String key) {
-        try {
-            JsonElement element = json.get(key);
-            if (element != null && !element.isJsonNull()) {
-                String value = element.getAsString();
-                if ("None".equalsIgnoreCase(value)) {
-                    return null;
-                }
+    private Long safeGetLong(JsonNode json, String key) {
+        JsonNode node = json.get(key);
+        if (node != null && !node.isNull()) {
+            if (node.isTextual() && "None".equalsIgnoreCase(node.asText())) {
+                return null;
+            }
+            if (node.isNumber()) {
+                return node.asLong();
+            }
+            if (node.isTextual()) {
                 try {
-                    return Long.valueOf(value);
+                    return Long.valueOf(node.asText());
                 } catch (NumberFormatException e) {
-                    System.err.println("Error parsing Long for key '" + key + "': " + value);
+                    System.err.println("Error parsing Long for key '" + key + "': " + node.asText());
                     return null;
                 }
             }
-            return null;
-        } catch (ClassCastException e) {
-            System.err.println("Error: Invalid type for key '" + key + "'. Expected Long.");
-            return null;
         }
+        return null;
     }
 
     /**
@@ -423,23 +415,22 @@ public class AlphaVantageService {
      * @param key  The key under which the value is located in the JSON.
      * @return The Integer value or null if the value does not exist, is null, or has an invalid type.
      */
-    private Integer safeGetInt(JsonObject json, String key) {
-    try {
-            JsonElement element = json.get(key);
-            if (element != null && !element.isJsonNull()) {
-                String value = element.getAsString();
+    private Integer safeGetInt(JsonNode json, String key) {
+        JsonNode node = json.get(key);
+        if (node != null && !node.isNull()) {
+            if (node.isNumber()) {
+                return node.asInt();
+            }
+            if (node.isTextual()) {
                 try {
-                    return Integer.valueOf(value);
+                    return Integer.valueOf(node.asText());
                 } catch (NumberFormatException e) {
-                    System.err.println("Error parsing Integer for key '" + key + "': " + value);
+                    System.err.println("Error parsing Integer for key '" + key + "': " + node.asText());
                     return null;
                 }
             }
-            return null;
-        } catch (ClassCastException e) {
-            System.err.println("Error: Invalid type for key '" + key + "'. Expected Integer.");
-            return null;
         }
+        return null;
     }
 
     /**
@@ -449,23 +440,17 @@ public class AlphaVantageService {
      * @param key  The key under which the value is located in the JSON.
      * @return The LocalDate value or null if the value does not exist, is null, or has an invalid format.
      */
-    private LocalDate safeGetDate(JsonObject json, String key) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            JsonElement element = json.get(key);
-            if (element != null && !element.isJsonNull()) {
-                String dateString = element.getAsString();
-                try {
-                    return LocalDate.parse(dateString, formatter);
-                } catch (DateTimeParseException e) {
-                    System.err.println("Error parsing date for key '" + key + "': " + dateString + ".  Expected format: " + formatter.format(LocalDate.now()));
-                    return null;
-                }
+    private LocalDate safeGetDate(JsonNode json, String key) {
+        JsonNode node = json.get(key);
+        if (node != null && !node.isNull() && node.isTextual()) {
+            String dateString = node.asText();
+            try {
+                return LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
+            } catch (DateTimeParseException e) {
+                System.err.println("Error parsing date for key '" + key + "': " + dateString + ". Expected format: yyyy-MM-dd");
+                return null;
             }
-            return null;
-        } catch (ClassCastException e) {
-            System.err.println("Error: Invalid type for key '" + key + "'. Expected Date String.");
-            return null;
         }
+        return null;
     }
 }
