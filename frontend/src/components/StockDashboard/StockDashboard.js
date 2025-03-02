@@ -192,22 +192,16 @@ function StockChart() {
     return (
         <div>
             <div className="contentBox">
-                <div className="mainLeftBox"></div>
-                <div className="mainCenterBox">
-                    {/* Stock price chart */}
-                    {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
-
+                <div className="mainLeftBox">
                     {/* Input block */}
                     <div>
-                        <h2>Enter YoY prediction, relative to the prior year's value (between 0 and 1):</h2>
-                        {dcfResult !== null && dcfResult !== undefined && (
-                            <h2>DCF Result: {dcfResult}</h2>
-                        )}
+                        <h1>DCF</h1>
+                        <h2>Enter growth rate predictions</h2>
                         {growthRates.map((number, index) => (
                             <div key={index} className='inputBox'>
                                 <div className='inputRow'>
                                     <label htmlFor={`number-${index}`} className='InputLabel'>
-                                        {index === growthRates.length - 1 ? "Terminal Value: " : `Year ${index + 1}: `}
+                                        {index === growthRates.length - 1 ? "Terminal Growth Rate: " : `Year ${index + 1}: `}
                                     </label>
                                     <input
                                         type="number" 
@@ -220,18 +214,25 @@ function StockChart() {
                             </div>
                         ))}
                         <button onClick={handleSubmit}>Send</button>
+                        {dcfResult !== null && dcfResult !== undefined && (
+                            <h2>DCF Result: {dcfResult}</h2>
+                        )}
                     </div>
+                </div>
+                <div className="mainCenterBox">
+                    {/* Stock price chart */}
+                    {loadingStocks ? <div>Loading stocks...</div> : <canvas id="stockChart"></canvas>}
 
                     {/* Buttons for getting annual report data */}
-                    <div>
+                    <div className="button-container">
                         <button onClick={fetchIncomeStatementData} disabled={loadingIncomeStatement}>
-                            {loadingIncomeStatement ? "Loading report..." : "Get Income Statement"}
+                        {loadingIncomeStatement ? "Loading report..." : "Income Statement"}
                         </button>
                         <button onClick={fetchBalanceSheetData} disabled={loadingBalanceSheet}>
-                            {loadingBalanceSheet ? "Loading report..." : "Get Balance Sheet"}
+                        {loadingBalanceSheet ? "Loading report..." : "Balance Sheet"}
                         </button>
                         <button onClick={fetchCashFlowStatementData} disabled={loadingCashFlowStatement}>
-                            {loadingCashFlowStatement ? "Loading report..." : "Get Cash Flow Statement"}
+                        {loadingCashFlowStatement ? "Loading report..." : "Cash Flow Statement"}
                         </button>
                     </div>
 

@@ -49,6 +49,7 @@ tbody tr:hover {
     width: 98%;
     min-height: 100px;
     height: auto;
+    max-height: 700px;
     overflow-x: auto;
     background-color: #ffffff;
     display: flex;
@@ -63,11 +64,10 @@ tbody tr:hover {
 }
 
 .customTableColumnHeader {
-    position: sticky;
     white-space: nowrap;
-    top: 0;
+    display: flex;
+    flex-direction: column;
     background-color: #f0f0f0;
-    z-index: 1;
 }
 
 .customTableCell, .customTableCellHeader {
@@ -76,7 +76,7 @@ tbody tr:hover {
     min-height: 18px;
     overflow: hidden;
     padding: 6px 8px;
-    border-top: 1px solid #ddd;
+    border-top: 2px solid #ddd;
     font-size: small;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -196,7 +196,7 @@ a:hover {
 /* -------- Links styling -------- */
 
 .inputBox{
-    width: 50%;
+    width: 85%;
     height: fit-content;
     display: flex;
     flex-direction: column;
@@ -204,17 +204,32 @@ a:hover {
 }
 
 .inputRow{
-    padding: 1px 0;
     width: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .InputLabel{
-    display: inline-block;
-    width: 120px;
-    text-align: right;
-    margin-right: 10px;
+    display: flex;
+    width: fit-content;
+    text-align: center;
+}
+
+/* -------- Button styling -------- */
+
+.button-container {
+    display: flex;
+    width: 100%;
+}
+  
+.button-container button {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: #f0f0f0;
+    cursor: pointer;
 }
 
 @media (max-width: 900px) {
