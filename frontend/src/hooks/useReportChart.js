@@ -11,13 +11,16 @@ import { createChart } from '../utils/createChart.js'
  * @param {string} chartType - The type of chart (e.g., 'line', 'bar', 'pie').
  * @param {function} setChart - A function to set the chart state in the parent component.
  */
-const useReportChart = (data, selectedData, headers, chartId, chartType, setChart) => {
+const useReportChart = (data, type, selectedData, headers, chartId, chartType, setChart) => {
     useEffect(() => {
         if (data && data.length > 0) {
+            const check = Object.values(headers[type]).flat().find(header => header.dataName === selectedData) ? true : false;
+            selectedData = check ? selectedData : headers[type][1].dataName;
+
             const labels = data.map(item => item.fiscalDateEnding);
             const chartData = data.map(item => item[selectedData]);
             const selectedHeader = Object.values(headers).flat().find(header => header.dataName === selectedData);
-            const dataName = selectedHeader ? selectedHeader.displayName : selectedData;
+            const dataName = selectedHeader ? selectedHeader.displayName : headers[type][1].dataName;
             const ctx = document.getElementById(chartId).getContext('2d');
 
             labels.reverse();
@@ -27,7 +30,7 @@ const useReportChart = (data, selectedData, headers, chartId, chartType, setChar
 
             setChart(newChart);
         }
-    }, [data, selectedData, headers, chartId, chartType, setChart]);
+    }, [data, type, selectedData, headers, chartId, chartType, setChart]);
 };
 
 export default useReportChart;

@@ -219,11 +219,12 @@ a:hover {
 
 .button-container {
     display: flex;
+    flex-direction: row;
     width: 100%;
 }
   
 .button-container button {
-    flex-grow: 1;
+    width: 33.33%;
     padding: 10px 15px;
     border: 1px solid #ccc;
     border-top-left-radius: 5px;

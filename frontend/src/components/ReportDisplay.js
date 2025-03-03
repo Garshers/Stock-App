@@ -4,7 +4,7 @@ import * as headers from '../utils/FinancialDataHeaders.js';
 import CustomTable from './CustomTable.js';
 
 function ReportDisplay({ reportData, reportType }) {
-    const [selectedData, setSelectedData] = useState(null);
+    const [selectedData, setSelectedData] = useState(headers[reportType][1].dataName);
     const [chart, setChart] = useState(null);
     const chartId = `${reportType}Chart`;
 
@@ -13,6 +13,7 @@ function ReportDisplay({ reportData, reportType }) {
 
     useReportChart(
         reportData,
+        reportType,
         selectedData,
         headers,
         chartId,
