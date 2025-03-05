@@ -227,24 +227,35 @@ public class StockChartsController {
 
         List<BalanceSheet> balanceSheets = getAnnualBalanceSheet(symbol);
         BalanceSheet latestBalanceSheet = balanceSheets.get(0);               // [Latest BS]
-        BigDecimal totalDebt = latestBalanceSheet.getShortLongTermDebtTotal();      // [BS]
-        BigDecimal netDebt = latestBalanceSheet.getShortLongTermDebtTotal();        // [BS]
-
+        BigDecimal totalDebt = latestBalanceSheet.getShortLongTermDebtTotal();      // [BS] ---
+        BigDecimal netDebt = latestBalanceSheet.getShortLongTermDebtTotal()
+                .multiply(BigDecimal.valueOf(0.7));                             // [BS] ---
+        
         List<IncomeStatement> incomeStatements = getAnnualIncomeStatements(symbol);
         IncomeStatement latestIncomeStatements = incomeStatements.get(0);     // [Latest IS]
         BigDecimal interestExpense = latestIncomeStatements.getInterestExpense();   // [IS]
         BigDecimal taxProvision = latestIncomeStatements.getIncomeTaxExpense();     // [IS]
-        BigDecimal pretaxIncome = latestIncomeStatements.getIncomeBeforeTax();      // [IS]
-
+        BigDecimal pretaxIncome = latestIncomeStatements.getIncomeBeforeTax();      // [IS] ---
+        
         List<CashFlow> cashFlows = getAnnualCashFlow(symbol);
         CashFlow latestCashFlow = cashFlows.get(0);                           // [Latest CFS]
         BigDecimal lastYearFCF = latestCashFlow.getOperatingCashflow()
-                .subtract(latestCashFlow.getCapitalExpenditures());                 // [CFS]
+                .subtract(latestCashFlow.getCapitalExpenditures());                 // [CFS] ---
 
-        Overview overview = getOverview(symbol);
-        BigDecimal beta = overview.getBeta();                                       // [Overview data]
+        Overview overview = getOverview(symbol);                                    // [Overview data]
+        BigDecimal beta = overview.getBeta();                                       // [OV]
         BigDecimal marketCapitalization = overview.getMarketCapitalization();       // [OV]
         BigDecimal numberOfShares = overview.getSharesOutstanding();                // [OV]
+
+        System.out.println("totalDebt: " + totalDebt);
+        System.out.println("netDebt: " + netDebt);
+        System.out.println("interestExpense: " + interestExpense);
+        System.out.println("taxProvision: " + taxProvision);
+        System.out.println("pretaxIncome: " + pretaxIncome);
+        System.out.println("lastYearFCF: " + lastYearFCF);
+        System.out.println("beta: " + beta);
+        System.out.println("marketCapitalization: " + marketCapitalization);
+        System.out.println("numberOfShares: " + numberOfShares);
 
         BigDecimal riskFreeRate = new BigDecimal("0.0461");     // 02/14/2025 - bonds
         BigDecimal marketRiskPremium = new BigDecimal("0.1");   // Average S&P500 annual return

@@ -362,47 +362,22 @@ public class AlphaVantageService {
     private BigDecimal safeGetBigDecimal(JsonNode json, String key) {
         JsonNode node = json.get(key);
         if (node != null && !node.isNull()) {
-            if (node.isTextual() && "None".equalsIgnoreCase(node.asText())) {
-                return null;
-            }
-            if (node.isNumber()) {
+            if (node.isTextual()) {
+                String textValue = node.asText();
+                if ("None".equalsIgnoreCase(textValue)) {
+                    return BigDecimal.ZERO;
+                } else if ("-".equals(textValue)) {
+                    return BigDecimal.ZERO;
+                } else {
+                    try {
+                        return new BigDecimal(textValue);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing BigDecimal for key '" + key + "': " + textValue);
+                        return null;
+                    }
+                }
+            } else if (node.isNumber()) {
                 return new BigDecimal(node.asText());
-            }
-            if (node.isTextual()) {
-                try {
-                    return new BigDecimal(node.asText());
-                } catch (NumberFormatException e) {
-                    System.err.println("Error parsing BigDecimal for key '" + key + "': " + node.asText());
-                    return null;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves a Long value from a JSON object, handling null, "None", and invalid types.
-     *
-     * @param json The JSON object to retrieve the value from.
-     * @param key  The key under which the value is located in the JSON.
-     * @return The Long value or null if the value does not exist, is null, or has an invalid type.
-     */
-    private Long safeGetLong(JsonNode json, String key) {
-        JsonNode node = json.get(key);
-        if (node != null && !node.isNull()) {
-            if (node.isTextual() && "None".equalsIgnoreCase(node.asText())) {
-                return null;
-            }
-            if (node.isNumber()) {
-                return node.asLong();
-            }
-            if (node.isTextual()) {
-                try {
-                    return Long.valueOf(node.asText());
-                } catch (NumberFormatException e) {
-                    System.err.println("Error parsing Long for key '" + key + "': " + node.asText());
-                    return null;
-                }
             }
         }
         return null;
@@ -444,13 +419,16 @@ public class AlphaVantageService {
         JsonNode node = json.get(key);
         if (node != null && !node.isNull() && node.isTextual()) {
             String dateString = node.asText();
+            if ("None".equalsIgnoreCase(dateString)) {
+                return LocalDate.MIN;
+            }
             try {
                 return LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
             } catch (DateTimeParseException e) {
                 System.err.println("Error parsing date for key '" + key + "': " + dateString + ". Expected format: yyyy-MM-dd");
-                return null;
+                return LocalDate.MIN;
             }
         }
-        return null;
+        return LocalDate.MIN;
     }
 }
