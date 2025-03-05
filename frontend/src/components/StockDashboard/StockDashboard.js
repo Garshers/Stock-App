@@ -29,7 +29,7 @@ function StockChart() {
     /**
      * Universal function to fetch annual report data from the API.
      */
-    const fetchDataAndSetState = async (tableKey, setState, setLoadingState, setErrorState) => {
+    const fetchDataAndSetState = async (tableKey, setState, setLoadingState) => {
         setLoadingState(true);
         try {
             const data = await fetches.fetchData(`${symbol}/${tableKey}`);
@@ -163,10 +163,10 @@ function StockChart() {
      */
     const handleSubmit = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/dcfData', {
+            const response = await fetch(`http://localhost:8080/api/${symbol}/dcfData`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json',},
-                body: JSON.stringify({ growthRates }),
+                body: JSON.stringify({ growthRates: growthRates }),
             });
 
             if (!response.ok) {

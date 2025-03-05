@@ -325,7 +325,7 @@ public class AlphaVantageService {
                 safeGetBigDecimal(jsonData, "52WeekLow"),
                 safeGetBigDecimal(jsonData, "50DayMovingAverage"),
                 safeGetBigDecimal(jsonData, "200DayMovingAverage"),
-                safeGetLong(jsonData, "SharesOutstanding"),
+                safeGetBigDecimal(jsonData, "SharesOutstanding"),
                 safeGetDate(jsonData, "DividendDate"),
                 safeGetDate(jsonData, "ExDividendDate")
             );

@@ -53,7 +53,7 @@ public class Overview {
     private final BigDecimal weekLow52;
     private final BigDecimal movingAverage50;
     private final BigDecimal movingAverage200;
-    private final Long sharesOutstanding;
+    private final BigDecimal sharesOutstanding;
     private final LocalDate dividendDate;
     private final LocalDate exDividendDate;
 
@@ -109,7 +109,21 @@ public class Overview {
      * @param dividendDate               The dividend date.
      * @param exDividendDate             The ex-dividend date.
      */
-    public Overview(String symbol, String name, String description, String exchange, String currency, String country, String sector, String industry, String fiscalYearEnd, LocalDate latestQuarter, BigDecimal marketCapitalization, BigDecimal ebitda, BigDecimal peRatio, BigDecimal pegRatio, BigDecimal bookValue, BigDecimal dividendPerShare, BigDecimal dividendYield, BigDecimal eps, BigDecimal revenuePerShareTTM, BigDecimal profitMargin, BigDecimal operatingMarginTTM, BigDecimal returnOnAssetsTTM, BigDecimal returnOnEquityTTM, BigDecimal revenueTTM, BigDecimal grossProfitTTM, BigDecimal dilutedEPSTTM, BigDecimal quarterlyEarningsGrowthYOY, BigDecimal quarterlyRevenueGrowthYOY, BigDecimal analystTargetPrice, Integer analystRatingStrongBuy, Integer analystRatingBuy, Integer analystRatingHold, Integer analystRatingSell, Integer analystRatingStrongSell, BigDecimal trailingPE, BigDecimal forwardPE, BigDecimal priceToSalesRatioTTM, BigDecimal priceToBookRatio, BigDecimal evToRevenue, BigDecimal evToEBITDA, BigDecimal beta, BigDecimal weekHigh52, BigDecimal weekLow52, BigDecimal movingAverage50, BigDecimal movingAverage200, Long sharesOutstanding, LocalDate dividendDate, LocalDate exDividendDate) {
+    public Overview(String symbol, String name, String description, String exchange, 
+            String currency, String country, String sector, String industry, 
+            String fiscalYearEnd, LocalDate latestQuarter, BigDecimal marketCapitalization, 
+            BigDecimal ebitda, BigDecimal peRatio, BigDecimal pegRatio, BigDecimal bookValue, 
+            BigDecimal dividendPerShare, BigDecimal dividendYield, BigDecimal eps, 
+            BigDecimal revenuePerShareTTM, BigDecimal profitMargin, BigDecimal operatingMarginTTM, 
+            BigDecimal returnOnAssetsTTM, BigDecimal returnOnEquityTTM, BigDecimal revenueTTM, 
+            BigDecimal grossProfitTTM, BigDecimal dilutedEPSTTM, BigDecimal quarterlyEarningsGrowthYOY, 
+            BigDecimal quarterlyRevenueGrowthYOY, BigDecimal analystTargetPrice, Integer analystRatingStrongBuy, 
+            Integer analystRatingBuy, Integer analystRatingHold, Integer analystRatingSell, 
+            Integer analystRatingStrongSell, BigDecimal trailingPE, BigDecimal forwardPE, 
+            BigDecimal priceToSalesRatioTTM, BigDecimal priceToBookRatio, BigDecimal evToRevenue, 
+            BigDecimal evToEBITDA, BigDecimal beta, BigDecimal weekHigh52, BigDecimal weekLow52, 
+            BigDecimal movingAverage50, BigDecimal movingAverage200, BigDecimal sharesOutstanding, 
+            LocalDate dividendDate, LocalDate exDividendDate) {
         this.symbol = symbol;
         this.name = name;
         this.description = description;
@@ -205,7 +219,7 @@ public class Overview {
     public BigDecimal getWeekLow52() { return weekLow52; }
     public BigDecimal getMovingAverage50() { return movingAverage50; }
     public BigDecimal getMovingAverage200() { return movingAverage200; }
-    public Long getSharesOutstanding() { return sharesOutstanding; }
+    public BigDecimal getSharesOutstanding() { return sharesOutstanding; }
     public LocalDate getDividendDate() { return dividendDate; }
     public LocalDate getExDividendDate() { return exDividendDate; }
 }

@@ -163,8 +163,8 @@ public class StockChartsController {
     }
     
 
-    @PostMapping("/api/dcfData")
-    public ResponseEntity<Map<String, Object>> handleDCFConnection(@RequestBody GrowthRates growthRates) {
+    @PostMapping("/api/{symbol}/dcfData")
+    public ResponseEntity<Map<String, Object>> handleDCFConnection(@RequestBody GrowthRates growthRates, @PathVariable("symbol") String symbol) {
         try {
             
             if (growthRates == null || growthRates.getGrowthRates() == null) {
@@ -173,10 +173,10 @@ public class StockChartsController {
             List<BigDecimal> values = growthRates.getGrowthRates();
             System.out.println("Received DCF data: " + values);
 
-            BigDecimal DCF = testDCFwithWAAC(values);
+            BigDecimal DCF = testDCFwithWAAC(values, symbol);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("message", "Counted DCF for InPost: " + DCF);
+            response.put("message", "Counted DCF for " + symbol + ": " + DCF);
             response.put("value", DCF);
 
             System.out.println("Price per share: " + DCF);
@@ -220,21 +220,35 @@ public class StockChartsController {
         return errorResponse;
     }
 
-    public BigDecimal testDCFwithWAAC(List<BigDecimal> growthRates){
+    public BigDecimal testDCFwithWAAC(List<BigDecimal> growthRates, String symbol){
         // Testing DCFValuationUtil
         DCFValuationUtil dcfUtil = new DCFValuationUtil();
 
+
+        List<BalanceSheet> balanceSheets = getAnnualBalanceSheet(symbol);
+        BalanceSheet latestBalanceSheet = balanceSheets.get(0);               // [Latest BS]
+        BigDecimal totalDebt = latestBalanceSheet.getShortLongTermDebtTotal();      // [BS]
+        BigDecimal netDebt = latestBalanceSheet.getShortLongTermDebtTotal();        // [BS]
+
+        List<IncomeStatement> incomeStatements = getAnnualIncomeStatements(symbol);
+        IncomeStatement latestIncomeStatements = incomeStatements.get(0);     // [Latest IS]
+        BigDecimal interestExpense = latestIncomeStatements.getInterestExpense();   // [IS]
+        BigDecimal taxProvision = latestIncomeStatements.getIncomeTaxExpense();     // [IS]
+        BigDecimal pretaxIncome = latestIncomeStatements.getIncomeBeforeTax();      // [IS]
+
+        List<CashFlow> cashFlows = getAnnualCashFlow(symbol);
+        CashFlow latestCashFlow = cashFlows.get(0);                           // [Latest CFS]
+        BigDecimal lastYearFCF = latestCashFlow.getOperatingCashflow()
+                .subtract(latestCashFlow.getCapitalExpenditures());                 // [CFS]
+
+        Overview overview = getOverview(symbol);
+        BigDecimal beta = overview.getBeta();                                       // [Overview data]
+        BigDecimal marketCapitalization = overview.getMarketCapitalization();       // [OV]
+        BigDecimal numberOfShares = overview.getSharesOutstanding();                // [OV]
+
         BigDecimal riskFreeRate = new BigDecimal("0.0461");     // 02/14/2025 - bonds
         BigDecimal marketRiskPremium = new BigDecimal("0.1");   // Average S&P500 annual return
-        BigDecimal beta = new BigDecimal("0.99");                        // (5Y Monthly) [summary]
-        BigDecimal marketCapitalization = new BigDecimal("2122000000000");  // [summary]
-        BigDecimal numberOfShares = new BigDecimal("5500000000");         // [statistics]
-        BigDecimal interestExpense = new BigDecimal("268000000");  // [IS]
-        BigDecimal taxProvision = new BigDecimal("19697000000");     // [IS]
-        BigDecimal pretaxIncome = new BigDecimal("119815000000");    // [IS]
-        BigDecimal totalDebt = new BigDecimal("25461000000");       // [BS]
-        BigDecimal netDebt = new BigDecimal("17000000000");         // [BS]
-        BigDecimal lastYearFCF = new BigDecimal("72764000000");     // [CFS]
+
         
         try {
             // Test 1: WAAC calculation for InPost (for 2024 data)
@@ -246,9 +260,8 @@ public class StockChartsController {
             BigDecimal discountRate = wacc;
             BigDecimal pricePerShare = dcfUtil.calculateDCF(lastYearFCF, growthRates, discountRate, numberOfShares, netDebt);
 
-            System.out.println("WACC dla InPost: " + wacc);
+            System.out.println("WACC for " + symbol + ": " + wacc);
             System.out.println("Price per share (before margin of safety): " + pricePerShare);
-            System.out.println("Price per share (including margin of safety): " + pricePerShare.multiply(new BigDecimal("0.9")));
             return pricePerShare;
         } catch (IllegalArgumentException e) {
             System.err.println("Error: " + e.getMessage());
