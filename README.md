@@ -62,7 +62,7 @@ Before you can run the application, ensure you have the following installed:
 
 ### Example Images
 
-![Dashboard top](images_README/Dashboard_bottom.png)
+![Dashboard top](images_README/Dashboard_top.png)
 ![Dashboard Income Statement](images_README/Dashboard_Income_Statement.png)
 ![Dashboard bottom](images_README/Dashboard_bottom.png)
 
